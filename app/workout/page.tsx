@@ -1,4 +1,6 @@
+"use client";
 import React from "react";
+import Button from "@mui/material/Button";
 
 const Workout: React.FC = () => {
   const workoutOptions = [
@@ -21,6 +23,7 @@ const Workout: React.FC = () => {
           className="flex p-8 items-center bg-gray-100 rounded-full"
         >
           {option}
+          <Button variant="contained">Contained</Button>
         </div>
       ))}
     </div>
