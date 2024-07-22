@@ -5,11 +5,12 @@ import { Button } from "@mui/material";
 
 const Dragger = () => {
   return (
-    <div>
-      <Button variant="text">
+    <div className="flex flex-col gap-4">
+      <div>Position</div>
+      <Button variant="outlined">
         <NorthIcon />
       </Button>
-      <Button variant="text">
+      <Button variant="outlined">
         <SouthIcon />
       </Button>
     </div>

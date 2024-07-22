@@ -4,6 +4,8 @@ import Dragger from "./_components/Dragger";
 import DeleteButton from "./_components/DeleteButton";
 import TimeSetting from "./_components/TimeSetting";
 import WeightSetting from "./_components/WeightSetting";
+import { Button } from "@mui/material";
+import WorkOutList from "./_components/WorkOutList/page";
 
 const Workout: React.FC = () => {
   const workoutOptions = [
@@ -18,20 +20,30 @@ const Workout: React.FC = () => {
   ];
 
   return (
-    <div className="flex gap-4 flex-col">
+    <div className="flex gap-4 flex-col items-center">
       <div>Workout</div>
+      <WorkOutList />
       {workoutOptions.map((option) => (
         <div
           key={option}
-          className="flex h-150 p-8 items-center bg-gray-100 gap-4"
+          className="flex flex-1 h-60 p-8 items-start rounded-3xl bg-gray-100 gap-4 w-full max-w-3xl"
         >
-          <div className="flex-1">{option}</div>
-          <WeightSetting />
-          <TimeSetting />
+          <div className="flex-1 text-xl">{option}</div>
+          <div className="flex flex-col gap-4">
+            <div>Weights / Rest Times</div>
+            <WeightSetting />
+            <TimeSetting />
+          </div>
           <Dragger />
-          <DeleteButton />
+          <div className="flex flex-col gap-4 items-center">
+            <div>Edit</div>
+            <DeleteButton />
+          </div>
         </div>
       ))}
+      <Button size="large" variant="contained">
+        START!
+      </Button>
     </div>
   );
 };

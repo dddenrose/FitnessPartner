@@ -4,7 +4,7 @@ import { Button } from "@mui/material";
 
 const DeleteButton = () => {
   return (
-    <Button variant="outlined">
+    <Button variant="text">
       <ClearIcon />
     </Button>
   );
