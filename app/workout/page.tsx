@@ -1,6 +1,9 @@
 "use client";
 import React from "react";
-import Button from "@mui/material/Button";
+import Dragger from "./_components/Dragger";
+import DeleteButton from "./_components/DeleteButton";
+import TimeSetting from "./_components/TimeSetting";
+import WeightSetting from "./_components/WeightSetting";
 
 const Workout: React.FC = () => {
   const workoutOptions = [
@@ -20,10 +23,13 @@ const Workout: React.FC = () => {
       {workoutOptions.map((option) => (
         <div
           key={option}
-          className="flex p-8 items-center bg-gray-100 rounded-full"
+          className="flex h-150 p-8 items-center bg-gray-100 gap-4"
         >
-          {option}
-          <Button variant="contained">Contained</Button>
+          <div className="flex-1">{option}</div>
+          <WeightSetting />
+          <TimeSetting />
+          <Dragger />
+          <DeleteButton />
         </div>
       ))}
     </div>
