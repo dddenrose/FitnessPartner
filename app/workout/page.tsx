@@ -6,6 +6,7 @@ import TimeSetting from "./_components/TimeSetting";
 import WeightSetting from "./_components/WeightSetting";
 import { Button } from "@mui/material";
 import WorkOutList from "./_components/WorkOutList/page";
+import CategoryCard from "./_components/CategoryCard/page";
 
 const Workout: React.FC = () => {
   const workoutOptions = [
@@ -21,9 +22,10 @@ const Workout: React.FC = () => {
 
   return (
     <div className="flex gap-4 flex-col items-center">
-      <div>Workout</div>
-      <WorkOutList />
-      {workoutOptions.map((option) => (
+      <div className="text-4xl">Workout</div>
+      {/* <WorkOutList /> */}
+      <CategoryCard />
+      {/* {workoutOptions.map((option) => (
         <div
           key={option}
           className="flex flex-1 h-60 p-8 items-start rounded-3xl bg-gray-100 gap-4 w-full max-w-3xl"
@@ -43,7 +45,7 @@ const Workout: React.FC = () => {
       ))}
       <Button size="large" variant="contained">
         START!
-      </Button>
+      </Button> */}
     </div>
   );
 };
