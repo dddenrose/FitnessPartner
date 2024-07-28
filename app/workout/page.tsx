@@ -7,6 +7,7 @@ import WeightSetting from "./_components/WeightSetting";
 import { Button } from "@mui/material";
 import WorkOutList from "./_components/WorkOutList/page";
 import CategoryCard from "./_components/CategoryCard/page";
+import WorkoutProcess from "./_components/WorkoutProcess/page";
 
 const Workout: React.FC = () => {
   const workoutOptions = [
@@ -25,6 +26,7 @@ const Workout: React.FC = () => {
       <div className="text-4xl">Workout</div>
       {/* <WorkOutList /> */}
       <CategoryCard />
+      <WorkoutProcess />
       {/* {workoutOptions.map((option) => (
         <div
           key={option}
