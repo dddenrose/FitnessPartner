@@ -135,6 +135,8 @@ const WorkoutProcess: React.FC = () => {
       return `Execrise : ${execriseList[0]?.title} / Left times: ${execriseList[0]?.times}`;
     } else if (execriseList[0]?.restTimes) {
       return `${execriseList[0]?.title}: Rest Time`;
+    } else if (execriseList[0]?.times) {
+      return `Execrise : ${execriseList[0]?.title} / Left times: ${execriseList[0]?.times}`;
     } else {
       return "Next Execrise";
     }
