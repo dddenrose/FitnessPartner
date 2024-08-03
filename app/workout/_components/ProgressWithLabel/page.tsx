@@ -1,19 +1,9 @@
 import React from "react";
-import { Box, Button, CircularProgress, Typography } from "@mui/material";
+import { Box, CircularProgress } from "@mui/material";
 
 const ProgressWithLabel: React.FC<{
   execriseList: WorkoutItem[];
 }> = ({ execriseList }) => {
-  const totalTime = () => {
-    if (execriseList?.[0]?.execriseTimes) {
-      return execriseList?.[0]?.requiredItem?.time;
-    } else if (execriseList?.[0]?.restTimes) {
-      return execriseList?.[0]?.requiredItem?.rest;
-    } else {
-      return 0;
-    }
-  };
-
   const formatValue = () => {
     if (execriseList?.[0]?.execriseTimes) {
       const slot = 100 / execriseList?.[0]?.requiredItem?.time;
@@ -23,6 +13,10 @@ const ProgressWithLabel: React.FC<{
       const slot = 100 / execriseList?.[0]?.requiredItem?.rest;
 
       return execriseList?.[0]?.restTimes * slot;
+    } else if (execriseList?.[0]?.prepareTimes) {
+      const slot = 100 / execriseList?.[0]?.requiredItem?.prepare;
+
+      return execriseList?.[0]?.prepareTimes * slot;
     } else {
       return 0;
     }
@@ -35,6 +29,8 @@ const ProgressWithLabel: React.FC<{
       return execriseList[0]?.execriseTimes;
     } else if (execriseList[0]?.restTimes) {
       return execriseList[0]?.restTimes;
+    } else if (execriseList[0]?.prepareTimes && execriseList[0]?.times === 0) {
+      return execriseList[0]?.prepareTimes;
     } else {
       return 0;
     }

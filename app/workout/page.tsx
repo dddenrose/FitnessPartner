@@ -8,17 +8,6 @@ const Workout: React.FC = () => {
   const [execriseList, setExecriseList] =
     React.useState<WorkoutItem[]>(aerobicsList);
 
-  const workoutOptions = [
-    "Push",
-    "Pull",
-    "Legs",
-    "Full Body",
-    "Upper Body",
-    "Lower Body",
-    "Core",
-    "Cardio",
-  ];
-
   return (
     <div className="flex gap-4 flex-col items-center">
       <div className="text-md font-bold w-4/5">

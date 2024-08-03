@@ -1,13 +1,16 @@
 import React from "react";
 import ProgressWithLabel from "../ProgressWithLabel/page";
-import { aerobicsList } from "./const";
+import PauseButton from "./_components/PauseButton/page";
+import SkipButton from "./_components/SkipButton/page";
 
 const WorkoutProcess: React.FC<{
   execriseList: WorkoutItem[];
   setExecriseList: React.Dispatch<React.SetStateAction<WorkoutItem[]>>;
 }> = ({ execriseList, setExecriseList }) => {
+  // pause
   const [isPause, setIsPause] = React.useState(false);
 
+  // timer
   React.useEffect(() => {
     if (!execriseList?.length) return;
 
@@ -35,6 +38,11 @@ const WorkoutProcess: React.FC<{
               execriseTimes: execriseList[0]?.requiredItem?.time,
               restTimes: execriseList[0]?.requiredItem?.rest,
             };
+          } else if (item?.prepareTimes) {
+            return {
+              ...item,
+              prepareTimes: item.prepareTimes - 1,
+            };
           } else {
             return null;
           }
@@ -47,6 +55,7 @@ const WorkoutProcess: React.FC<{
     return () => clearInterval(timer); // 清除上一次的計時器
   }, [execriseList, isPause]);
 
+  // 顯示的大標題
   const execriseTitle = () => {
     if (!execriseList?.length) return "Finish !!!";
 
@@ -56,61 +65,76 @@ const WorkoutProcess: React.FC<{
       return "Rest Time";
     } else if (execriseList[0]?.times) {
       return execriseList[0]?.title;
+    } else if (execriseList[0]?.prepareTimes) {
+      const nextExecrise = execriseList[1]?.title;
+
+      if (nextExecrise) {
+        return (
+          <div className="text-white font-bold text-5xl">
+            <div className="mb-2">Prepare Time</div>
+            <div className="text-sm font-normal">Next : {nextExecrise}</div>
+          </div>
+        );
+      }
+
+      return "Prepare Time";
     } else {
       return "Next Execrise";
     }
   };
 
-  const execriseSeconds = () => {
-    if (!execriseList?.length) return "Finish !!!";
+  // 剩餘組數
+  const leftTimes = () => {
+    if (!execriseList?.length) return null;
 
-    if (execriseList[0]?.execriseTimes) {
-      return execriseList[0]?.times;
-    } else if (execriseList[0]?.restTimes) {
-      return execriseList[0]?.restTimes;
-    } else if (execriseList[0]?.times) {
-      return {
-        title: execriseList[0]?.title,
-        leftTimes: execriseList[0]?.times,
-      };
-    } else {
-      return "Next Execrise";
+    const currentTitle = execriseTitle();
+
+    if (
+      currentTitle === "Prepare Time" ||
+      currentTitle === "Rest Time" ||
+      typeof currentTitle !== "string"
+    ) {
+      return null;
     }
+
+    return `Left Times : ${execriseList[0]?.times}`;
+  };
+
+  // background color
+  const bgColor = () => {
+    const currentTitle = execriseTitle();
+
+    if (currentTitle === "Prepare Time" || currentTitle === "Rest Time") {
+      return "bg-indigo-300";
+    }
+
+    return "bg-indigo-800";
   };
 
   return (
-    <div className="flex bg-indigo-800 p-8 w-4/5 gap-4 place-content-between rounded-3xl">
+    <div
+      className={`flex ${bgColor()} p-8 w-4/5 gap-4 place-content-between rounded-3xl`}
+    >
       <div className="flex flex-col place-content-between">
         <div className="block text-white font-bold text-5xl">
           {execriseTitle()}
+
+          {/* 剩餘組數 */}
           <div className="block text-white font-medium text-xl mt-3">
-            Left Times : {execriseList?.[0]?.times}
+            {leftTimes()}
           </div>
         </div>
 
-        <div className="flex gap-8">
-          <div
-            className="text-indigo-700 cursor-pointer font-bold flex items-center justify-center p-1 rounded-full text-center text-md bg-white w-40 h-10 "
-            onClick={() => {
-              setIsPause(!isPause);
-            }}
-          >
-            {isPause ? "Resume 💞" : "Pause 💫"}
-          </div>
+        <div className="flex gap-2">
+          <PauseButton isPause={isPause} setIsPause={setIsPause} />
 
-          <div
-            onClick={() => {
-              setExecriseList(execriseList.slice(1));
-            }}
-            className="flex gap-1 justify-center rounded-full 
-            border border-white
-            text-white
-            h-10 items-center w-40 cursor-pointer"
-          >
-            Skip
-          </div>
+          <SkipButton
+            execriseList={execriseList}
+            setExecriseList={setExecriseList}
+          />
         </div>
       </div>
+
       <div>
         <ProgressWithLabel execriseList={execriseList} />
       </div>
