@@ -1,14 +1,8 @@
 "use client";
 import React from "react";
-import Dragger from "./_components/Dragger";
-import DeleteButton from "./_components/DeleteButton";
-import TimeSetting from "./_components/TimeSetting";
-import WeightSetting from "./_components/WeightSetting";
-import { Button } from "@mui/material";
-import WorkOutList from "./_components/WorkOutList/page";
-import CategoryCard from "./_components/CategoryCard/page";
 import WorkoutProcess from "./_components/WorkoutProcess/page";
 import { aerobicsList } from "./_components/WorkoutProcess/const";
+import NextWorkoutList from "./_components/NextWorkoutList/page";
 
 const Workout: React.FC = () => {
   const [execriseList, setExecriseList] =
@@ -27,10 +21,22 @@ const Workout: React.FC = () => {
 
   return (
     <div className="flex gap-4 flex-col items-center">
-      {/* <div className="text-4xl">Workout</div> */}
-      {/* <WorkOutList /> */}
-      {/* <CategoryCard /> */}
-      <WorkoutProcess />
+      <div className="text-md font-bold w-4/5">
+        Hi Stanley, Let's workout !!!!! 🔥 💪
+      </div>
+
+      {/* process */}
+      <WorkoutProcess
+        execriseList={execriseList}
+        setExecriseList={setExecriseList}
+      />
+
+      {/* upcomming workout list */}
+      <NextWorkoutList
+        execriseList={execriseList}
+        setExecriseList={setExecriseList}
+      />
+
       {/* {workoutOptions.map((option) => (
         <div
           key={option}

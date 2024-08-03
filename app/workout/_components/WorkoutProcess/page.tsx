@@ -2,9 +2,10 @@ import React from "react";
 import ProgressWithLabel from "../ProgressWithLabel/page";
 import { aerobicsList } from "./const";
 
-const WorkoutProcess: React.FC = () => {
-  const [execriseList, setExecriseList] =
-    React.useState<WorkoutItem[]>(aerobicsList);
+const WorkoutProcess: React.FC<{
+  execriseList: WorkoutItem[];
+  setExecriseList: React.Dispatch<React.SetStateAction<WorkoutItem[]>>;
+}> = ({ execriseList, setExecriseList }) => {
   const [isPause, setIsPause] = React.useState(false);
 
   React.useEffect(() => {
@@ -94,7 +95,7 @@ const WorkoutProcess: React.FC = () => {
               setIsPause(!isPause);
             }}
           >
-            {isPause ? "Resume" : "Pause"}
+            {isPause ? "Resume 💞" : "Pause 💫"}
           </div>
 
           <div
