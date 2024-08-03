@@ -4,22 +4,63 @@ import LinearProgress, {
 } from "@mui/material/LinearProgress";
 import { Box, Button, Typography } from "@mui/material";
 
-function LinearProgressWithLabel(
-  props: LinearProgressProps & { value: number }
-) {
+const LinearProgressWithLabel: React.FC<{
+  value: number;
+  execriseSpec: {
+    time: number;
+    rest: number;
+  };
+  execriseList: any[];
+}> = ({ value, execriseSpec, execriseList }) => {
+  const totalTime = () => {
+    if (execriseList?.[0]?.execriseTimes) {
+      return execriseList?.[0]?.requiredItem?.time;
+    } else if (execriseList?.[0]?.restTimes) {
+      return execriseList?.[0]?.requiredItem?.rest;
+    } else {
+      return 0;
+    }
+  };
+
+  const formatValue = () => {
+    if (execriseList?.[0]?.execriseTimes) {
+      const slot = 100 / execriseList?.[0]?.requiredItem?.time;
+
+      return execriseList?.[0]?.execriseTimes * slot;
+    } else if (execriseList?.[0]?.restTimes) {
+      const slot = 100 / execriseList?.[0]?.requiredItem?.rest;
+
+      return execriseList?.[0]?.restTimes * slot;
+    } else {
+      return 0;
+    }
+  };
+
+  const progressValue = (): number => {
+    if (!execriseList?.length) return 0;
+
+    if (execriseList[0]?.execriseTimes) {
+      return execriseList[0]?.execriseTimes;
+    } else if (execriseList[0]?.restTimes) {
+      return execriseList[0]?.restTimes;
+    } else {
+      return 0;
+    }
+  };
+
   return (
     <Box sx={{ display: "flex", alignItems: "center" }}>
       <Box sx={{ width: "100%", mr: 1 }}>
-        <LinearProgress variant="determinate" {...props} />
+        <LinearProgress variant="determinate" value={formatValue()} />
       </Box>
       <div className="w-20">
         <Typography variant="body2" color="text.secondary">
-          {`${Math.round(props.value)} / 100s`}
+          {`${progressValue()} / ${totalTime()}`}
         </Typography>
       </div>
     </Box>
   );
-}
+};
 
 const aerobicsList = [
   {
@@ -27,48 +68,80 @@ const aerobicsList = [
     execriseTimes: 6,
     times: 1,
     restTimes: 4,
+    requiredItem: {
+      time: 6,
+      rest: 4,
+    },
   },
   {
     title: "Burpees",
     execriseTimes: 6,
     times: 1,
     restTimes: 4,
+    requiredItem: {
+      time: 6,
+      rest: 4,
+    },
   },
   {
     title: "Jumping Jacks",
     execriseTimes: 6,
     times: 1,
     restTimes: 4,
+    requiredItem: {
+      time: 6,
+      rest: 4,
+    },
   },
   {
     title: "Mountain Climbers",
     execriseTimes: 6,
     times: 1,
     restTimes: 4,
+    requiredItem: {
+      time: 6,
+      rest: 4,
+    },
   },
   {
     title: "High Knees",
     execriseTimes: 6,
     times: 1,
     restTimes: 4,
+    requiredItem: {
+      time: 6,
+      rest: 4,
+    },
   },
   {
     title: "Butt Kicks",
     execriseTimes: 6,
     times: 1,
     restTimes: 4,
+    requiredItem: {
+      time: 6,
+      rest: 4,
+    },
   },
   {
     title: "Skaters",
     execriseTimes: 6,
     times: 1,
     restTimes: 4,
+    requiredItem: {
+      time: 6,
+      rest: 4,
+    },
   },
   {
     title: "Plank Jacks",
     execriseTimes: 6,
     times: 1,
     restTimes: 4,
+    requiredItem: {
+      time: 6,
+      rest: 4,
+    },
   },
 ];
 
@@ -101,8 +174,8 @@ const WorkoutProcess: React.FC = () => {
             return {
               ...item,
               times: item.times - 1,
-              execriseTimes: 10,
-              restTimes: 4,
+              execriseTimes: execriseList[0]?.requiredItem?.time,
+              restTimes: execriseList[0]?.requiredItem?.rest,
             };
           } else {
             return null;
@@ -116,7 +189,7 @@ const WorkoutProcess: React.FC = () => {
     return () => clearInterval(timer); // 清除上一次的計時器
   }, [execriseList, isPause]);
 
-  const progressValue = () => {
+  const progressValue = (): number => {
     if (!execriseList?.length) return 0;
 
     if (execriseList[0]?.execriseTimes) {
@@ -145,7 +218,11 @@ const WorkoutProcess: React.FC = () => {
   return (
     <Box sx={{ width: "50%" }}>
       {execriseTitle()}
-      <LinearProgressWithLabel value={progressValue()} />
+      <LinearProgressWithLabel
+        value={progressValue()}
+        execriseSpec={execriseList[0]?.requiredItem}
+        execriseList={execriseList}
+      />
       <Button
         onClick={() => {
           setIsPause(!isPause);
