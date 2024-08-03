@@ -3,6 +3,7 @@ import React from "react";
 import WorkoutProcess from "./_components/WorkoutProcess/page";
 import { aerobicsList } from "./_components/WorkoutProcess/const";
 import NextWorkoutList from "./_components/NextWorkoutList/page";
+import Statistics from "./_components/Statistics/page";
 
 const Workout: React.FC = () => {
   const [execriseList, setExecriseList] =
@@ -25,6 +26,8 @@ const Workout: React.FC = () => {
         execriseList={execriseList}
         setExecriseList={setExecriseList}
       />
+
+      <Statistics execriseList={execriseList} />
 
       {/* {workoutOptions.map((option) => (
         <div

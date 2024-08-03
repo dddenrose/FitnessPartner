@@ -31,10 +31,10 @@ const WorkoutProcess: React.FC<{
               ...item,
               restTimes: item.restTimes - 1,
             };
-          } else if (item?.times) {
+          } else if (item?.set) {
             return {
               ...item,
-              times: item.times - 1,
+              times: item.set - 1,
               execriseTimes: execriseList[0]?.requiredItem?.time,
               restTimes: execriseList[0]?.requiredItem?.rest,
             };
@@ -63,7 +63,7 @@ const WorkoutProcess: React.FC<{
       return execriseList[0]?.title;
     } else if (execriseList[0]?.restTimes) {
       return "Rest Time";
-    } else if (execriseList[0]?.times) {
+    } else if (execriseList[0]?.set) {
       return execriseList[0]?.title;
     } else if (execriseList[0]?.prepareTimes) {
       const nextExecrise = execriseList[1]?.title;
@@ -97,7 +97,7 @@ const WorkoutProcess: React.FC<{
       return null;
     }
 
-    return `Left Times : ${execriseList[0]?.times}`;
+    return `Left Times : ${execriseList[0]?.set}`;
   };
 
   // background color
@@ -117,6 +117,7 @@ const WorkoutProcess: React.FC<{
     >
       <div className="flex flex-col place-content-between">
         <div className="block text-white font-bold text-5xl">
+          {/* Title */}
           {execriseTitle()}
 
           {/* 剩餘組數 */}
@@ -126,8 +127,10 @@ const WorkoutProcess: React.FC<{
         </div>
 
         <div className="flex gap-2">
+          {/* Pause Button */}
           <PauseButton isPause={isPause} setIsPause={setIsPause} />
 
+          {/* Skip Button */}
           <SkipButton
             execriseList={execriseList}
             setExecriseList={setExecriseList}

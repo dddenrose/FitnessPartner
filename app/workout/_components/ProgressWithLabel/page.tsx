@@ -29,7 +29,7 @@ const ProgressWithLabel: React.FC<{
       return execriseList[0]?.execriseTimes;
     } else if (execriseList[0]?.restTimes) {
       return execriseList[0]?.restTimes;
-    } else if (execriseList[0]?.prepareTimes && execriseList[0]?.times === 0) {
+    } else if (execriseList[0]?.prepareTimes && execriseList[0]?.set === 0) {
       return execriseList[0]?.prepareTimes;
     } else {
       return 0;
