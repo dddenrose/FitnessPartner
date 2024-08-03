@@ -1,5 +1,4 @@
 import React from "react";
-import { Box, Button, Divider, Typography } from "@mui/material";
 import ProgressWithLabel from "../ProgressWithLabel/page";
 import { aerobicsList } from "./const";
 
@@ -83,6 +82,9 @@ const WorkoutProcess: React.FC = () => {
       <div className="flex flex-col place-content-between">
         <div className="block text-white font-bold text-5xl">
           {execriseTitle()}
+          <div className="block text-white font-medium text-xl mt-3">
+            Left Times : {execriseList?.[0]?.times}
+          </div>
         </div>
 
         <div className="flex gap-8">

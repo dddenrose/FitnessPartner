@@ -8,8 +8,12 @@ import { Button } from "@mui/material";
 import WorkOutList from "./_components/WorkOutList/page";
 import CategoryCard from "./_components/CategoryCard/page";
 import WorkoutProcess from "./_components/WorkoutProcess/page";
+import { aerobicsList } from "./_components/WorkoutProcess/const";
 
 const Workout: React.FC = () => {
+  const [execriseList, setExecriseList] =
+    React.useState<WorkoutItem[]>(aerobicsList);
+
   const workoutOptions = [
     "Push",
     "Pull",
