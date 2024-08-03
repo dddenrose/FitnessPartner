@@ -23,7 +23,7 @@ const Workout: React.FC = () => {
 
   return (
     <div className="flex gap-4 flex-col items-center">
-      <div className="text-4xl">Workout</div>
+      {/* <div className="text-4xl">Workout</div> */}
       {/* <WorkOutList /> */}
       {/* <CategoryCard /> */}
       <WorkoutProcess />

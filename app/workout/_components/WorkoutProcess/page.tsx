@@ -79,27 +79,39 @@ const WorkoutProcess: React.FC = () => {
   };
 
   return (
-    <Box className="bg-slate-100 p-8" sx={{ width: "50%" }}>
-      <Typography variant="h4">{execriseTitle()}</Typography>
+    <div className="flex bg-indigo-800 p-8 w-4/5 gap-4 place-content-between rounded-3xl">
+      <div className="flex flex-col place-content-between">
+        <div className="block text-white font-bold text-5xl">
+          {execriseTitle()}
+        </div>
 
-      <ProgressWithLabel execriseList={execriseList} />
+        <div className="flex gap-8">
+          <div
+            className="text-indigo-700 cursor-pointer font-bold flex items-center justify-center p-1 rounded-full text-center text-md bg-white w-40 h-10 "
+            onClick={() => {
+              setIsPause(!isPause);
+            }}
+          >
+            {isPause ? "Resume" : "Pause"}
+          </div>
 
-      <Button
-        onClick={() => {
-          setIsPause(!isPause);
-        }}
-      >
-        {isPause ? "Resume" : "Pause"}
-      </Button>
-
-      <Button
-        onClick={() => {
-          setExecriseList(execriseList.slice(1));
-        }}
-      >
-        Skip
-      </Button>
-    </Box>
+          <div
+            onClick={() => {
+              setExecriseList(execriseList.slice(1));
+            }}
+            className="flex gap-1 justify-center rounded-full 
+            border border-white
+            text-white
+            h-10 items-center w-40 cursor-pointer"
+          >
+            Skip
+          </div>
+        </div>
+      </div>
+      <div>
+        <ProgressWithLabel execriseList={execriseList} />
+      </div>
+    </div>
   );
 };
 

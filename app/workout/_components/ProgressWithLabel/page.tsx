@@ -1,8 +1,5 @@
 import React from "react";
-import LinearProgress, {
-  LinearProgressProps,
-} from "@mui/material/LinearProgress";
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, CircularProgress, Typography } from "@mui/material";
 
 const ProgressWithLabel: React.FC<{
   execriseList: WorkoutItem[];
@@ -44,15 +41,30 @@ const ProgressWithLabel: React.FC<{
   };
 
   return (
-    <Box sx={{ display: "flex", alignItems: "center" }}>
-      <Box sx={{ width: "100%", mr: 1 }}>
-        <LinearProgress variant="determinate" value={formatValue()} />
+    <Box sx={{ position: "relative", display: "inline-flex" }}>
+      <CircularProgress
+        variant="determinate"
+        value={formatValue()}
+        size={200}
+        sx={{
+          color: (theme) =>
+            theme.palette.grey[theme.palette.mode === "light" ? 200 : 800],
+        }}
+      />
+      <Box
+        sx={{
+          top: 0,
+          left: 0,
+          bottom: 0,
+          right: 0,
+          position: "absolute",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <div className="text-white text-4xl">{`${progressValue()}`}</div>
       </Box>
-      <div className="w-20">
-        <Typography variant="body2" color="text.secondary">
-          {`${progressValue()} / ${totalTime()}`}
-        </Typography>
-      </div>
     </Box>
   );
 };
