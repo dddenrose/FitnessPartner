@@ -1,36 +1,37 @@
 import React from "react";
 import { Box, CircularProgress } from "@mui/material";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 
-const ProgressWithLabel: React.FC<{
-  execriseList: WorkoutItem[];
-}> = ({ execriseList }) => {
+const ProgressWithLabel: React.FC = () => {
+  const list = useAppSelector((state) => state.workout.list);
+
   const formatValue = () => {
-    if (execriseList?.[0]?.execriseTimes) {
-      const slot = 100 / execriseList?.[0]?.requiredItem?.time;
+    if (list?.[0]?.execriseTimes) {
+      const slot = 100 / list?.[0]?.requiredItem?.time;
 
-      return execriseList?.[0]?.execriseTimes * slot;
-    } else if (execriseList?.[0]?.restTimes) {
-      const slot = 100 / execriseList?.[0]?.requiredItem?.rest;
+      return list?.[0]?.execriseTimes * slot;
+    } else if (list?.[0]?.restTimes) {
+      const slot = 100 / list?.[0]?.requiredItem?.rest;
 
-      return execriseList?.[0]?.restTimes * slot;
-    } else if (execriseList?.[0]?.prepareTimes) {
-      const slot = 100 / execriseList?.[0]?.requiredItem?.prepare;
+      return list?.[0]?.restTimes * slot;
+    } else if (list?.[0]?.prepareTimes) {
+      const slot = 100 / list?.[0]?.requiredItem?.prepare;
 
-      return execriseList?.[0]?.prepareTimes * slot;
+      return list?.[0]?.prepareTimes * slot;
     } else {
       return 0;
     }
   };
 
   const progressValue = (): number => {
-    if (!execriseList?.length) return 0;
+    if (!list?.length) return 0;
 
-    if (execriseList[0]?.execriseTimes) {
-      return execriseList[0]?.execriseTimes;
-    } else if (execriseList[0]?.restTimes) {
-      return execriseList[0]?.restTimes;
-    } else if (execriseList[0]?.prepareTimes && execriseList[0]?.set === 0) {
-      return execriseList[0]?.prepareTimes;
+    if (list[0]?.execriseTimes) {
+      return list[0]?.execriseTimes;
+    } else if (list[0]?.restTimes) {
+      return list[0]?.restTimes;
+    } else if (list[0]?.prepareTimes && list[0]?.set === 0) {
+      return list[0]?.prepareTimes;
     } else {
       return 0;
     }

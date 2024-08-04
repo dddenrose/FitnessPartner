@@ -50,10 +50,24 @@ export const counterSlice = createSlice({
         })
         ?.filter((ele) => ele) as WorkoutItem[];
     },
+    skip: (state) => {
+      state.list = state.list?.slice(1);
+    },
+    switchList: (state, action: PayloadAction<number>) => {
+      const id = action.payload;
+
+      const target = state.list?.find((item) => item?.id === id);
+
+      if (!target) return;
+
+      const result = state.list?.filter((item) => item?.id !== id);
+
+      state.list = [target, ...result];
+    },
   },
 });
 
-export const { decrement } = counterSlice.actions;
+export const { decrement, skip, switchList } = counterSlice.actions;
 
 // Other code such as selectors can use the imported `RootState` type
 export const selectList = (state: RootState) => state.workout.list;

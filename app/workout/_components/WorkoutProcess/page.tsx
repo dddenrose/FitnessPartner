@@ -103,15 +103,12 @@ const WorkoutProcess: React.FC<{
           <PauseButton isPause={isPause} setIsPause={setIsPause} />
 
           {/* Skip Button */}
-          <SkipButton
-            execriseList={execriseList}
-            setExecriseList={setExecriseList}
-          />
+          <SkipButton />
         </div>
       </div>
 
       <div>
-        <ProgressWithLabel execriseList={execriseList} />
+        <ProgressWithLabel />
       </div>
     </div>
   );
