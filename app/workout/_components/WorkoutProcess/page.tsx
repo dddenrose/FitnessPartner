@@ -2,71 +2,44 @@ import React from "react";
 import ProgressWithLabel from "../ProgressWithLabel/page";
 import PauseButton from "./_components/PauseButton/page";
 import SkipButton from "./_components/SkipButton/page";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import { decrement } from "@/lib/features/workouts/workoutsSlice";
+import { Button } from "@mui/material";
 
 const WorkoutProcess: React.FC<{
   execriseList: WorkoutItem[];
   setExecriseList: React.Dispatch<React.SetStateAction<WorkoutItem[]>>;
 }> = ({ execriseList, setExecriseList }) => {
+  const list = useAppSelector((state) => state.workout.list);
+  const dispatch = useAppDispatch();
   // pause
   const [isPause, setIsPause] = React.useState(false);
 
   // timer
   React.useEffect(() => {
-    if (!execriseList?.length) return;
+    if (!list?.length) return;
 
     const timer = setInterval(() => {
       if (isPause) return;
 
-      const result: WorkoutItem[] = execriseList
-        ?.map((item, index) => {
-          if (index !== 0) return item;
-
-          if (item?.execriseTimes) {
-            return {
-              ...item,
-              execriseTimes: item.execriseTimes - 1,
-            };
-          } else if (item?.restTimes) {
-            return {
-              ...item,
-              restTimes: item.restTimes - 1,
-            };
-          } else if (item?.set) {
-            return {
-              ...item,
-              times: item.set - 1,
-              execriseTimes: execriseList[0]?.requiredItem?.time,
-              restTimes: execriseList[0]?.requiredItem?.rest,
-            };
-          } else if (item?.prepareTimes) {
-            return {
-              ...item,
-              prepareTimes: item.prepareTimes - 1,
-            };
-          } else {
-            return null;
-          }
-        })
-        ?.filter((ele) => ele) as WorkoutItem[];
-
-      setExecriseList(result);
+      dispatch(decrement());
     }, 1000);
 
     return () => clearInterval(timer); // 清除上一次的計時器
-  }, [execriseList, isPause]);
+  }, [list, isPause]);
 
   // 顯示的大標題
   const execriseTitle = () => {
-    if (!execriseList?.length) return "Finish !!!";
+    if (!list?.length) return "Finish !!!";
 
-    if (execriseList[0]?.execriseTimes) {
-      return execriseList[0]?.title;
-    } else if (execriseList[0]?.restTimes) {
+    if (list?.[0]?.execriseTimes) {
+      return list?.[0]?.title;
+    } else if (list?.[0]?.restTimes) {
       return "Rest Time";
-    } else if (execriseList[0]?.set) {
-      return execriseList[0]?.title;
-    } else if (execriseList[0]?.prepareTimes) {
-      const nextExecrise = execriseList[1]?.title;
+    } else if (list?.[0]?.set) {
+      return list?.[0]?.title;
+    } else if (list?.[0]?.prepareTimes) {
+      const nextExecrise = list?.[1]?.title;
 
       if (nextExecrise) {
         return (
@@ -85,7 +58,7 @@ const WorkoutProcess: React.FC<{
 
   // 剩餘組數
   const leftTimes = () => {
-    if (!execriseList?.length) return null;
+    if (!list?.length) return null;
 
     const currentTitle = execriseTitle();
 
@@ -97,7 +70,7 @@ const WorkoutProcess: React.FC<{
       return null;
     }
 
-    return `Left Times : ${execriseList[0]?.set}`;
+    return `Left Times : ${list?.[0]?.set}`;
   };
 
   // background color
@@ -125,7 +98,6 @@ const WorkoutProcess: React.FC<{
             {leftTimes()}
           </div>
         </div>
-
         <div className="flex gap-2">
           {/* Pause Button */}
           <PauseButton isPause={isPause} setIsPause={setIsPause} />
