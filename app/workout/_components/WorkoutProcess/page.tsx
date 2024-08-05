@@ -6,10 +6,7 @@ import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { decrement } from "@/lib/features/workouts/workoutsSlice";
 import { Button } from "@mui/material";
 
-const WorkoutProcess: React.FC<{
-  execriseList: WorkoutItem[];
-  setExecriseList: React.Dispatch<React.SetStateAction<WorkoutItem[]>>;
-}> = ({ execriseList, setExecriseList }) => {
+const WorkoutProcess: React.FC = () => {
   const list = useAppSelector((state) => state.workout.list);
   const dispatch = useAppDispatch();
   // pause
