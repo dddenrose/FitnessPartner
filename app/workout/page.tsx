@@ -22,10 +22,7 @@ const Workout: React.FC = () => {
       />
 
       {/* upcomming workout list */}
-      <NextWorkoutList
-        execriseList={execriseList}
-        setExecriseList={setExecriseList}
-      />
+      <NextWorkoutList />
 
       <Statistics execriseList={execriseList} />
 
