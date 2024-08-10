@@ -5,11 +5,13 @@ import { list } from "./const";
 // Define a type for the slice state
 interface WorkoutState {
   list: WorkoutItem[];
+  doneList: number[];
 }
 
 // Define the initial state using that type
 const initialState: WorkoutState = {
   list,
+  doneList: [],
 };
 
 export const counterSlice = createSlice({
@@ -45,6 +47,8 @@ export const counterSlice = createSlice({
               prepareTimes: item.prepareTimes - 1,
             };
           } else {
+            // 完成後doneList + item.id
+            state.doneList = [...state.doneList, item.id];
             return null;
           }
         })
