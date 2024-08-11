@@ -39,7 +39,7 @@ export const counterSlice = createSlice({
           } else if (item?.set) {
             return {
               ...item,
-              times: item.set - 1,
+              set: item.set - 1,
               execriseTimes: state.list?.[0]?.requiredItem?.time,
               restTimes: state.list?.[0]?.requiredItem?.rest,
             };
@@ -72,10 +72,18 @@ export const counterSlice = createSlice({
     setList: (state, action: PayloadAction<WorkoutItem[]>) => {
       state.list = action.payload;
     },
+    setSkipList: (state, action: PayloadAction<WorkoutItem[]>) => {
+      state.skipList = action.payload;
+    },
+    resetState: (state) => {
+      state.list = state.originalList;
+      state.skipList = [];
+    },
   },
 });
 
-export const { decrement, skip, switchList, setList } = counterSlice.actions;
+export const { decrement, skip, switchList, setList, setSkipList, resetState } =
+  counterSlice.actions;
 
 // Other code such as selectors can use the imported `RootState` type
 export const selectList = (state: RootState) => state.workout.list;

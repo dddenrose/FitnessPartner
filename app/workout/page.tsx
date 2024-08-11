@@ -1,5 +1,5 @@
 "use client";
-import React, { use } from "react";
+import React from "react";
 import WorkoutProcess from "./_components/WorkoutProcess/page";
 import NextWorkoutList from "./_components/NextWorkoutList/page";
 import Statistics from "./_components/Statistics/page";
@@ -12,12 +12,13 @@ const Workout: React.FC = () => {
 
   return (
     <div className="flex gap-8 flex-col items-center">
-      <div className="text-md font-bold w-4/5">
-        Hi {userInfo.name}, Lets workout !!!!! 🔥 💪
-      </div>
-
       {list.length ? (
         <>
+          {/* user name */}
+          <div className="text-3xl font-bold w-4/5">
+            Hi {userInfo.name}, Lets workout !!!!! 🔥 💪
+          </div>
+
           {/* process */}
           <WorkoutProcess />
 

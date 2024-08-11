@@ -2,7 +2,7 @@
 import React from "react";
 import { useRouter } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import { setList } from "@/lib/features/workouts/workoutsSlice";
+import { resetState, setList } from "@/lib/features/workouts/workoutsSlice";
 
 const ReStartButton: React.FC = () => {
   const originalList = useAppSelector((state) => state.workout.originalList);
@@ -10,7 +10,7 @@ const ReStartButton: React.FC = () => {
   const router = useRouter();
 
   const handleOnclick = () => {
-    dispatch(setList(originalList));
+    dispatch(resetState());
     router.push("/");
   };
 

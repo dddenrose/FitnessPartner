@@ -4,7 +4,6 @@ import PauseButton from "./_components/PauseButton/page";
 import SkipButton from "./_components/SkipButton/page";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { decrement } from "@/lib/features/workouts/workoutsSlice";
-import { Button } from "@mui/material";
 
 const WorkoutProcess: React.FC = () => {
   const list = useAppSelector((state) => state.workout.list);
@@ -15,6 +14,8 @@ const WorkoutProcess: React.FC = () => {
   // timer
   React.useEffect(() => {
     if (!list?.length) return;
+
+    console.log(list, "======list");
 
     const timer = setInterval(() => {
       if (isPause) return;
