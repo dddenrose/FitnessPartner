@@ -1,8 +1,5 @@
-import {
-  CircularProgress,
-  LinearProgress,
-  linearProgressClasses,
-} from "@mui/material";
+import { useAppSelector } from "@/lib/hooks";
+import { LinearProgress, linearProgressClasses } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import React from "react";
 
@@ -19,11 +16,11 @@ const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
   },
 }));
 
-const ProgressBar: React.FC<{ item: WorkoutItem }> = ({ item }) => {
+const ProgressBar: React.FC<{ item: WorkoutItem & { doneTime: number } }> = ({
+  item,
+}) => {
   const totalRequiredTime = item.requiredItem.time * item.set;
-  const totalExecriseTime = item.requiredItem.time * item.set;
-
-  const value = (totalExecriseTime / totalRequiredTime) * 100;
+  const value = (item.doneTime / totalRequiredTime) * 100;
 
   return (
     <div className="flex flex-col gap-2">
@@ -32,7 +29,7 @@ const ProgressBar: React.FC<{ item: WorkoutItem }> = ({ item }) => {
           {item.title} {value === 100 ? "🎖️" : null}
         </div>
         <div className="text-gray-500">
-          {totalExecriseTime} / {totalRequiredTime} s
+          {item.doneTime} / {totalRequiredTime} s
         </div>
       </div>
       <BorderLinearProgress variant="determinate" value={value} />
@@ -40,9 +37,38 @@ const ProgressBar: React.FC<{ item: WorkoutItem }> = ({ item }) => {
   );
 };
 
-const Statistics: React.FC<{
-  execriseList: WorkoutItem[];
-}> = ({ execriseList }) => {
+const Statistics: React.FC = () => {
+  const originalList = useAppSelector((state) => state.workout.originalList);
+  const skipList = useAppSelector((state) => state.workout.skipList);
+
+  console.log("skipList", skipList);
+
+  // 統計完成秒數
+  const result = originalList.map((item) => {
+    const foundItem = skipList.find((ele) => ele?.id === item.id);
+
+    if (!foundItem) {
+      return {
+        ...item,
+        doneTime: item.requiredItem.time * item.set,
+      };
+    }
+
+    if (item?.set) {
+      return {
+        ...item,
+        doneTime:
+          item.requiredItem.time * item.set -
+          foundItem.execriseTimes * foundItem.set,
+      };
+    } else {
+      return {
+        ...item,
+        doneTime: item.requiredItem.time * item.set - foundItem.execriseTimes,
+      };
+    }
+  });
+
   return (
     <div className="w-4/5 flex flex-col gap-8">
       <div className=" text-3xl font-bold">
@@ -51,7 +77,7 @@ const Statistics: React.FC<{
         You have completed the workout !!! 🎊
       </div>
 
-      {execriseList.map((item) => (
+      {result.map((item) => (
         <ProgressBar key={item.id} item={item} />
       ))}
     </div>

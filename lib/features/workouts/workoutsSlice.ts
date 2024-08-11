@@ -5,13 +5,15 @@ import { list } from "./const";
 // Define a type for the slice state
 interface WorkoutState {
   list: WorkoutItem[];
-  doneList: number[];
+  originalList: WorkoutItem[];
+  skipList: WorkoutItem[];
 }
 
 // Define the initial state using that type
 const initialState: WorkoutState = {
   list,
-  doneList: [],
+  skipList: [],
+  originalList: list,
 };
 
 export const counterSlice = createSlice({
@@ -47,14 +49,13 @@ export const counterSlice = createSlice({
               prepareTimes: item.prepareTimes - 1,
             };
           } else {
-            // 完成後doneList + item.id
-            state.doneList = [...state.doneList, item.id];
             return null;
           }
         })
         ?.filter((ele) => ele) as WorkoutItem[];
     },
     skip: (state) => {
+      state.skipList?.push(state.list?.[0]);
       state.list = state.list?.slice(1);
     },
     switchList: (state, action: PayloadAction<number>) => {
@@ -68,10 +69,13 @@ export const counterSlice = createSlice({
 
       state.list = [target, ...result];
     },
+    setList: (state, action: PayloadAction<WorkoutItem[]>) => {
+      state.list = action.payload;
+    },
   },
 });
 
-export const { decrement, skip, switchList } = counterSlice.actions;
+export const { decrement, skip, switchList, setList } = counterSlice.actions;
 
 // Other code such as selectors can use the imported `RootState` type
 export const selectList = (state: RootState) => state.workout.list;

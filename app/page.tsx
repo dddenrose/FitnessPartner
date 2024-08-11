@@ -2,7 +2,6 @@
 import { useRouter } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { setUser } from "@/lib/features/userInfo/userInfoSlice";
-import Image from "next/image";
 import { ChangeEvent } from "react";
 
 const Home: React.FC = () => {
