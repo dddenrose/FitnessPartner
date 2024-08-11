@@ -40,6 +40,7 @@ const ProgressBar: React.FC<{ item: WorkoutItem & { doneTime: number } }> = ({
 const Statistics: React.FC = () => {
   const originalList = useAppSelector((state) => state.workout.originalList);
   const skipList = useAppSelector((state) => state.workout.skipList);
+  const userInfo = useAppSelector((state) => state.userInfo.user);
 
   console.log("skipList", skipList);
 
@@ -72,7 +73,7 @@ const Statistics: React.FC = () => {
   return (
     <div className="w-4/5 flex flex-col gap-8">
       <div className=" text-3xl font-bold">
-        Congratulations!
+        {userInfo.name}, Congratulations!
         <br />
         You have completed the workout !!! 🎊
       </div>
