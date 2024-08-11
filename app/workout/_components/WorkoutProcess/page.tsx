@@ -15,8 +15,6 @@ const WorkoutProcess: React.FC = () => {
   React.useEffect(() => {
     if (!list?.length) return;
 
-    console.log(list, "======list");
-
     const timer = setInterval(() => {
       if (isPause) return;
 
@@ -84,7 +82,7 @@ const WorkoutProcess: React.FC = () => {
 
   return (
     <div
-      className={`flex ${bgColor()} p-8 w-4/5 gap-4 place-content-between rounded-3xl`}
+      className={`flex ${bgColor()} w-full p-8 gap-4 place-content-between rounded-3xl`}
     >
       <div className="flex flex-col place-content-between">
         <div className="block text-white font-bold text-5xl">

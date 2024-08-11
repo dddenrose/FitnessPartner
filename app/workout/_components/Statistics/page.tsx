@@ -86,7 +86,7 @@ const Statistics: React.FC = () => {
   });
 
   return (
-    <div className="w-4/5 flex flex-col gap-8">
+    <div className="w-full flex flex-col gap-8">
       <div className=" text-3xl font-bold">
         {userInfo.name}, Congratulations!
         <br />

@@ -21,11 +21,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.className} p-4 bg-slate-50`}>
-        <AppRouterCacheProvider>
-          <StoreProvider>
-            <ThemeProvider theme={theme}>{children}</ThemeProvider>
-          </StoreProvider>
-        </AppRouterCacheProvider>
+        <div className="flex justify-center w-full">
+          <div className="flex flex-col justify-center w-4/5">
+            <AppRouterCacheProvider>
+              <StoreProvider>
+                <ThemeProvider theme={theme}>{children}</ThemeProvider>
+              </StoreProvider>
+            </AppRouterCacheProvider>
+          </div>
+        </div>
       </body>
     </html>
   );

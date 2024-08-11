@@ -12,7 +12,7 @@ const NextWorkoutList: React.FC = () => {
 
   return (
     list?.length > 1 && (
-      <div className="flex gap-4 w-4/5 justify-start p-2 overflow-auto overflow-hidden">
+      <div className="flex gap-4 w-full justify-start p-2 overflow-auto overflow-hidden">
         {list?.map((item, index) => {
           if (index === 0) return null;
 

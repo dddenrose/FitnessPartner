@@ -15,7 +15,7 @@ const Workout: React.FC = () => {
       {list.length ? (
         <>
           {/* user name */}
-          <div className="text-3xl font-bold w-4/5">
+          <div className="text-3xl font-bold w-full">
             Hi {userInfo.name}, Lets workout !!!!! 🔥 💪
           </div>
 
