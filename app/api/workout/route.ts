@@ -10,6 +10,13 @@ const createWorkoutSchema = z.object({
 });
 
 export async function POST(request: NextRequest) {
+  if (prisma === null) {
+    return NextResponse.json(
+      { message: "Prisma is not enabled" },
+      { status: 500 }
+    );
+  }
+
   const body = await request.json();
   const validataion = createWorkoutSchema.safeParse(body);
 
