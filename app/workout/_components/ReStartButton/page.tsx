@@ -10,8 +10,8 @@ const ReStartButton: React.FC = () => {
   const router = useRouter();
 
   const handleOnclick = () => {
-    dispatch(resetState());
     router.push("/");
+    dispatch(resetState());
   };
 
   return (

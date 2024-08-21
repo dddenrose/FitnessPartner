@@ -82,9 +82,13 @@ const WorkoutProcess: React.FC = () => {
 
   return (
     <div
-      className={`flex ${bgColor()} w-full p-8 gap-4 place-content-between rounded-3xl`}
+      className={`flex ${bgColor()} w-full 
+      p-8 gap-16 place-content-between
+      rounded-3xl
+      flex-col sm:flex-row
+      `}
     >
-      <div className="flex flex-col place-content-between">
+      <div className="flex flex-col place-content-between gap-4">
         <div className="block text-white font-bold text-5xl">
           {/* Title */}
           {execriseTitle()}
@@ -94,7 +98,7 @@ const WorkoutProcess: React.FC = () => {
             {leftTimes()}
           </div>
         </div>
-        <div className="flex gap-2">
+        <div className="gap-4 flex flex-col sm:flex-row">
           {/* Pause Button */}
           <PauseButton isPause={isPause} setIsPause={setIsPause} />
 

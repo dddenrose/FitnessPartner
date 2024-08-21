@@ -27,9 +27,11 @@ const Home: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col gap-8">
-      <div className="text-indigo-700 text-4xl font-bold w-4/5">
-        Welcome to Fitness Partner,
+    <div className="flex flex-col gap-8 p-40">
+      <div className="text-indigo-700 text-6xl font-bold w-4/5">
+        Welcome to
+        <br />
+        Fitness Partner,
       </div>
       <div>
         <input
