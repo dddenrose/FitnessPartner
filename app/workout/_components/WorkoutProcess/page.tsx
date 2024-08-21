@@ -1,4 +1,5 @@
 import React from "react";
+import classNames from "classnames";
 import ProgressWithLabel from "../ProgressWithLabel/page";
 import PauseButton from "./_components/PauseButton/page";
 import SkipButton from "./_components/SkipButton/page";
@@ -39,7 +40,7 @@ const WorkoutProcess: React.FC = () => {
 
       if (nextExecrise) {
         return (
-          <div className="text-white font-bold text-5xl">
+          <div className={classNames("text-white", "font-bold", "text-5xl")}>
             <div className="mb-2">Prepare Time</div>
             <div className="text-sm font-normal">Next : {nextExecrise}</div>
           </div>
@@ -82,23 +83,46 @@ const WorkoutProcess: React.FC = () => {
 
   return (
     <div
-      className={`flex ${bgColor()} w-full 
-      p-8 gap-16 place-content-between
-      rounded-3xl
-      flex-col sm:flex-row
-      `}
+      className={classNames(
+        "flex",
+        bgColor(),
+        "w-full",
+        "p-8",
+        "gap-16",
+        "place-content-between",
+        "rounded-3xl",
+        "flex-col",
+        "sm:flex-row"
+      )}
     >
-      <div className="flex flex-col place-content-between gap-4">
-        <div className="block text-white font-bold text-5xl">
+      <div
+        className={classNames(
+          "flex",
+          "flex-col",
+          "place-content-between",
+          "gap-4"
+        )}
+      >
+        <div
+          className={classNames("block", "text-white", "font-bold", "text-5xl")}
+        >
           {/* Title */}
           {execriseTitle()}
 
           {/* 剩餘組數 */}
-          <div className="block text-white font-medium text-xl mt-3">
+          <div
+            className={classNames(
+              "block",
+              "text-white",
+              "font-medium",
+              "text-xl",
+              "mt-3"
+            )}
+          >
             {leftTimes()}
           </div>
         </div>
-        <div className="gap-4 flex flex-col sm:flex-row">
+        <div className={classNames("gap-4", "flex", "flex-col", "sm:flex-row")}>
           {/* Pause Button */}
           <PauseButton isPause={isPause} setIsPause={setIsPause} />
 
