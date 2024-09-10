@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import classNames from "classnames";
 import WorkoutProcess from "./_components/WorkoutProcess/page";
 import NextWorkoutList from "./_components/NextWorkoutList/page";
 import Statistics from "./_components/Statistics/page";
