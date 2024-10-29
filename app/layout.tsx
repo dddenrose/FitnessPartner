@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v13-appRouter";
+import { AntdRegistry } from "@ant-design/nextjs-registry";
 import { ThemeProvider } from "@mui/material/styles";
 import StoreProvider from "./StoreProvider";
 import theme from "./theme";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import Navigation from "./components/Navigation/page";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,14 +22,17 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.className} p-4 bg-slate-50`}>
+      <body className={`${inter.className} p-0 m-0 bg-slate-50`}>
         <div className="flex justify-center w-full">
-          <div className="flex flex-col justify-center w-4/5">
-            <AppRouterCacheProvider>
-              <StoreProvider>
-                <ThemeProvider theme={theme}>{children}</ThemeProvider>
-              </StoreProvider>
-            </AppRouterCacheProvider>
+          <div className="flex flex-col justify-center align-middle">
+            <AntdRegistry>
+              <Navigation />
+              <AppRouterCacheProvider>
+                <StoreProvider>
+                  <ThemeProvider theme={theme}>{children}</ThemeProvider>
+                </StoreProvider>
+              </AppRouterCacheProvider>
+            </AntdRegistry>
           </div>
         </div>
       </body>
