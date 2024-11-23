@@ -22,7 +22,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.className} p-0 m-0 bg-slate-50`}>
+      <body
+        className={`${inter.className} p-0 m-0 bg-slate-50 max-w-full overflow-x-hidden`}
+      >
         <div className="flex justify-center w-full">
           <div className="flex flex-col justify-center align-middle">
             <AntdRegistry>
