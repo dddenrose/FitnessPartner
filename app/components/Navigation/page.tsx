@@ -6,12 +6,8 @@ const Navigation = () => {
   return (
     <div
       style={{
-        zIndex: 5,
-        position: "fixed",
-        top: 0,
-        left: 0,
-        right: 0,
         padding: "16px 10%",
+        backgroundColor: "gray",
       }}
     >
       <Flex justify="space-between">
