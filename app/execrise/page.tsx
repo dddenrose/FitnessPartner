@@ -14,9 +14,7 @@ const Execrise: React.FC = () => {
 
   return (
     <div className="min-w-screen min-h-screen">
-      {mode === "prepare" && <ModeButton.StartButton />}
-
-      {mode === "execrise" && <Timer />}
+      <Timer />
     </div>
   );
 };

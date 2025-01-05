@@ -5,16 +5,18 @@ export const execriseSlice = createSlice({
   name: "execise",
   initialState: {
     mode: "prepare",
-    initialTime: {
-      main: 5,
-      rest: 0,
-      rounds: 8,
-    },
-    time: {
-      main: 0,
-      rest: 0,
-      rounds: 0,
-    },
+    initialTime: [
+      {
+        name: "",
+        time: 30,
+      },
+    ],
+    time: [
+      {
+        name: "",
+        time: 30,
+      },
+    ],
     pause: false,
   },
   reducers: {

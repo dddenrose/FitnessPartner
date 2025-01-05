@@ -8,7 +8,7 @@ import ModeButton from "../ModeButton";
 const Timer = () => (
   <TimerLogic>
     <Execrise />
-    <Rest />
+    {/* <Rest /> */}
     <ModeButton.BackButton />
     <TimerBg />
   </TimerLogic>
