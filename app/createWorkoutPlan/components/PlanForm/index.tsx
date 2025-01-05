@@ -8,11 +8,18 @@ const PlanForm = () => {
   const [form] = Form.useForm();
 
   return (
-    <Flex>
-      <Form form={form} initialValues={initialValues}>
+    <Form form={form} initialValues={initialValues} layout="vertical">
+      <Flex
+        vertical
+        style={{
+          width: "100%",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
         <FormContent />
-      </Form>
-    </Flex>
+      </Flex>
+    </Form>
   );
 };
 

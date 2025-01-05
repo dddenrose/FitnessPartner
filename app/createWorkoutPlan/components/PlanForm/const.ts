@@ -1,7 +1,7 @@
 export const initialValues = {
   items: [
     {
-      name: "item1",
+      name: undefined,
     },
   ],
 };
