@@ -33,17 +33,9 @@ const FormAction = ({ children }: { children: React.ReactNode }) => {
       initialValues={initialValues}
       layout="vertical"
       onFinish={onFinish}
+      style={{ width: "100%", maxWidth: 600 }}
     >
-      <Flex
-        vertical
-        style={{
-          width: "100%",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        {children}
-      </Flex>
+      {children}
     </Form>
   );
 };

@@ -1,11 +1,12 @@
 import React from "react";
 import PlanForm from "./components/PlanForm";
+import ContentWrapper from "../components/ContentWrapper";
 
 const CreateWourkoutPlan = () => {
   return (
-    <div>
+    <ContentWrapper>
       <PlanForm />
-    </div>
+    </ContentWrapper>
   );
 };
 

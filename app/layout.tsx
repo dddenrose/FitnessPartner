@@ -28,7 +28,7 @@ export default function RootLayout({
         <div className="flex justify-center w-full">
           <div className="flex flex-col justify-center align-middle w-full">
             <AntdRegistry>
-              {/* <Navigation /> */}
+              <Navigation />
               <AppRouterCacheProvider>
                 <StoreProvider>
                   <ThemeProvider theme={theme}>{children}</ThemeProvider>

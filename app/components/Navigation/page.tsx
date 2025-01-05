@@ -6,11 +6,11 @@ const Navigation = () => {
   return (
     <div
       style={{
-        padding: "16px 10%",
-        backgroundColor: "gray",
+        padding: "8px 10%",
+        backgroundColor: "#C5C5C5FF",
       }}
     >
-      <Flex justify="space-between">
+      <Flex justify="space-between" align="center">
         <div>Home</div>
         <div>About</div>
         <div>Services</div>
