@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@ant-design/icons": "^5.5.2",
     "@ant-design/nextjs-registry": "^1.0.1",
     "@emotion/cache": "^11.11.0",
     "@emotion/react": "^11.13.0",

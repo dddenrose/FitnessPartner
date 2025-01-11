@@ -1,6 +1,7 @@
 import { setTime, setMode } from "@/lib/features/execrise/execriseSlice";
 import { RootState } from "@/lib/store";
 import { Button } from "antd";
+import { useRouter } from "next/navigation";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -24,11 +25,12 @@ const StartButton = () => {
 
 const BackButton = () => {
   const dispatch = useDispatch();
+  const router = useRouter();
 
   return (
     <Button
       onClick={() => {
-        dispatch(setMode("prepare"));
+        router.push("/createWorkoutPlan");
       }}
     >
       Back

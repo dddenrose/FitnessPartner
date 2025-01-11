@@ -16,7 +16,7 @@ const timeConfig = {
 
 const TimerLogic = ({ children }: { children: React.ReactNode }) => {
   const dispatch = useDispatch();
-  const time = selectTime(useSelector((state: RootState) => state));
+  const time = useSelector((state: RootState) => state.execrise.time);
   const pause = useSelector((state: RootState) => state.execrise.pause);
   const initialTime = useSelector(
     (state: RootState) => state.execrise.initialTime
@@ -24,27 +24,25 @@ const TimerLogic = ({ children }: { children: React.ReactNode }) => {
 
   React.useEffect(() => {
     const t = setInterval(() => {
-      if (pause) return;
+      if (pause || !time.length) return;
 
-      if (time.main > 0) {
-        dispatch(setTime({ ...time, main: time.main - 1 }));
-      } else if (time.rest > 0) {
+      if (time[0].time > 0) {
         dispatch(
-          setTime({
-            ...time,
-            rest: time.rest - 1,
-          })
-        );
-      } else if (time.rounds > 0) {
-        dispatch(
-          setTime({
-            main: initialTime.main,
-            rest: initialTime.rest,
-            rounds: time.rounds - 1,
-          })
+          setTime(
+            time.map((t, index) => {
+              if (index === 0) {
+                return {
+                  ...t,
+                  time: t.time - 1,
+                };
+              }
+
+              return t;
+            })
+          )
         );
       } else {
-        dispatch(setPause(true));
+        dispatch(setTime(time.slice(1)));
       }
     }, 1000);
 
