@@ -26,7 +26,7 @@ const WorkoutSelect = () => {
                 <Flex gap={8} align="end">
                   <Form.Item
                     name={[name, "name"]}
-                    label="運動"
+                    label={`運動 ${name + 1}`}
                     style={{ margin: 0, flex: 1 }}
                     rules={[
                       { required: name === 0, message: "請選擇運動項目" },
