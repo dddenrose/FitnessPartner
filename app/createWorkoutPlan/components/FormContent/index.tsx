@@ -10,6 +10,7 @@ const FormContent = () => {
       <PopularSet />
       <Divider />
       <WorkoutSelect />
+      <Divider />
       <SubmitButton />
     </Flex>
   );

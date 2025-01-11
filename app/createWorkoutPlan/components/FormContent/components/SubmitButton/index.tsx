@@ -1,11 +1,13 @@
-import { Button } from "antd";
+import { Button, Flex } from "antd";
 import React from "react";
 
 const SubmitButton = () => {
   return (
-    <Button type="primary" htmlType="submit" style={{ width: 120 }}>
-      Submit
-    </Button>
+    <Flex justify="end">
+      <Button type="primary" htmlType="submit" style={{ width: 100 }}>
+        完成
+      </Button>
+    </Flex>
   );
 };
 
