@@ -6,19 +6,17 @@ import { useSelector } from "react-redux";
 const Execrise = () => {
   const time = useSelector((state: RootState) => state.execrise.time);
 
-  return time?.[0]?.time > 0 ? (
+  return (
     <div className="text-6xl flex flex-col text-white items-center">
       <div className="text-xl">{time?.[0]?.name}</div>
       <div>
-        <div className="text-9xl">
-          00:{time[0].time < 10 ? `0${time[0].time}` : time[0].time}
-        </div>
-      </div>
-    </div>
-  ) : (
-    <div className="text-6xl flex flex-col text-white items-center">
-      <div>
-        <div className="text-9xl">00:00</div>
+        {time?.[0]?.time > 0 ? (
+          <div className="text-9xl">
+            00:{time[0].time < 10 ? `0${time[0].time}` : time[0].time}
+          </div>
+        ) : (
+          <div className="text-9xl">00:00</div>
+        )}
       </div>
     </div>
   );

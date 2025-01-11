@@ -18,7 +18,7 @@ const FormAction = ({ children }: { children: React.ReactNode }) => {
         setTime(
           values.items.map((i) => ({
             name: i.name,
-            time: 3,
+            time: 10,
           }))
         )
       );
