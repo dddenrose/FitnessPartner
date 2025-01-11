@@ -16,7 +16,7 @@ const timeConfig = {
 
 const TimerLogic = ({ children }: { children: React.ReactNode }) => {
   const dispatch = useDispatch();
-  const time = selectTime(useSelector((state: RootState) => state));
+  const time = useSelector((state: RootState) => state.execrise.time);
   const pause = useSelector((state: RootState) => state.execrise.pause);
   const initialTime = useSelector(
     (state: RootState) => state.execrise.initialTime

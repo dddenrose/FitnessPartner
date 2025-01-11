@@ -7,6 +7,8 @@ import theme from "./theme";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Navigation from "./components/Navigation/page";
+import { ConfigProvider, ThemeConfig } from "antd";
+import { Suspense } from "react";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -28,12 +30,20 @@ export default function RootLayout({
         <div className="flex justify-center w-full">
           <div className="flex flex-col justify-center align-middle w-full">
             <AntdRegistry>
-              <Navigation />
-              <AppRouterCacheProvider>
-                <StoreProvider>
-                  <ThemeProvider theme={theme}>{children}</ThemeProvider>
-                </StoreProvider>
-              </AppRouterCacheProvider>
+              <ConfigProvider
+                theme={{
+                  token: {
+                    colorPrimary: "#202020FF",
+                  },
+                }}
+              >
+                <Navigation />
+                <AppRouterCacheProvider>
+                  <StoreProvider>
+                    <ThemeProvider theme={theme}>{children}</ThemeProvider>
+                  </StoreProvider>
+                </AppRouterCacheProvider>
+              </ConfigProvider>
             </AntdRegistry>
           </div>
         </div>

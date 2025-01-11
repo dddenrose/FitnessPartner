@@ -12,8 +12,11 @@ const Execrise: React.FC = () => {
   );
 
   React.useEffect(() => {
+    console.log("mount");
+
     return () => {
-      dispatch(setTime([]));
+      console.log("unmount");
+      // dispatch(setTime([]));
     };
   }, []);
 
