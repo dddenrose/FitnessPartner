@@ -27,8 +27,12 @@ const Navigation = () => {
       style={{
         width: "100%",
         backgroundColor: "#282828FF",
-        padding: "8px 0",
+        height: "60px",
         boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+        position: "fixed",
+        top: 0,
+        zIndex: 2,
+        borderBottom: "1px solid #202020FF",
       }}
     >
       <Flex style={{ width: "70%" }} justify="space-between" align="center">

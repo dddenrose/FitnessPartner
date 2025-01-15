@@ -32,6 +32,7 @@ const BackButton = () => {
       onClick={() => {
         router.push("/createWorkoutPlan");
       }}
+      style={{ width: 120 }}
     >
       Back
     </Button>
