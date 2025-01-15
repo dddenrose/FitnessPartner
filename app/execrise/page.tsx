@@ -1,5 +1,4 @@
 "use client";
-import { setTime } from "@/lib/features/execrise/execriseSlice";
 import { RootState } from "@/lib/store";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -20,11 +19,7 @@ const Execrise: React.FC = () => {
     };
   }, []);
 
-  return (
-    <div className="min-w-screen min-h-screen">
-      <Timer />
-    </div>
-  );
+  return <Timer />;
 };
 
 export default Execrise;

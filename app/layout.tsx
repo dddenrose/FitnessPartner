@@ -1,14 +1,13 @@
-import type { Metadata } from "next";
-import { AppRouterCacheProvider } from "@mui/material-nextjs/v13-appRouter";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
+import { AppRouterCacheProvider } from "@mui/material-nextjs/v13-appRouter";
 import { ThemeProvider } from "@mui/material/styles";
+import { ConfigProvider, Flex } from "antd";
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import Navigation from "./components/Navigation/page";
+import "./globals.css";
 import StoreProvider from "./StoreProvider";
 import theme from "./theme";
-import { Inter } from "next/font/google";
-import "./globals.css";
-import Navigation from "./components/Navigation/page";
-import { ConfigProvider, ThemeConfig } from "antd";
-import { Suspense } from "react";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -24,29 +23,34 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${inter.className} p-0 m-0 bg-slate-50 w-full max-w-full overflow-x-hidden`}
-      >
-        <div className="flex justify-center w-full">
-          <div className="flex flex-col justify-center align-middle w-full">
-            <AntdRegistry>
-              <ConfigProvider
-                theme={{
-                  token: {
-                    colorPrimary: "#202020FF",
-                  },
-                }}
-              >
-                <Navigation />
-                <AppRouterCacheProvider>
-                  <StoreProvider>
-                    <ThemeProvider theme={theme}>{children}</ThemeProvider>
-                  </StoreProvider>
-                </AppRouterCacheProvider>
-              </ConfigProvider>
-            </AntdRegistry>
-          </div>
-        </div>
+      <body className={`${inter.className} p-0 m-0`}>
+        <AntdRegistry>
+          <ConfigProvider
+            theme={{
+              token: {
+                colorPrimary: "#202020FF",
+              },
+            }}
+          >
+            <Flex vertical justify="flex-start">
+              <Navigation />
+              <AppRouterCacheProvider>
+                <StoreProvider>
+                  <ThemeProvider theme={theme}>
+                    <div
+                      style={{
+                        padding: "60px 0px 0px 0px",
+                        overflowX: "hidden",
+                      }}
+                    >
+                      {children}
+                    </div>
+                  </ThemeProvider>
+                </StoreProvider>
+              </AppRouterCacheProvider>
+            </Flex>
+          </ConfigProvider>
+        </AntdRegistry>
       </body>
     </html>
   );

@@ -1,10 +1,7 @@
 "use client";
-import {
-  selectTime,
-  setPause,
-  setTime,
-} from "@/lib/features/execrise/execriseSlice";
+import { setTime } from "@/lib/features/execrise/execriseSlice";
 import { RootState } from "@/lib/store";
+import { Flex } from "antd";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -50,9 +47,14 @@ const TimerLogic = ({ children }: { children: React.ReactNode }) => {
   }, [pause, time]);
 
   return (
-    <div className="flex flex-col w-full h-full justify-center items-center">
+    <Flex
+      vertical
+      justify="center"
+      align="center"
+      style={{ minHeight: "100vh" }}
+    >
       {children}
-    </div>
+    </Flex>
   );
 };
 
