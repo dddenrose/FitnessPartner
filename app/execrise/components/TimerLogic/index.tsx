@@ -46,16 +46,7 @@ const TimerLogic = ({ children }: { children: React.ReactNode }) => {
     return () => clearInterval(t);
   }, [pause, time]);
 
-  return (
-    <Flex
-      vertical
-      justify="center"
-      align="center"
-      style={{ minHeight: "100vh" }}
-    >
-      {children}
-    </Flex>
-  );
+  return children;
 };
 
 export default TimerLogic;

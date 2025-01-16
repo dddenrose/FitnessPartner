@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-const StartButton = () => {
+const StartButton: React.FC = () => {
   const dispatch = useDispatch();
   const initialTime = useSelector(
     (state: RootState) => state.execrise.initialTime
@@ -23,7 +23,7 @@ const StartButton = () => {
   );
 };
 
-const BackButton = () => {
+const BackButton: React.FC = () => {
   const dispatch = useDispatch();
   const router = useRouter();
 
@@ -32,14 +32,30 @@ const BackButton = () => {
       onClick={() => {
         router.push("/createWorkoutPlan");
       }}
-      style={{ width: 120 }}
+      style={{ width: 100 }}
+      type="default"
     >
       Back
     </Button>
   );
 };
 
-export default {
-  StartButton,
-  BackButton,
+const SkipButton: React.FC = () => {
+  const dispatch = useDispatch();
+  const time = useSelector((state: RootState) => state.execrise.time);
+
+  return (
+    <Button
+      onClick={() => {
+        if (time.length < 2) return;
+        dispatch(setTime(time.slice(1)));
+      }}
+      style={{ width: 100 }}
+      type="default"
+    >
+      Skip
+    </Button>
+  );
 };
+
+export { StartButton, BackButton, SkipButton };

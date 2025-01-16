@@ -1,24 +1,30 @@
 import { RootState } from "@/lib/store";
-import { time } from "console";
+import { Flex, Typography } from "antd";
 import React from "react";
 import { useSelector } from "react-redux";
 
-const Execrise = () => {
+const Execrise: React.FC = () => {
   const time = useSelector((state: RootState) => state.execrise.time);
 
+  const getText = () => {
+    if (time?.length === 0) {
+      return "Finish!";
+    }
+
+    if (time?.[0]?.time > 0) {
+      return `00:${time[0].time < 10 ? `0${time[0].time}` : time[0].time}`;
+    }
+
+    return "00:00";
+  };
+
   return (
-    <div className="text-6xl flex flex-col text-white items-center">
-      <div className="text-xl">{time?.[0]?.name}</div>
-      <div>
-        {time?.[0]?.time > 0 ? (
-          <div className="text-9xl">
-            00:{time[0].time < 10 ? `0${time[0].time}` : time[0].time}
-          </div>
-        ) : (
-          <div className="text-9xl">00:00</div>
-        )}
-      </div>
-    </div>
+    <Flex vertical align="center">
+      <Typography.Title level={2} style={{ color: "white" }}>
+        {time?.[0]?.name}
+      </Typography.Title>
+      <div className="text-9xl text-white">{getText()}</div>
+    </Flex>
   );
 };
 
