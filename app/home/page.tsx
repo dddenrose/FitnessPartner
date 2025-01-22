@@ -10,10 +10,6 @@ import Introduction from "./components/Introduction/page";
 import Footer from "./components/Footer/Footer";
 
 const Home = () => {
-  const obj = {
-    site: "wmks",
-  };
-
   return (
     <div className={classNames("flex", "flex-col", "align-middle")}>
       {/* Image */}
