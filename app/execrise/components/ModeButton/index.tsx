@@ -58,4 +58,4 @@ const SkipButton: React.FC = () => {
   );
 };
 
-export { StartButton, BackButton, SkipButton };
+export default { StartButton, BackButton, SkipButton };

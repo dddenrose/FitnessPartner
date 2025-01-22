@@ -2,7 +2,7 @@
 import { RootState } from "@/lib/store";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { BackButton, SkipButton } from "./components/ModeButton";
+import Buttons from "./components/ModeButton";
 import TimerBg from "./components/TimerBg";
 import TimerLogic from "./components/TimerLogic";
 import Timer from "./components/Timer";
@@ -27,8 +27,8 @@ const App: React.FC = () => {
         <Execrise />
 
         <Flex gap={8}>
-          <BackButton />
-          <SkipButton />
+          <Buttons.BackButton />
+          <Buttons.SkipButton />
         </Flex>
 
         <TimerBg />
