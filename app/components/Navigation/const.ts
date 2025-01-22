@@ -1,5 +1,5 @@
 export const routerMap = {
-  Home: "/home",
+  Home: "/",
   "Workout Plan": "/createWorkoutPlan",
   Execrise: "/execrise",
   Contact: "/contact",
