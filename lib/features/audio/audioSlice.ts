@@ -12,8 +12,11 @@ const audioSlice = createSlice({
     stopAudio: (state) => {
       state.isGlobalPlaying = false;
     },
+    setIsGlobalPlaying: (state, action) => {
+      state.isGlobalPlaying = action.payload;
+    },
   },
 });
 
-export const { playAudio, stopAudio } = audioSlice.actions;
+export const { playAudio, stopAudio, setIsGlobalPlaying } = audioSlice.actions;
 export default audioSlice.reducer;

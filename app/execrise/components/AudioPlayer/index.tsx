@@ -7,10 +7,17 @@ import { CiOutlined } from "@ant-design/icons";
 
 const AudioPlayer: React.FC = () => {
   const time = useAppSelector((state) => state.execrise.time);
+  const isGlobalPlaying = useAppSelector(
+    (state) => state.audio.isGlobalPlaying
+  );
   const [isPlaying, setIsPlaying] = React.useState(false);
 
   React.useEffect(() => {
-    if (Boolean(time.length > 0 && time[0].name && time[0].time <= 5)) {
+    if (
+      Boolean(
+        isGlobalPlaying && time.length > 0 && time[0].name && time[0].time <= 5
+      )
+    ) {
       setIsPlaying(true);
     } else {
       setIsPlaying(false);

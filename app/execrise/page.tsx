@@ -9,6 +9,7 @@ import Timer from "./components/Timer";
 import Execrise from "./components/Execrise";
 import { Flex } from "antd";
 import AudioPlayer from "./components/AudioPlayer";
+import FloatFunctions from "./components/FloatFunctions";
 
 const App: React.FC = () => {
   const dispatch = useDispatch();
@@ -35,6 +36,8 @@ const App: React.FC = () => {
         <TimerBg />
 
         <AudioPlayer />
+
+        <FloatFunctions />
       </TimerLogic>
     </Flex>
   );

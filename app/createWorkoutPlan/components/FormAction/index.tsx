@@ -24,8 +24,6 @@ const FormAction = ({ children }: { children: React.ReactNode }) => {
         )
       );
 
-      dispatch(playAudio());
-
       router.push("/execrise");
     });
   };
