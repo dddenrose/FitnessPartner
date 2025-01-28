@@ -4,6 +4,7 @@ import { initialValues } from "../PlanForm/const";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { setTime } from "@/lib/features/execrise/execriseSlice";
+import { playAudio } from "@/lib/features/audio/audioSlice";
 
 const FormAction = ({ children }: { children: React.ReactNode }) => {
   const [form] = Form.useForm<CreateWorkoutPlanForm>();
@@ -22,6 +23,8 @@ const FormAction = ({ children }: { children: React.ReactNode }) => {
           }))
         )
       );
+
+      dispatch(playAudio());
 
       router.push("/execrise");
     });
