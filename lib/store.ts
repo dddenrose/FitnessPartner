@@ -2,6 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import workoutReducer from "./features/workouts/workoutsSlice";
 import userInfoReducer from "./features/userInfo/userInfoSlice";
 import execriseReducer from "./features/execrise/execriseSlice";
+import audioReducer from "./features/audio/audioSlice";
 
 export const makeStore = () => {
   return configureStore({
@@ -9,6 +10,7 @@ export const makeStore = () => {
       workout: workoutReducer,
       userInfo: userInfoReducer,
       execrise: execriseReducer,
+      audio: audioReducer,
     },
   });
 };
