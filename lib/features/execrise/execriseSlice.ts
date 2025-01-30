@@ -9,12 +9,14 @@ export const execriseSlice = createSlice({
       {
         name: "",
         time: 30,
+        rest: 10,
       },
     ],
     time: [
       {
         name: "",
         time: 30,
+        rest: 10,
       },
     ],
     pause: false,

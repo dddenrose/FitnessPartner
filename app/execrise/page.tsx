@@ -30,6 +30,7 @@ const App: React.FC = () => {
 
         <Flex gap={8}>
           <Buttons.BackButton />
+          <Buttons.PauseButton />
           <Buttons.SkipButton />
         </Flex>
 

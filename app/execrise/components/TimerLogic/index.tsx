@@ -38,6 +38,21 @@ const TimerLogic = ({ children }: { children: React.ReactNode }) => {
             })
           )
         );
+      } else if (time[0].rest > 0) {
+        dispatch(
+          setTime(
+            time.map((t, index) => {
+              if (index === 0) {
+                return {
+                  ...t,
+                  rest: t.rest - 1,
+                };
+              }
+
+              return t;
+            })
+          )
+        );
       } else {
         dispatch(setTime(time.slice(1)));
       }

@@ -2,11 +2,12 @@ import { Form, Row, Col, Select, Button, Typography, Flex } from "antd";
 import React from "react";
 import { workoutItems } from "../../const";
 import { DeleteOutlined, PlusOutlined, RedoOutlined } from "@ant-design/icons";
+import RestItem from "../TimeSelect";
 
 const WorkoutSelect = () => {
   const form = Form.useFormInstance<CreateWorkoutPlanForm>();
   return (
-    <div style={{ minHeight: 200 }}>
+    <div>
       <Form.List name="items">
         {(fields, { add, remove }) => (
           <>
