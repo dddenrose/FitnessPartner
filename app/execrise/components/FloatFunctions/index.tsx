@@ -17,7 +17,6 @@ const FloatFunctions: React.FC = () => {
 
   const handleAudio = () => {
     dispatch(setIsGlobalPlaying(!isGlobalPlaying));
-    console.log("try some random commit");
   };
 
   return (
