@@ -26,6 +26,8 @@ const FormAction = ({ children }: { children: React.ReactNode }) => {
       );
 
       router.push("/execrise");
+
+      console.log("values", values);
     });
   };
 
