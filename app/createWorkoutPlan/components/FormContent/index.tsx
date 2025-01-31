@@ -3,6 +3,7 @@ import { Divider, Flex, Form } from "antd";
 import WorkoutSelect from "./components/WorkoutSelect";
 import SubmitButton from "./components/SubmitButton";
 import PopularSet from "../PopularSet";
+import RestItem from "./components/TimeSelect";
 
 const FormContent = () => {
   return (
@@ -10,6 +11,8 @@ const FormContent = () => {
       <PopularSet />
       <Divider />
       <WorkoutSelect />
+      <Divider />
+      <RestItem />
       <Divider />
       <SubmitButton />
     </Flex>

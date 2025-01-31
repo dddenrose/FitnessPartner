@@ -4,4 +4,6 @@ interface CreateWorkoutPlanForm {
       name: string;
     }
   ];
+  rest: number;
+  time: number;
 }

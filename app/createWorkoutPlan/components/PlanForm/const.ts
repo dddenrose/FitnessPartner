@@ -4,4 +4,6 @@ export const initialValues = {
       name: undefined,
     },
   ],
+  rest: 10,
+  time: 60,
 };

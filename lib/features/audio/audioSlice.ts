@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const audioSlice = createSlice({
   name: "audio",
   initialState: {
-    isGlobalPlaying: false,
+    isGlobalPlaying: true,
   },
   reducers: {
     playAudio: (state) => {

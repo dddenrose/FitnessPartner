@@ -1,4 +1,8 @@
-import { setTime, setMode } from "@/lib/features/execrise/execriseSlice";
+import {
+  setTime,
+  setMode,
+  setPause,
+} from "@/lib/features/execrise/execriseSlice";
 import { RootState } from "@/lib/store";
 import { Button } from "antd";
 import { useRouter } from "next/navigation";
@@ -58,4 +62,21 @@ const SkipButton: React.FC = () => {
   );
 };
 
-export default { StartButton, BackButton, SkipButton };
+const PauseButton: React.FC = () => {
+  const dispatch = useDispatch();
+  const pause = useSelector((state: RootState) => state.execrise.pause);
+
+  return (
+    <Button
+      onClick={() => {
+        dispatch(setPause(!pause));
+      }}
+      style={{ width: 100 }}
+      type="default"
+    >
+      {pause ? "Resume" : "Pause"}
+    </Button>
+  );
+};
+
+export default { StartButton, BackButton, SkipButton, PauseButton };
