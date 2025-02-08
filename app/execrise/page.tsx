@@ -31,7 +31,7 @@ const App: React.FC = () => {
       vertical
       justify="center"
       align="center"
-      style={{ minHeight: "100vh" }}
+      style={{ minHeight: "100vh", maxHeight: "100vh" }}
       gap={24}
     >
       <TimerLogic />
