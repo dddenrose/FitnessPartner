@@ -1,5 +1,5 @@
 "use client";
-import { setTime } from "@/lib/features/execrise/execriseSlice";
+import { setMode, setTime } from "@/lib/features/execrise/execriseSlice";
 import { RootState } from "@/lib/store";
 import { Flex } from "antd";
 import React from "react";
@@ -11,13 +11,10 @@ const timeConfig = {
   rounds: 8,
 };
 
-const TimerLogic = ({ children }: { children: React.ReactNode }) => {
+const TimerLogic = ({ children }: { children?: React.ReactNode }) => {
   const dispatch = useDispatch();
   const time = useSelector((state: RootState) => state.execrise.time);
   const pause = useSelector((state: RootState) => state.execrise.pause);
-  const initialTime = useSelector(
-    (state: RootState) => state.execrise.initialTime
-  );
 
   React.useEffect(() => {
     const t = setInterval(() => {
@@ -53,13 +50,15 @@ const TimerLogic = ({ children }: { children: React.ReactNode }) => {
             })
           )
         );
-      } else {
+      } else if (time.length > 1) {
         dispatch(setTime(time.slice(1)));
+      } else {
+        dispatch(setMode("finish"));
       }
     }, 1000);
 
     return () => clearInterval(t);
-  }, [pause, time]);
+  }, [pause, time, dispatch]);
 
   return children;
 };
