@@ -3,13 +3,14 @@ import React from "react";
 import { initialValues } from "../PlanForm/const";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
-import { setTime } from "@/lib/features/execrise/execriseSlice";
+import { setMode, setTime } from "@/lib/features/execrise/execriseSlice";
 import { playAudio } from "@/lib/features/audio/audioSlice";
+import { useAppDispatch } from "@/lib/hooks";
 
 const FormAction = ({ children }: { children: React.ReactNode }) => {
   const [form] = Form.useForm<CreateWorkoutPlanForm>();
   const router = useRouter();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const onFinish = () => {
     form.validateFields().then((values) => {
@@ -24,6 +25,8 @@ const FormAction = ({ children }: { children: React.ReactNode }) => {
           }))
         )
       );
+
+      dispatch(setMode("execrise"));
 
       router.push("/execrise");
     });
