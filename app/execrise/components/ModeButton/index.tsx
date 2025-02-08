@@ -4,6 +4,7 @@ import {
   setPause,
 } from "@/lib/features/execrise/execriseSlice";
 import { RootState } from "@/lib/store";
+import { PauseOutlined, RightOutlined } from "@ant-design/icons";
 import { Button } from "antd";
 import { useRouter } from "next/navigation";
 import React from "react";
@@ -74,7 +75,7 @@ const PauseButton: React.FC = () => {
       style={{ width: 100 }}
       type="default"
     >
-      {pause ? "Resume" : "Pause"}
+      {pause ? <RightOutlined /> : <PauseOutlined />}
     </Button>
   );
 };

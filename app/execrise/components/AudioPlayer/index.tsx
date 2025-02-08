@@ -1,9 +1,6 @@
-import React from "react";
-import countDownAudio from "@/app/static/audio/countDownAudio.wav";
-import { useSelector } from "react-redux";
-import { useAppSelector } from "@/lib/hooks";
 import AudioComponent from "@/app/components/AudioPlayer";
-import { CiOutlined } from "@ant-design/icons";
+import { useAppSelector } from "@/lib/hooks";
+import React from "react";
 
 const AudioPlayer: React.FC = () => {
   const time = useAppSelector((state) => state.execrise.time);
@@ -13,17 +10,26 @@ const AudioPlayer: React.FC = () => {
   const isPause = useAppSelector((state) => state.execrise.pause);
   const [isPlaying, setIsPlaying] = React.useState(false);
 
+  /**
+   * 當運動時間<=5秒時撥放音樂
+   * 或者，當休息時間<=5秒時撥放音樂
+   */
   React.useEffect(() => {
+    const commonLimit =
+      isGlobalPlaying && time[0].name && time.length > 0 && !isPause;
+
     if (
       Boolean(
-        (isGlobalPlaying &&
-          time.length > 0 &&
-          time[0].name &&
+        commonLimit &&
           time[0].time <= 5 &&
-          !isPause) ||
-          (isGlobalPlaying && time.length > 0 && time[0].rest <= 5 && !isPause)
+          time[0].time !== 0 &&
+          time[0].rest > 5
       )
     ) {
+      setIsPlaying(true);
+    } else if (commonLimit && time[0].time === 0 && time[0].rest > 5) {
+      setIsPlaying(false);
+    } else if (commonLimit && time[0].time === 0 && time[0].rest <= 5) {
       setIsPlaying(true);
     } else {
       setIsPlaying(false);
