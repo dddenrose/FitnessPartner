@@ -10,12 +10,18 @@ import Execrise from "./components/Execrise";
 import { Flex } from "antd";
 import AudioPlayer from "./components/AudioPlayer";
 import FloatFunctions from "./components/FloatFunctions";
+import { setNavigationShow } from "@/lib/features/userInfo/userInfoSlice";
 
 const App: React.FC = () => {
   const dispatch = useDispatch();
-  const initialTime = useSelector(
-    (state: RootState) => state.execrise.initialTime
-  );
+
+  React.useEffect(() => {
+    dispatch(setNavigationShow(false));
+
+    return () => {
+      dispatch(setNavigationShow(true));
+    };
+  }, [dispatch]);
 
   return (
     <Flex
@@ -29,7 +35,6 @@ const App: React.FC = () => {
         <Execrise />
 
         <Flex gap={8}>
-          <Buttons.BackButton />
           <Buttons.PauseButton />
           <Buttons.SkipButton />
         </Flex>

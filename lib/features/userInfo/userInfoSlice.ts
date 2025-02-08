@@ -7,6 +7,7 @@ interface UserInfoState {
     name: string;
     age: number;
     email: string;
+    isNavigationShow: boolean;
   };
 }
 
@@ -16,23 +17,25 @@ const initialState: UserInfoState = {
     name: "John Doe",
     age: 25,
     email: "",
+    isNavigationShow: true,
   },
 };
 
 export const counterSlice = createSlice({
   name: "userInfo",
-  // `createSlice` will infer the state type from the `initialState` argument
   initialState,
   reducers: {
     setUser: (state, action: PayloadAction<UserInfoState["user"]>) => {
       state.user = action.payload;
     },
+    setNavigationShow: (state, action: PayloadAction<boolean>) => {
+      state.user.isNavigationShow = action.payload;
+    },
   },
 });
 
-export const { setUser } = counterSlice.actions;
+export const { setUser, setNavigationShow } = counterSlice.actions;
 
-// Other code such as selectors can use the imported `RootState` type
 export const selectUserInfo = (state: RootState) => state.userInfo.user;
 
 export default counterSlice.reducer;

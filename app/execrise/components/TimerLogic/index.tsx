@@ -53,13 +53,13 @@ const TimerLogic = ({ children }: { children: React.ReactNode }) => {
             })
           )
         );
-      } else {
+      } else if (time.length > 1) {
         dispatch(setTime(time.slice(1)));
       }
     }, 1000);
 
     return () => clearInterval(t);
-  }, [pause, time]);
+  }, [pause, time, dispatch]);
 
   return children;
 };
