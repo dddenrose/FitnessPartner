@@ -1,7 +1,7 @@
 "use clients";
 import { SmileFilled } from "@ant-design/icons";
 import { Button, Flex, Typography } from "antd";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import React from "react";
 
 const Finish: React.FC = () => {
