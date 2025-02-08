@@ -1,10 +1,10 @@
 import { RootState } from "@/lib/store";
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export const execriseSlice = createSlice({
   name: "execise",
   initialState: {
-    mode: "prepare",
+    mode: "execrise" as "execrise" | "finish",
     initialTime: [
       {
         name: "",
@@ -22,7 +22,7 @@ export const execriseSlice = createSlice({
     pause: false,
   },
   reducers: {
-    setMode: (state, action) => {
+    setMode: (state, action: PayloadAction<"execrise" | "finish">) => {
       state.mode = action.payload;
     },
     setTime: (state, action) => {

@@ -11,9 +11,12 @@ import { Flex } from "antd";
 import AudioPlayer from "./components/AudioPlayer";
 import FloatFunctions from "./components/FloatFunctions";
 import { setNavigationShow } from "@/lib/features/userInfo/userInfoSlice";
+import Finish from "./components/Finish";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 
 const App: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
+  const mode = useAppSelector((state) => state.execrise.mode);
 
   React.useEffect(() => {
     dispatch(setNavigationShow(false));
@@ -31,20 +34,26 @@ const App: React.FC = () => {
       style={{ minHeight: "100vh" }}
       gap={24}
     >
-      <TimerLogic>
-        <Execrise />
+      <TimerLogic />
 
-        <Flex gap={8}>
-          <Buttons.PauseButton />
-          <Buttons.SkipButton />
-        </Flex>
+      {mode === "execrise" && (
+        <>
+          <Execrise />
 
-        <TimerBg />
+          <Flex gap={8}>
+            <Buttons.PauseButton />
+            <Buttons.SkipButton />
+          </Flex>
 
-        <AudioPlayer />
+          <AudioPlayer />
+        </>
+      )}
 
-        <FloatFunctions />
-      </TimerLogic>
+      {mode === "finish" && <Finish />}
+
+      <TimerBg />
+
+      <FloatFunctions />
     </Flex>
   );
 };
