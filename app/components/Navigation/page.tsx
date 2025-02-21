@@ -48,8 +48,6 @@ const Navigation: React.FC = () => {
           <Link title="Home" />
           <Link title="Workout Plan" />
           <Link title="Execrise" />
-          <Link title="Contact" />
-          <Link title="Login" />
         </Flex>
       </Flex>
     )
