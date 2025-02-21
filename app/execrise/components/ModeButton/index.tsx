@@ -4,7 +4,14 @@ import {
   setPause,
 } from "@/lib/features/execrise/execriseSlice";
 import { RootState } from "@/lib/store";
-import { Button } from "antd";
+import {
+  DoubleRightOutlined,
+  PauseOutlined,
+  RightOutlined,
+  RollbackOutlined,
+} from "@ant-design/icons";
+import { App, Button, Modal } from "antd";
+
 import { useRouter } from "next/navigation";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -30,17 +37,34 @@ const StartButton: React.FC = () => {
 const BackButton: React.FC = () => {
   const dispatch = useDispatch();
   const router = useRouter();
+  const initialTime = useSelector(
+    (state: RootState) => state.execrise.initialTime
+  );
+  const [modalApi, context] = Modal.useModal();
 
   return (
-    <Button
-      onClick={() => {
-        router.push("/createWorkoutPlan");
-      }}
-      style={{ width: 100 }}
-      type="default"
-    >
-      Back
-    </Button>
+    <>
+      {context}
+      <Button
+        onClick={() => {
+          modalApi.confirm({
+            title: "Are you sure you want to go back?",
+            content: "All your progress will be lost",
+            onOk: () => {
+              dispatch(setTime(initialTime));
+              dispatch(setPause(false));
+              router.push("/createWorkoutPlan");
+            },
+          });
+        }}
+        style={{ width: 100 }}
+        type="primary"
+        danger
+      >
+        <RollbackOutlined />
+        Back
+      </Button>
+    </>
   );
 };
 
@@ -57,7 +81,7 @@ const SkipButton: React.FC = () => {
       style={{ width: 100 }}
       type="default"
     >
-      Skip
+      <DoubleRightOutlined />
     </Button>
   );
 };
@@ -74,7 +98,7 @@ const PauseButton: React.FC = () => {
       style={{ width: 100 }}
       type="default"
     >
-      {pause ? "Resume" : "Pause"}
+      {pause ? <RightOutlined /> : <PauseOutlined />}
     </Button>
   );
 };

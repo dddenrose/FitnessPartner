@@ -7,10 +7,6 @@ const Execrise: React.FC = () => {
   const time = useSelector((state: RootState) => state.execrise.time);
 
   const getText = () => {
-    if (time?.length === 0) {
-      return "Finish!";
-    }
-
     if (time?.[0]?.time > 0) {
       return `00:${time[0].time < 10 ? `0${time[0].time}` : time[0].time}`;
     }
