@@ -1,8 +1,11 @@
+import { Bricolage_Grotesque, Inter, Roboto } from "next/font/google";
 import classNames from "classnames";
 import React from "react";
 
-const lorem =
-  "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
+const roboto = Bricolage_Grotesque({
+  weight: "600",
+  subsets: ["latin"],
+});
 
 const Introduction = () => {
   return (
@@ -29,17 +32,29 @@ const Introduction = () => {
           "content-center"
         )}
       >
-        <div className={classNames("text-9xl", "flex-1")}>Neo</div>
+        <div className={classNames("text-9xl", "flex-1", roboto.className)}>
+          neo
+        </div>
         <div
           className={classNames(
             "text-sm",
             "flex-1",
             "top-0",
             "left-0",
-            "right-0"
+            "right-0",
+            roboto.className,
+            "text-base"
           )}
         >
-          {lorem}
+          Neo
+          健身夥伴是一款免費的運動輔助應用，提供運動輔助，比如規劃運動行程、組合，使用者可依照預設時間進行運動，提升訓練效率，如
+          Tabata 有氧運動、HIIT 等訓練模式。
+          <br />
+          <br />
+          Neo Fitness Companion is a free workout assistant app that helps users
+          plan exercise schedules and routines. It allows users to follow preset
+          workout durations to enhance training efficiency, supporting training
+          modes such as Tabata cardio and HIIT.
         </div>
       </div>
     </div>

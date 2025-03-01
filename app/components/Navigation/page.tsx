@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { Button, Flex } from "antd";
-import { OpenAIOutlined } from "@ant-design/icons";
+import { FieldNumberOutlined, OpenAIOutlined } from "@ant-design/icons";
 import { useRouter } from "next/navigation";
 import { routerMap } from "./const";
 import { useAppSelector } from "@/lib/hooks";
@@ -13,7 +13,7 @@ const Link = ({ title }: { title: keyof typeof routerMap }) => {
   return (
     <Button
       type="text"
-      style={{ color: "white" }}
+      style={{ color: "white", fontSize: 12, letterSpacing: 0.8 }}
       onClick={() => router.push(pathName)}
     >
       {title}
@@ -26,8 +26,6 @@ const Navigation: React.FC = () => {
     (state) => state.userInfo.user.isNavigationShow
   );
 
-  console.log(isNavigationShow, "===:isNavigationShow");
-
   return (
     isNavigationShow && (
       <Flex
@@ -35,7 +33,7 @@ const Navigation: React.FC = () => {
         style={{
           width: "100%",
           backgroundColor: "#282828FF",
-          height: "60px",
+          height: "36px",
           boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
           position: "fixed",
           top: 0,
@@ -43,8 +41,9 @@ const Navigation: React.FC = () => {
           borderBottom: "1px solid #202020FF",
         }}
       >
-        <Flex style={{ width: "70%" }} justify="space-between" align="center">
-          <OpenAIOutlined style={{ color: "white" }} />
+        <Flex style={{ width: "70%" }} align="center" justify="flex-end">
+          {/* <FieldNumberOutlined /> */}
+          {/* <OpenAIOutlined style={{ color: "white" }} /> */}
           <Link title="Home" />
           <Link title="Workout Plan" />
           <Link title="Execrise" />
