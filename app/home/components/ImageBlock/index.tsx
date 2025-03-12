@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import image1 from "@/app/static/106.jpg";
 import Image from "next/image";
