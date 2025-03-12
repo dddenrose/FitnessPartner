@@ -24,6 +24,8 @@ const Introduction = () => {
     >
       <div
         className={classNames(
+          "sm: flex-col",
+          "md:flex-row",
           "w-4/5",
           "flex",
           "p-6",
@@ -51,10 +53,12 @@ const Introduction = () => {
           Tabata 有氧運動、HIIT 等訓練模式。
           <br />
           <br />
-          Neo Fitness Companion is a free workout assistant app that helps users
-          plan exercise schedules and routines. It allows users to follow preset
-          workout durations to enhance training efficiency, supporting training
-          modes such as Tabata cardio and HIIT.
+          <span className={classNames("hidden", "sm:block")}>
+            Neo Fitness Companion is a free workout assistant app that helps
+            users plan exercise schedules and routines. It allows users to
+            follow preset workout durations to enhance training efficiency,
+            supporting training modes such as Tabata cardio and HIIT.
+          </span>
         </div>
       </div>
     </div>
