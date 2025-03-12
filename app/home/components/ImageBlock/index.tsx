@@ -24,7 +24,6 @@ const ImageBlock = () => {
           "transform",
           "-translate-x-1/2",
           "-translate-y-1/2",
-          "text-white",
           "text-6xl",
           "hover:text-7xl",
           "transition-all",
@@ -33,7 +32,8 @@ const ImageBlock = () => {
           "align-middle",
           "text-center",
           "underline",
-          "underline-offset-4"
+          "underline-offset-4",
+          "text-white"
         )}
         onClick={() => {
           router.push("createWorkoutPlan");
