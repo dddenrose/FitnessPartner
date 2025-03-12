@@ -22,9 +22,30 @@ const ThreeImage = () => {
     >
       {/* Three Images */}
       <div className="flex-col items-center sm:flex-row flex gap-4 justify-between w-3/5">
-        <BorderImage imageSrc={image1} />
-        <BorderImage imageSrc={image2} />
-        <BorderImage imageSrc={image3} />
+        <BorderImage
+          imageSrc={image1}
+          information={{
+            title: "Consistent Progress",
+            content:
+              "每天進步 1%，累積成非凡改變。你的對手不是別人，而是昨天的自己。只要開始，就已經贏了一半。",
+          }}
+        />
+        <BorderImage
+          imageSrc={image2}
+          information={{
+            title: "Smart Training",
+            content:
+              "不只是努力，更要方法對！透過專業指導與個人化訓練計畫，讓每一分努力都發揮最大效果，安全且高效地邁向更好的自己。",
+          }}
+        />
+        <BorderImage
+          imageSrc={image3}
+          information={{
+            title: "Balanced Living",
+            content:
+              "健身不只是鍛鍊身體，更是打造健康的生活習慣。透過運動、飲食與休息的完美平衡，讓活力成為你的日常狀態，迎接更有品質的每一天。",
+          }}
+        />
       </div>
 
       {/* Brand Story */}

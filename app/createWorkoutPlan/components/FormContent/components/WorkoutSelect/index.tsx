@@ -11,25 +11,32 @@ const WorkoutSelect = () => {
       <Form.List name="items">
         {(fields, { add, remove }) => (
           <>
-            <Flex justify="between" gap={8}>
-              <Typography.Title level={4} style={{ width: "100%" }}>
-                自訂運動項目
-              </Typography.Title>
-              <Button
-                onClick={() =>
-                  form.setFieldValue("items", [{ name: undefined }])
-                }
-              >
-                <RedoOutlined /> 重置
-              </Button>
-              <Button type="primary" onClick={() => add()}>
-                <PlusOutlined /> 新增項目
-              </Button>
-            </Flex>
+            <Row gutter={[16, 16]} justify="space-between" className="mb-4">
+              <Col span={24} sm={12}>
+                <Typography.Title
+                  level={4}
+                  style={{ width: "100%", margin: 0 }}
+                >
+                  自訂運動項目
+                </Typography.Title>
+              </Col>
+              <Flex gap={8}>
+                <Button
+                  onClick={() =>
+                    form.setFieldValue("items", [{ name: undefined }])
+                  }
+                >
+                  <RedoOutlined /> 重置
+                </Button>
+                <Button type="primary" onClick={() => add()}>
+                  <PlusOutlined /> 新增項目
+                </Button>
+              </Flex>
+            </Row>
 
             <Row gutter={[16, 16]} align="top" style={{ marginBottom: 16 }}>
               {fields.map(({ key, name }) => (
-                <Col span={12} key={key}>
+                <Col span={24} sm={12} key={key}>
                   <Flex gap={8} align="end">
                     <Form.Item
                       name={[name, "name"]}

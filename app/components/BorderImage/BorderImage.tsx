@@ -13,13 +13,7 @@ interface BorderImageProps {
 }
 
 const BorderImage = (props: BorderImageProps) => {
-  const {
-    information = {
-      title: "Sport",
-      content,
-    },
-    imageSrc = image3,
-  } = props;
+  const { information, imageSrc = image3 } = props;
 
   return (
     <div className={classNames("w-60", "h-80", "relative", "group")}>
@@ -44,11 +38,11 @@ const BorderImage = (props: BorderImageProps) => {
         <div
           className={classNames("text-2xl", "font-bold", "mb-4", "text-white")}
         >
-          {information.title}
+          {information?.title}
         </div>
 
         {/* Content */}
-        <div className={classNames("text-white")}>{information.content}</div>
+        <div className={classNames("text-white")}>{information?.content}</div>
       </div>
 
       {/* Image */}
