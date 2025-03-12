@@ -3,14 +3,19 @@ import { AppRouterCacheProvider } from "@mui/material-nextjs/v13-appRouter";
 import { ThemeProvider } from "@mui/material/styles";
 import { ConfigProvider, Flex } from "antd";
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Bricolage_Grotesque, Inter } from "next/font/google";
 import Navigation from "./components/Navigation/page";
 import OutletWrapper from "./components/OutletWrapper";
 import "./globals.css";
 import StoreProvider from "./StoreProvider";
-import theme from "./theme";
+// import theme from "./theme";
 
 const inter = Inter({ subsets: ["latin"] });
+
+const roboto = Bricolage_Grotesque({
+  weight: "400",
+  subsets: ["latin"],
+});
 
 export const metadata: Metadata = {
   title: "Fintess Partner",
@@ -23,7 +28,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.className} p-0 m-0`}>
+      <body className={`${roboto.className} p-0 m-0`}>
         <AntdRegistry>
           <ConfigProvider
             theme={{
@@ -36,9 +41,7 @@ export default function RootLayout({
               <Flex vertical justify="flex-start">
                 <Navigation />
                 <AppRouterCacheProvider>
-                  <ThemeProvider theme={theme}>
-                    <OutletWrapper>{children}</OutletWrapper>
-                  </ThemeProvider>
+                  <OutletWrapper>{children}</OutletWrapper>
                 </AppRouterCacheProvider>
               </Flex>
             </StoreProvider>
