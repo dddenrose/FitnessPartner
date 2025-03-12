@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 const ImageBlock = () => {
   const router = useRouter();
   return (
-    <div style={{ position: "relative", width: "100vw", height: "840px" }}>
+    <div style={{ position: "relative", width: "100vw", height: "100vh" }}>
       <Image
         src={image1}
         alt="Full Screen Background"
@@ -30,7 +30,9 @@ const ImageBlock = () => {
           "duration-500",
           "cursor-pointer",
           "align-middle",
-          "text-center"
+          "text-center",
+          "underline",
+          "underline-offset-4"
         )}
         onClick={() => {
           router.push("createWorkoutPlan");
