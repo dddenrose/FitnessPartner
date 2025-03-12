@@ -8,20 +8,9 @@ import ThreeImage from "./components/ThreeImage/page";
 const Home = () => {
   return (
     <div className={classNames("flex", "flex-col", "align-middle")}>
-      {/* Image */}
       <ImageBlock />
-
-      {/* Neo Introduction */}
       <Introduction />
-
-      {/* Three Image */}
       <ThreeImage />
-
-      {/* Our story */}
-      {/* <OurStory /> */}
-
-      {/* Footer */}
-      {/* <Footer /> */}
     </div>
   );
 };
