@@ -1,6 +1,5 @@
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v13-appRouter";
-import { ThemeProvider } from "@mui/material/styles";
 import { ConfigProvider, Flex } from "antd";
 import type { Metadata } from "next";
 import { Bricolage_Grotesque, Inter } from "next/font/google";
@@ -8,7 +7,6 @@ import Navigation from "./components/Navigation/page";
 import OutletWrapper from "./components/OutletWrapper";
 import "./globals.css";
 import StoreProvider from "./StoreProvider";
-// import theme from "./theme";
 
 const inter = Inter({ subsets: ["latin"] });
 
