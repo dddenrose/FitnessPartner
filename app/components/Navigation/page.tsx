@@ -42,11 +42,10 @@ const Navigation: React.FC = () => {
         }}
       >
         <Flex style={{ width: "70%" }} align="center" justify="flex-end">
-          {/* <FieldNumberOutlined /> */}
-          {/* <OpenAIOutlined style={{ color: "white" }} /> */}
           <Link title="Home" />
           <Link title="Workout Plan" />
           <Link title="Execrise" />
+          <Link title="Login" />
         </Flex>
       </Flex>
     )
