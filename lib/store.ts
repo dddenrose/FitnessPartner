@@ -3,6 +3,7 @@ import workoutReducer from "./features/workouts/workoutsSlice";
 import userInfoReducer from "./features/userInfo/userInfoSlice";
 import execriseReducer from "./features/execrise/execriseSlice";
 import audioReducer from "./features/audio/audioSlice";
+import FirebaseReducer from "./features/firebase/firebaseSlice";
 
 export const makeStore = () => {
   return configureStore({
@@ -11,6 +12,7 @@ export const makeStore = () => {
       userInfo: userInfoReducer,
       execrise: execriseReducer,
       audio: audioReducer,
+      firebase: FirebaseReducer,
     },
   });
 };

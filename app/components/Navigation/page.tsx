@@ -1,10 +1,11 @@
 "use client";
 import React from "react";
-import { Button, Flex } from "antd";
+import { Button, Flex, Space } from "antd";
 import { FieldNumberOutlined, OpenAIOutlined } from "@ant-design/icons";
 import { useRouter } from "next/navigation";
 import { routerMap } from "./const";
 import { useAppSelector } from "@/lib/hooks";
+import UserProfileMenu from "../UserProfileMenu";
 
 const Link = ({ title }: { title: keyof typeof routerMap }) => {
   const router = useRouter();
@@ -41,12 +42,15 @@ const Navigation: React.FC = () => {
           borderBottom: "1px solid #202020FF",
         }}
       >
-        <Flex style={{ width: "70%" }} align="center" justify="flex-end">
-          {/* <FieldNumberOutlined /> */}
-          {/* <OpenAIOutlined style={{ color: "white" }} /> */}
-          <Link title="Home" />
-          <Link title="Workout Plan" />
-          <Link title="Execrise" />
+        <Flex style={{ width: "70%" }} align="center" justify="space-between">
+          <Flex>
+            <Link title="Home" />
+            <Link title="Workout Plan" />
+            <Link title="Execrise" />
+          </Flex>
+          <Space align="center" style={{ marginRight: "10px" }}>
+            <UserProfileMenu />
+          </Space>
         </Flex>
       </Flex>
     )
