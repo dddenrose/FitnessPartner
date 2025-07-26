@@ -5,12 +5,16 @@ import Image from "next/image";
 
 const BgImage: React.FC = () => {
   return (
-    <div style={{ position: "relative", width: "100vw", height: "100vh" }}>
+    <div style={{ position: "relative", width: "100%", height: "100%" }}>
       <Image
         src={image1}
         alt="Full Screen Background"
         fill
-        style={{ objectFit: "cover" }}
+        priority
+        style={{
+          objectFit: "cover",
+          objectPosition: "center",
+        }}
       />
     </div>
   );

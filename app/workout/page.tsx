@@ -6,6 +6,7 @@ import NextWorkoutList from "./_components/NextWorkoutList/page";
 import Statistics from "./_components/Statistics/page";
 import { useAppSelector } from "@/lib/hooks";
 import ReStartButton from "./_components/ReStartButton/page";
+import { withAuth } from "@/lib/auth";
 
 const Workout: React.FC = () => {
   const list = useAppSelector((state) => state.workout.list);
@@ -39,4 +40,5 @@ const Workout: React.FC = () => {
   );
 };
 
-export default Workout;
+// Wrap the Workout component with authentication protection
+export default withAuth(Workout);

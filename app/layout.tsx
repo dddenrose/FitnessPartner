@@ -9,6 +9,12 @@ import "./globals.css";
 import StoreProvider from "./StoreProvider";
 import { initializeApp } from "firebase/app";
 import { firebaseConfig } from "./firebase";
+import dynamic from "next/dynamic";
+
+// Import AuthProvider with dynamic to avoid SSR issues with Firebase
+const AuthProvider = dynamic(() => import("./components/AuthProvider"), {
+  ssr: false,
+});
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -40,10 +46,12 @@ export default function RootLayout({
           >
             <StoreProvider>
               <Flex vertical justify="flex-start">
-                <Navigation />
-                <AppRouterCacheProvider>
-                  <OutletWrapper>{children}</OutletWrapper>
-                </AppRouterCacheProvider>
+                <AuthProvider>
+                  <Navigation />
+                  <AppRouterCacheProvider>
+                    <OutletWrapper>{children}</OutletWrapper>
+                  </AppRouterCacheProvider>
+                </AuthProvider>
               </Flex>
             </StoreProvider>
           </ConfigProvider>
