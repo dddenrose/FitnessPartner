@@ -63,7 +63,14 @@ const LoginButton: React.FC = () => {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen">
-        <Spin size="large" tip="Please wait..." />
+        <Spin size="large">
+          <div
+            className="p-8 rounded-md flex flex-col items-center justify-center"
+            style={{ minHeight: "100px", minWidth: "200px" }}
+          >
+            <div className="text-center mt-4">Please wait...</div>
+          </div>
+        </Spin>
       </div>
     );
   }
@@ -122,7 +129,14 @@ const LoginButton: React.FC = () => {
 
       {loading && (
         <div className="absolute inset-0 flex justify-center items-center bg-black/20">
-          <Spin size="large" tip="Please wait..." />
+          <Spin size="large">
+            <div
+              className="bg-white p-4 rounded-md flex flex-col items-center justify-center"
+              style={{ minHeight: "80px", minWidth: "150px" }}
+            >
+              <div className="text-center mt-4">Please wait...</div>
+            </div>
+          </Spin>
         </div>
       )}
     </>
