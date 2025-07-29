@@ -25,7 +25,14 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   if (loading) {
     return (
       <div className="h-screen flex items-center justify-center">
-        <Spin size="large" tip="Loading..." />
+        <Spin size="large">
+          <div
+            className="p-12 rounded-md flex flex-col items-center justify-center"
+            style={{ minHeight: "120px", minWidth: "200px" }}
+          >
+            <div className="text-center mt-4">Loading...</div>
+          </div>
+        </Spin>
       </div>
     );
   }
