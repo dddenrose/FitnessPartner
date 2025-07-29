@@ -1,19 +1,37 @@
-import { firebaseConfig } from "@/app/firebase";
 import { createSlice } from "@reduxjs/toolkit";
-import { initializeApp } from "firebase/app";
 
-const app = initializeApp(firebaseConfig);
-
+// Firebase 狀態應該只包含可序列化的資料
+// 而不是 Firebase 應用實例本身
 export interface TFirebaseState {
-  app: typeof app;
+  isInitialized: boolean;
+  authLoaded: boolean;
+  error: string | null;
 }
 
 export const firebaseSlice = createSlice({
   name: "firebase",
   initialState: {
-    app,
+    isInitialized: false,
+    authLoaded: false,
+    error: null,
+  } as TFirebaseState,
+  reducers: {
+    setFirebaseInitialized: (state, action) => {
+      state.isInitialized = action.payload;
+    },
+    setAuthLoaded: (state, action) => {
+      state.authLoaded = action.payload;
+    },
+    setFirebaseError: (state, action) => {
+      state.error = action.payload;
+    },
   },
-  reducers: {},
 });
+
+export const { 
+  setFirebaseInitialized, 
+  setAuthLoaded,
+  setFirebaseError 
+} = firebaseSlice.actions;
 
 export default firebaseSlice.reducer;
