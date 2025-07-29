@@ -34,7 +34,7 @@ const Login: React.FC = () => {
           bordered={false}
         >
           <Title level={2} className="text-center mb-6">
-            Fitness Partner
+            Neo - Fitness Partner
           </Title>
           <LoginButton />
         </Card>
