@@ -1,12 +1,13 @@
 "use client";
-import React, { useState, useEffect } from "react";
-import { Button, Flex, Space, Tooltip } from "antd";
+import { useMediaQuery } from "@/lib/hooks/useMediaQuery";
+import React, { useState } from "react";
+import { Button, Flex, Space, Tooltip, Drawer, Menu } from "antd";
 import {
-  FieldNumberOutlined,
   HomeOutlined,
   CalendarOutlined,
   BarChartOutlined,
   ThunderboltOutlined,
+  MenuOutlined,
 } from "@ant-design/icons";
 import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
@@ -22,14 +23,18 @@ const navIcons = {
   "Workout Report": <BarChartOutlined />,
 };
 
-const Link = ({ title }: { title: keyof typeof routerMap }) => {
+// 共用 Hook，處理導覽邏輯
+const useNavigation = () => {
+  const pathname = usePathname();
   const router = useRouter();
-  const pathname = usePathname(); // 使用 Next.js 的 usePathname 獲取當前路徑
-  const targetPath = routerMap[title];
-  const icon = navIcons[title as keyof typeof navIcons];
+  const isNavigationShow = useAppSelector(
+    (state) => state.userInfo.user.isNavigationShow
+  );
+  const isMobile = useMediaQuery("(max-width: 768px)");
+  const [drawerVisible, setDrawerVisible] = useState(false);
 
-  // 透過直接比較 pathname 與 targetPath 來確定是否為活動狀態
-  const isActive = React.useMemo(() => {
+  // 檢查路由是否活動中
+  const isRouteActive = (targetPath: string) => {
     // 如果 pathname 還沒有準備好，則使用 window.location.pathname
     const currentPath = pathname || window.location.pathname;
 
@@ -49,52 +54,140 @@ const Link = ({ title }: { title: keyof typeof routerMap }) => {
     }
 
     return false;
-  }, [pathname, targetPath]);
+  };
+
+  const navigateTo = (path: string) => {
+    router.push(path);
+    setDrawerVisible(false);
+  };
+
+  return {
+    pathname,
+    isNavigationShow,
+    isMobile,
+    drawerVisible,
+    setDrawerVisible,
+    isRouteActive,
+    navigateTo,
+  };
+};
+
+// 桌面版導航組件
+const DesktopNavigation: React.FC = () => {
+  const { isRouteActive, navigateTo } = useNavigation();
+
+  // 桌面版導覽項目
+  const NavLink = ({ title }: { title: keyof typeof routerMap }) => {
+    const targetPath = routerMap[title];
+    const isActive = isRouteActive(targetPath);
+
+    return (
+      <Tooltip title={title}>
+        <Button
+          type="text"
+          style={{
+            color: isActive ? "#333333" : "#555555",
+            fontSize: 13,
+            letterSpacing: 0.8,
+            fontWeight: isActive ? 600 : 400,
+            position: "relative",
+            borderRadius: 0,
+            height: 44,
+            padding: "0 16px",
+            display: "flex",
+            alignItems: "center",
+            gap: 6,
+            overflow: "hidden",
+            background: isActive ? "rgba(240, 240, 240, 0.8)" : "transparent",
+            transition: "all 0.3s ease",
+          }}
+          onClick={() => navigateTo(targetPath)}
+        >
+          {title}
+        </Button>
+      </Tooltip>
+    );
+  };
 
   return (
-    <Tooltip title={title}>
-      <Button
-        type="text"
-        style={{
-          color: isActive ? "#1890ff" : "white",
-          fontSize: 13,
-          letterSpacing: 0.8,
-          fontWeight: isActive ? 500 : 400,
-          position: "relative",
-          borderRadius: 0,
-          height: 44,
-          padding: "0 16px",
-          display: "flex",
-          alignItems: "center",
-          gap: 6,
-          overflow: "hidden",
-        }}
-        onClick={() => router.push(targetPath)}
-      >
-        {icon}
-        {title}
-        {isActive && (
-          <div
-            style={{
-              position: "absolute",
-              bottom: 0,
-              left: 0,
-              width: "100%",
-              height: 2,
-              backgroundColor: "#1890ff",
-            }}
-          />
-        )}
-      </Button>
-    </Tooltip>
+    <>
+      <Flex align="center" gap={8}>
+        <NavLink title="Home" />
+        <NavLink title="Workout Plan" />
+        <NavLink title="Workout Report" />
+      </Flex>
+      <Space align="center">
+        <UserProfileMenu />
+      </Space>
+    </>
   );
 };
 
-const Navigation: React.FC = () => {
-  const pathname = usePathname(); // 用於監聽路徑變化，強制導航組件重新渲染
-  const isNavigationShow = useAppSelector(
-    (state) => state.userInfo.user.isNavigationShow
+// 移動版導航組件
+const MobileNavigation: React.FC = () => {
+  const { pathname, drawerVisible, setDrawerVisible, navigateTo } =
+    useNavigation();
+
+  return (
+    <Flex align="center" justify="space-between" style={{ width: "100%" }}>
+      <Button
+        type="text"
+        icon={<MenuOutlined />}
+        onClick={() => setDrawerVisible(true)}
+        style={{
+          fontSize: 16,
+          color: "#333333",
+          padding: "0 12px",
+          background: "transparent",
+          border: "none",
+        }}
+      />
+      <UserProfileMenu />
+
+      <Drawer
+        title="選單"
+        placement="left"
+        onClose={() => setDrawerVisible(false)}
+        open={drawerVisible}
+        width="100%"
+        height="100%"
+      >
+        <Menu
+          mode="vertical"
+          selectedKeys={[pathname || ""]}
+          style={{
+            border: "none",
+            fontSize: "16px",
+          }}
+          items={[
+            {
+              key: routerMap["Home"],
+              icon: <HomeOutlined style={{ fontSize: "18px" }} />,
+              label: "Home",
+              onClick: () => navigateTo(routerMap["Home"]),
+            },
+            {
+              key: routerMap["Workout Plan"],
+              icon: <CalendarOutlined style={{ fontSize: "18px" }} />,
+              label: "Workout Plan",
+              onClick: () => navigateTo(routerMap["Workout Plan"]),
+            },
+            {
+              key: routerMap["Workout Report"],
+              icon: <BarChartOutlined style={{ fontSize: "18px" }} />,
+              label: "Workout Report",
+              onClick: () => navigateTo(routerMap["Workout Report"]),
+            },
+          ]}
+        />
+      </Drawer>
+    </Flex>
   );
+};
+
+// 主導航組件
+const Navigation: React.FC = () => {
+  const { isNavigationShow, isMobile } = useNavigation();
 
   return (
     isNavigationShow && (
@@ -102,13 +195,14 @@ const Navigation: React.FC = () => {
         justify="center"
         style={{
           width: "100%",
-          backgroundColor: "#282828FF",
+          backgroundColor: "rgba(255, 255, 255, 0.3)",
+          backdropFilter: "blur(8px)",
           height: "44px",
-          boxShadow: "0 2px 8px rgba(0, 0, 0, 0.2)",
+          boxShadow: "0 2px 10px rgba(0, 0, 0, 0.05)",
           position: "fixed",
           top: 0,
           zIndex: 2,
-          borderBottom: "1px solid #202020FF",
+          borderBottom: "1px solid rgba(0, 0, 0, 0.06)",
         }}
       >
         <Flex
@@ -116,15 +210,7 @@ const Navigation: React.FC = () => {
           align="center"
           justify="space-between"
         >
-          <Flex align="center" gap={8}>
-            <Link title="Home" />
-            <Link title="Workout Plan" />
-            <Link title="Execrise" />
-            <Link title="Workout Report" />
-          </Flex>
-          <Space align="center">
-            <UserProfileMenu />
-          </Space>
+          {isMobile ? <MobileNavigation /> : <DesktopNavigation />}
         </Flex>
       </Flex>
     )

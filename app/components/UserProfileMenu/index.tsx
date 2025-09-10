@@ -32,7 +32,7 @@ const UserProfileMenu: React.FC = () => {
   if (!isAuthenticated || !user) {
     return (
       <Link href="/login">
-        <Button type="primary">Login</Button>
+        <Button type="text">Login</Button>
       </Link>
     );
   }
