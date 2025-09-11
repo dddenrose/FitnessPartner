@@ -36,7 +36,7 @@ const ImageBlock = () => {
           "text-white"
         )}
         onClick={() => {
-          router.push("createWorkoutPlan");
+          router.push("create-workout-plan");
         }}
       >
         Better Than

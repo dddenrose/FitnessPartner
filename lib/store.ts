@@ -1,17 +1,16 @@
 import { configureStore } from "@reduxjs/toolkit";
-import workoutReducer from "./features/workouts/workoutsSlice";
 import userInfoReducer from "./features/userInfo/userInfoSlice";
-import execriseReducer from "./features/execrise/execriseSlice";
 import audioReducer from "./features/audio/audioSlice";
 import FirebaseReducer from "./features/firebase/firebaseSlice";
 import workoutReportReducer from "./features/workoutReport/workoutReportSlice";
+import exerciseReducer from "./features/exercise/exerciseSlice";
 
 export const makeStore = () => {
   return configureStore({
     reducer: {
-      workout: workoutReducer,
+      // workout reducer 已被刪除
       userInfo: userInfoReducer,
-      execrise: execriseReducer,
+      exercise: exerciseReducer,
       audio: audioReducer,
       firebase: FirebaseReducer,
       workoutReport: workoutReportReducer,
@@ -22,7 +21,7 @@ export const makeStore = () => {
           // 忽略特定路徑下的非序列化值檢查
           ignoredActions: [
             "firebase/setApp",
-            "execise/setMode",
+            "exercise/setMode",
             "userInfo/setFirebaseUser",
           ],
           // 忽略特定的 action paths
