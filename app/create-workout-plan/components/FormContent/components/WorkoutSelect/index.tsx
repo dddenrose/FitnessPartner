@@ -3,6 +3,7 @@ import React from "react";
 import { workoutItems } from "../../const";
 import { DeleteOutlined, PlusOutlined, RedoOutlined } from "@ant-design/icons";
 import RestItem from "../TimeSelect";
+import { CreateWorkoutPlanForm } from "@/app/interface/CreateWorkoutPlan";
 
 const WorkoutSelect = () => {
   const form = Form.useFormInstance<CreateWorkoutPlanForm>();
