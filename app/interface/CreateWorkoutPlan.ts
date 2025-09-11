@@ -1,4 +1,4 @@
-interface CreateWorkoutPlanForm {
+export interface CreateWorkoutPlanForm {
   items: [
     {
       name: string;

@@ -4,7 +4,7 @@ interface WorkoutItem {
   // 運動名稱
   title: string;
   // 剩餘運動的時間
-  execriseTimes: number;
+  exerciseTimes: number;
   // 剩餘的組數
   set: number;
   // 剩餘的休息時間

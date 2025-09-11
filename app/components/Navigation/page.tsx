@@ -19,7 +19,7 @@ import UserProfileMenu from "../UserProfileMenu";
 const navIcons = {
   Home: <HomeOutlined />,
   "Workout Plan": <CalendarOutlined />,
-  Execrise: <ThunderboltOutlined />,
+  Exercise: <ThunderboltOutlined />,
   "Workout Report": <BarChartOutlined />,
 };
 
