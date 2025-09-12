@@ -2,8 +2,8 @@
 import React from "react";
 import { Button, Row, Spin, Empty } from "antd";
 import { WorkoutReport } from "@/app/interface/WorkoutReport";
-import { formatTimeKey } from "../utils";
-import ReportCard from "./ReportCard";
+import { formatTimeKey } from "../../utils";
+import ReportCard from "../ReportCard";
 import { AppDispatch } from "@/lib/store";
 import { generateWorkoutReport } from "@/lib/features/workoutReport/workoutReportSlice";
 

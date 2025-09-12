@@ -1,4 +1,4 @@
-import BorderImage from "@/app/components/BorderImage/BorderImage";
+import BorderImage from "@/app/components/BorderImage";
 import classNames from "classnames";
 import React from "react";
 import image1 from "@/app/static/108.jpg";
