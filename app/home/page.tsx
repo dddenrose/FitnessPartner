@@ -1,9 +1,7 @@
 import classNames from "classnames";
-import Footer from "./components/Footer/Footer";
 import ImageBlock from "./components/ImageBlock";
-import Introduction from "./components/Introduction/page";
-import OurStory from "./components/OurStory/page";
-import ThreeImage from "./components/ThreeImage/page";
+import Introduction from "./components/Introduction";
+import ThreeImage from "./components/ThreeImage";
 
 const Home = () => {
   return (

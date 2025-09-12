@@ -1,8 +1,8 @@
 "use client";
 import React from "react";
 import { Card, Row } from "antd";
-import DateRangePicker from "./DateRangePicker";
-import TimeRangeTabs from "./TimeRangeTabs";
+import DateRangePicker from "../DateRangePicker";
+import TimeRangeTabs from "../TimeRangeTabs";
 
 interface FilterPanelProps {
   dateRange: {

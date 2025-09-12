@@ -3,7 +3,7 @@ import { AppRouterCacheProvider } from "@mui/material-nextjs/v13-appRouter";
 import { ConfigProvider, Flex } from "antd";
 import type { Metadata } from "next";
 import { Bricolage_Grotesque, Inter } from "next/font/google";
-import Navigation from "./components/Navigation/page";
+import Navigation from "./components/Navigation";
 import OutletWrapper from "./components/OutletWrapper";
 import "./globals.css";
 import StoreProvider from "./StoreProvider";
