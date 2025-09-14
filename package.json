@@ -30,6 +30,7 @@
     "react-dom": "^18",
     "react-redux": "^9.1.2",
     "three": "^0.172.0",
+    "use-sound": "^5.0.0",
     "zod": "^3.23.8"
   },
   "devDependencies": {

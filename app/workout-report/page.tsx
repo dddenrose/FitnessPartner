@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { Typography } from "antd";
-import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks/index";
 import {
   generateWorkoutReport,
   setSelectedTimeRange,

@@ -30,73 +30,76 @@ export const useAuth = () => {
   const user = useSelector(selectFirebaseUser);
   const isAuthenticated = useSelector(selectIsAuthenticated);
 
-  // Sign in with Google using popup
+  const handleAuthStateChange = (user: User | null) => {
+    dispatch(setFirebaseUser(user ? user : null));
+  };
+
   const signInWithGoogle = async () => {
     try {
       setLoading(true);
-      const result = await signInWithPopup(auth, googleProvider);
-      return result.user;
+      await signInWithPopup(auth, googleProvider);
     } catch (error) {
-      console.error("Sign in error:", error);
-      throw error;
+      console.error("Error signing in with Google:", error);
     } finally {
       setLoading(false);
     }
   };
 
-  // Sign in with Google using redirect (better for mobile)
-  const signInWithGoogleRedirect = () => {
-    setLoading(true);
-    return signInWithRedirect(auth, googleProvider);
+  const signInWithGoogleRedirect = async () => {
+    try {
+      await signInWithRedirect(auth, googleProvider);
+    } catch (error) {
+      console.error("Error signing in with Google redirect:", error);
+    }
   };
 
-  // Register with email and password
-  const registerWithEmailAndPassword = async (
+  const signUp = async (
     email: string,
     password: string,
-    displayName?: string
+    displayName: string
   ) => {
     try {
       setLoading(true);
-      const userCredential = await createUserWithEmailAndPassword(
+
+      // 創建用戶
+      const credential = await createUserWithEmailAndPassword(
         auth,
         email,
         password
       );
 
-      // Update profile if displayName is provided
-      if (displayName) {
-        await updateProfile(userCredential.user, { displayName });
+      // 設置顯示名稱
+      if (credential.user) {
+        await updateProfile(credential.user, { displayName });
+        handleAuthStateChange(credential.user);
       }
 
-      return userCredential.user;
+      return credential.user;
     } catch (error) {
-      console.error("Registration error:", error);
+      console.error("Error signing up:", error);
       throw error;
     } finally {
       setLoading(false);
     }
   };
 
-  // Login with email and password
-  const loginWithEmailAndPassword = async (email: string, password: string) => {
+  const signIn = async (email: string, password: string) => {
     try {
       setLoading(true);
-      const userCredential = await signInWithEmailAndPassword(
+      const credential = await signInWithEmailAndPassword(
         auth,
         email,
         password
       );
-      return userCredential.user;
+      return credential.user;
     } catch (error) {
-      console.error("Login error:", error);
+      console.error("Error signing in:", error);
       throw error;
     } finally {
       setLoading(false);
     }
   };
 
-  // Sign out
   const logoutUser = async () => {
     try {
       setLoading(true);
@@ -104,12 +107,16 @@ export const useAuth = () => {
       dispatch(logout());
       router.push("/login");
     } catch (error) {
-      console.error("Sign out error:", error);
-      throw error;
+      console.error("Error signing out:", error);
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged(handleAuthStateChange);
+    return () => unsubscribe();
+  }, []);
 
   return {
     user,
@@ -117,8 +124,8 @@ export const useAuth = () => {
     loading,
     signInWithGoogle,
     signInWithGoogleRedirect,
-    loginWithEmailAndPassword,
-    registerWithEmailAndPassword,
-    logout: logoutUser,
+    signUp,
+    signIn,
+    logoutUser,
   };
 };

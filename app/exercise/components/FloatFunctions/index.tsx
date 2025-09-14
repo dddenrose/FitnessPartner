@@ -8,7 +8,7 @@ import { FloatButton, Modal } from "antd";
 import { setIsGlobalPlaying, stopAudio } from "@/lib/features/audio/audioSlice";
 import React from "react";
 import { useDispatch } from "react-redux";
-import { useAppSelector } from "@/lib/hooks";
+import { useAppSelector } from "@/lib/hooks/index";
 import { setTime, setPause } from "@/lib/features/exercise/exerciseSlice";
 import { useRouter } from "next/navigation";
 

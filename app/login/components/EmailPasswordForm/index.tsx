@@ -11,7 +11,7 @@ import {
   Alert,
 } from "antd";
 import { LockOutlined, MailOutlined, UserOutlined } from "@ant-design/icons";
-import { useAuth } from "@/lib/hooks";
+import { useAuth } from "@/lib/hooks/index";
 
 const { TabPane } = Tabs;
 const { Title, Text } = Typography;

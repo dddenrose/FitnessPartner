@@ -1,5 +1,5 @@
 "use client";
-import { useMediaQuery } from "@/lib/hooks/useMediaQuery";
+import { useMediaQuery } from "@/lib/hooks/index";
 import React, { useState } from "react";
 import { Button, Flex, Space, Tooltip, Drawer, Menu } from "antd";
 import {
@@ -12,7 +12,7 @@ import {
 import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
 import { routerMap } from "./const";
-import { useAppSelector } from "@/lib/hooks";
+import { useAppSelector } from "@/lib/hooks/index";
 import UserProfileMenu from "../UserProfileMenu";
 
 // 定義導航項的圖標
@@ -187,33 +187,31 @@ const MobileNavigation: React.FC = () => {
 
 // 主導航組件
 const Navigation: React.FC = () => {
-  const { isNavigationShow, isMobile } = useNavigation();
+  const { isMobile } = useNavigation();
 
   return (
-    isNavigationShow && (
+    <Flex
+      justify="center"
+      style={{
+        width: "100%",
+        backgroundColor: "rgba(255, 255, 255, 0.3)",
+        backdropFilter: "blur(8px)",
+        height: "44px",
+        boxShadow: "0 2px 10px rgba(0, 0, 0, 0.05)",
+        position: "fixed",
+        top: 0,
+        zIndex: 2,
+        borderBottom: "1px solid rgba(0, 0, 0, 0.06)",
+      }}
+    >
       <Flex
-        justify="center"
-        style={{
-          width: "100%",
-          backgroundColor: "rgba(255, 255, 255, 0.3)",
-          backdropFilter: "blur(8px)",
-          height: "44px",
-          boxShadow: "0 2px 10px rgba(0, 0, 0, 0.05)",
-          position: "fixed",
-          top: 0,
-          zIndex: 2,
-          borderBottom: "1px solid rgba(0, 0, 0, 0.06)",
-        }}
+        style={{ width: "80%", maxWidth: "1200px" }}
+        align="center"
+        justify="space-between"
       >
-        <Flex
-          style={{ width: "80%", maxWidth: "1200px" }}
-          align="center"
-          justify="space-between"
-        >
-          {isMobile ? <MobileNavigation /> : <DesktopNavigation />}
-        </Flex>
+        {isMobile ? <MobileNavigation /> : <DesktopNavigation />}
       </Flex>
-    )
+    </Flex>
   );
 };
 

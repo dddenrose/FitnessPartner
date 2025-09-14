@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { setMode, setTime } from "@/lib/features/exercise/exerciseSlice";
 import { playAudio } from "@/lib/features/audio/audioSlice";
-import { useAppDispatch } from "@/lib/hooks";
+import { useAppDispatch } from "@/lib/hooks/index";
 import { CreateWorkoutPlanForm } from "@/app/interface/CreateWorkoutPlan";
 
 const FormAction = ({ children }: { children: React.ReactNode }) => {

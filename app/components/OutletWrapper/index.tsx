@@ -1,5 +1,5 @@
 "use client";
-import { useAppSelector } from "@/lib/hooks";
+import { useAppSelector } from "@/lib/hooks/index";
 import React from "react";
 
 const OutletWrapper: React.FC<{

@@ -3,7 +3,7 @@ import { SmileFilled, LoadingOutlined } from "@ant-design/icons";
 import { Button, Flex, Typography, message } from "antd";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState, useCallback } from "react";
-import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks/index";
 import { addWorkoutSession } from "@/lib/features/workoutReport/workoutReportSlice";
 import { auth } from "@/app/firebase";
 
