@@ -1,7 +1,18 @@
+"use client";
 import {
+  setWorkoutPlan,
+  setStatus,
+  skipCurrentExercise,
+  resetWorkout,
+  // 向下兼容
   setTime,
   setMode,
   setPause,
+  selectInitialWorkoutPlan,
+  selectStatus,
+  selectIsPaused,
+  selectCurrentExercise,
+  selectRemainingExercises,
 } from "@/lib/features/exercise/exerciseSlice";
 import { RootState } from "@/lib/store";
 import {
@@ -10,23 +21,30 @@ import {
   RightOutlined,
   RollbackOutlined,
 } from "@ant-design/icons";
-import { App, Button, Modal } from "antd";
+import { Button, Modal } from "antd";
 
 import { useRouter } from "next/navigation";
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks/redux/useRedux";
 
 const StartButton: React.FC = () => {
-  const dispatch = useDispatch();
-  const initialTime = useSelector(
-    (state: RootState) => state.exercise.initialTime
-  );
+  const dispatch = useAppDispatch();
+  const initialWorkoutPlan = useAppSelector(selectInitialWorkoutPlan);
+  // 向下兼容
+  const initialTime = useAppSelector((state) => state.exercise.initialTime);
 
   return (
     <Button
       onClick={() => {
-        dispatch(setTime(initialTime));
-        dispatch(setMode("exercise"));
+        // 優先使用新的 API
+        if (initialWorkoutPlan.length > 0) {
+          dispatch(setWorkoutPlan(initialWorkoutPlan));
+          dispatch(setStatus("active"));
+        } else {
+          // 向下兼容
+          dispatch(setTime(initialTime));
+          dispatch(setMode("exercise"));
+        }
       }}
     >
       Go to exercise
@@ -35,11 +53,11 @@ const StartButton: React.FC = () => {
 };
 
 const BackButton: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const router = useRouter();
-  const initialTime = useSelector(
-    (state: RootState) => state.exercise.initialTime
-  );
+  const initialWorkoutPlan = useAppSelector(selectInitialWorkoutPlan);
+  // 向下兼容
+  const initialTime = useAppSelector((state) => state.exercise.initialTime);
   const [modalApi, context] = Modal.useModal();
 
   return (
@@ -48,11 +66,19 @@ const BackButton: React.FC = () => {
       <Button
         onClick={() => {
           modalApi.confirm({
-            title: "Are you sure you want to go back?",
-            content: "All your progress will be lost",
+            title: "確定要返回嗎？",
+            content: "所有進度將會丟失",
+            okText: "確定",
+            cancelText: "取消",
             onOk: () => {
-              dispatch(setTime(initialTime));
-              dispatch(setPause(false));
+              // 優先使用新的 API
+              if (initialWorkoutPlan.length > 0) {
+                dispatch(resetWorkout());
+              } else {
+                // 向下兼容
+                dispatch(setTime(initialTime));
+                dispatch(setPause(false));
+              }
               router.push("/create-workout-plan");
             },
           });
@@ -62,21 +88,34 @@ const BackButton: React.FC = () => {
         danger
       >
         <RollbackOutlined />
-        Back
+        返回
       </Button>
     </>
   );
 };
 
 const SkipButton: React.FC = () => {
-  const dispatch = useDispatch();
-  const time = useSelector((state: RootState) => state.exercise.times);
+  const dispatch = useAppDispatch();
+  const currentExercise = useAppSelector(selectCurrentExercise);
+  const remainingExercises = useAppSelector(selectRemainingExercises);
+  // 向下兼容
+  const time = useAppSelector((state) => state.exercise.times);
 
   return (
     <Button
       onClick={() => {
-        if (time.length < 2) return;
-        dispatch(setTime(time.slice(1)));
+        // 優先使用新的 API
+        if (
+          currentExercise &&
+          (remainingExercises.length > 0 ||
+            currentExercise.time > 0 ||
+            currentExercise.rest > 0)
+        ) {
+          dispatch(skipCurrentExercise());
+        } else if (time.length > 1) {
+          // 向下兼容
+          dispatch(setTime(time.slice(1)));
+        }
       }}
       style={{ width: 100 }}
       type="default"
@@ -87,18 +126,27 @@ const SkipButton: React.FC = () => {
 };
 
 const PauseButton: React.FC = () => {
-  const dispatch = useDispatch();
-  const pause = useSelector((state: RootState) => state.exercise.pause);
+  const dispatch = useAppDispatch();
+  const status = useAppSelector(selectStatus);
+  const isPaused = useAppSelector(selectIsPaused);
+  // 向下兼容
+  const pause = useAppSelector((state) => state.exercise.pause);
 
   return (
     <Button
       onClick={() => {
-        dispatch(setPause(!pause));
+        // 優先使用新的 API
+        if (status === "active" || status === "paused") {
+          dispatch(setStatus(status === "active" ? "paused" : "active"));
+        } else {
+          // 向下兼容
+          dispatch(setPause(!pause));
+        }
       }}
       style={{ width: 100 }}
       type="default"
     >
-      {pause ? <RightOutlined /> : <PauseOutlined />}
+      {isPaused || pause ? <RightOutlined /> : <PauseOutlined />}
     </Button>
   );
 };

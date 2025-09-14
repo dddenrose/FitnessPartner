@@ -1,18 +1,29 @@
+"use client";
 import React from "react";
 import {
   DoubleRightOutlined,
   MutedOutlined,
   PauseOutlined,
-  QuestionCircleOutlined,
   RightOutlined,
   RollbackOutlined,
   SoundOutlined,
 } from "@ant-design/icons";
 import { Button, Flex, Modal } from "antd";
 import { setIsGlobalPlaying } from "@/lib/features/audio/audioSlice";
-import { useDispatch } from "react-redux";
-import { useAppSelector } from "@/lib/hooks/index";
-import { setTime, setPause } from "@/lib/features/exercise/exerciseSlice";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks/redux/useRedux";
+import {
+  // 新 API
+  setStatus,
+  skipCurrentExercise,
+  resetWorkout,
+  selectStatus,
+  selectCurrentExercise,
+  selectRemainingExercises,
+  selectInitialWorkoutPlan,
+  // 向下兼容
+  setTime,
+  setPause,
+} from "@/lib/features/exercise/exerciseSlice";
 import { useRouter } from "next/navigation";
 import { useMediaQuery } from "@/lib/hooks/index";
 
@@ -20,14 +31,22 @@ import { useMediaQuery } from "@/lib/hooks/index";
  * 統一的控制面板組件，整合所有控制按鈕
  */
 const ControlPanel: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const router = useRouter();
   const [modalApi, context] = Modal.useModal();
 
-  // 狀態獲取
+  // 新的狀態選擇器
+  const status = useAppSelector(selectStatus);
+  const currentExercise = useAppSelector(selectCurrentExercise);
+  const remainingExercises = useAppSelector(selectRemainingExercises);
+  const initialWorkoutPlan = useAppSelector(selectInitialWorkoutPlan);
+
+  // 向下兼容的狀態
   const pause = useAppSelector((state) => state.exercise.pause);
   const time = useAppSelector((state) => state.exercise.times);
   const initialTime = useAppSelector((state) => state.exercise.initialTime);
+
+  // 其他狀態
   const isGlobalPlaying = useAppSelector(
     (state) => state.audio.isGlobalPlaying
   );
@@ -37,12 +56,28 @@ const ControlPanel: React.FC = () => {
 
   // 按鈕處理函數
   const handlePause = () => {
-    dispatch(setPause(!pause));
+    // 優先使用新 API
+    if (status === "active" || status === "paused") {
+      dispatch(setStatus(status === "active" ? "paused" : "active"));
+    } else {
+      // 向下兼容
+      dispatch(setPause(!pause));
+    }
   };
 
   const handleSkip = () => {
-    if (time.length < 2) return;
-    dispatch(setTime(time.slice(1)));
+    // 優先使用新 API
+    if (
+      currentExercise &&
+      (remainingExercises.length > 0 ||
+        currentExercise.time > 0 ||
+        currentExercise.rest > 0)
+    ) {
+      dispatch(skipCurrentExercise());
+    } else if (time.length > 1) {
+      // 向下兼容
+      dispatch(setTime(time.slice(1)));
+    }
   };
 
   const handleAudio = () => {
@@ -53,9 +88,17 @@ const ControlPanel: React.FC = () => {
     modalApi.confirm({
       title: "確定要返回嗎？",
       content: "所有進度將會遺失",
+      okText: "確定",
+      cancelText: "取消",
       onOk: () => {
-        dispatch(setTime(initialTime));
-        dispatch(setPause(false));
+        // 優先使用新 API
+        if (initialWorkoutPlan.length > 0) {
+          dispatch(resetWorkout());
+        } else {
+          // 向下兼容
+          dispatch(setTime(initialTime));
+          dispatch(setPause(false));
+        }
         router.push("/create-workout-plan");
       },
     });

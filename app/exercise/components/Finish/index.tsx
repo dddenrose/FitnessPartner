@@ -13,21 +13,43 @@ const Finish: React.FC = () => {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
 
-  // Get exercise data from Redux
+  // 從 Redux 獲取運動數據
+  const initialWorkoutPlan = useAppSelector(
+    (state) => state.exercise.initialWorkoutPlan
+  );
+  const completedExercises = useAppSelector(
+    (state) => state.exercise.completedExercises
+  );
+  const sessionInfo = useAppSelector((state) => state.exercise.sessionInfo);
+
+  // 向下兼容
   const initialTime = useAppSelector((state) => state.exercise.initialTime);
   const time = useAppSelector((state) => state.exercise.times);
 
   // Calculate the total duration of the workout (in minutes)
   const calculateTotalDuration = () => {
-    // Calculate total minutes from seconds
-    let totalSeconds = 0;
+    // 優先使用新數據結構中的會話時間
+    if (sessionInfo.totalDuration > 0) {
+      return Math.round(sessionInfo.totalDuration / 60);
+    }
 
-    // Calculate from initial state (since the time state might be depleted)
+    // 從完成的運動項目計算總時間
+    if (initialWorkoutPlan.length > 0) {
+      let totalSeconds = 0;
+
+      initialWorkoutPlan.forEach((item) => {
+        totalSeconds += item.time + item.rest;
+      });
+
+      return Math.round(totalSeconds / 60);
+    }
+
+    // 向下兼容的計算方式
+    let totalSeconds = 0;
     initialTime.forEach((item) => {
       totalSeconds += item.time + item.rest;
     });
 
-    // Convert seconds to minutes and round to nearest integer
     return Math.round(totalSeconds / 60);
   };
 
@@ -53,8 +75,20 @@ const Finish: React.FC = () => {
       const workoutData = {
         date: today,
         duration: calculateTotalDuration(),
-        workoutType: "exercise", // Default type, can be customized later
-        notes: `Completed ${initialTime.length} exercise sets`,
+        workoutType:
+          initialWorkoutPlan.length > 0
+            ? "standard" // 使用新數據結構中的運動類型
+            : "exercise", // 向下兼容的運動類型
+        completedExercises:
+          completedExercises.length > 0
+            ? completedExercises.length // 使用新數據中已完成的運動數量
+            : initialTime.length, // 向下兼容的運動數量
+        notes:
+          initialWorkoutPlan.length > 0
+            ? `完成 ${
+                completedExercises.length
+              } 組運動，總時長 ${calculateTotalDuration()} 分鐘`
+            : `完成 ${initialTime.length} 組運動`,
       };
 
       console.log("正在保存運動數據:", workoutData);

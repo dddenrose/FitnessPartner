@@ -1,10 +1,16 @@
 "use client";
 import { useRef, useEffect } from "react";
 import { Provider } from "react-redux";
-import { makeStore, AppStore } from "../lib/store";
+import { makeStore, AppStore, makePersistedStore } from "../lib/store";
 import { auth } from "./firebase";
 import { onAuthStateChanged } from "firebase/auth";
-import { setFirebaseInitialized, setAuthLoaded } from "@/lib/features/firebase/firebaseSlice";
+import {
+  setFirebaseInitialized,
+  setAuthLoaded,
+} from "@/lib/features/firebase/firebaseSlice";
+import { PersistGate } from "redux-persist/integration/react";
+import { Persistor } from "redux-persist";
+import { Spin } from "antd";
 
 export default function StoreProvider({
   children,
@@ -12,10 +18,13 @@ export default function StoreProvider({
   children: React.ReactNode;
 }) {
   const storeRef = useRef<AppStore>();
+  const persistorRef = useRef<Persistor>();
 
   if (!storeRef.current) {
-    // Create the store instance the first time this renders
-    storeRef.current = makeStore();
+    // 創建持久化的 store 實例
+    const { store, persistor } = makePersistedStore();
+    storeRef.current = store;
+    persistorRef.current = persistor;
   }
 
   // Initialize Firebase state after store is created
@@ -24,15 +33,35 @@ export default function StoreProvider({
     if (store) {
       // 標記 Firebase 初始化
       store.dispatch(setFirebaseInitialized(true));
-      
+
       // 設置 Auth 監聽器
       const unsubscribe = onAuthStateChanged(auth, () => {
         store.dispatch(setAuthLoaded(true));
       });
-      
+
       return () => unsubscribe();
     }
   }, []);
 
-  return <Provider store={storeRef.current}>{children}</Provider>;
+  return (
+    <Provider store={storeRef.current}>
+      <PersistGate
+        loading={
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              height: "100vh",
+            }}
+          >
+            <Spin size="large" tip="載入中..." />
+          </div>
+        }
+        persistor={persistorRef.current!}
+      >
+        {children}
+      </PersistGate>
+    </Provider>
+  );
 }
