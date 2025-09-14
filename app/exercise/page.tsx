@@ -1,17 +1,17 @@
 "use client";
-import { RootState } from "@/lib/store";
-import React from "react";
-import { useDispatch, useSelector } from "react-redux";
-import TimerBg from "./components/TimerBg";
-import TimerLogic from "./components/TimerLogic";
-import Timer from "./components/Timer";
-import Exercise from "./components/Exercise";
-import { Flex } from "antd";
 import { setNavigationShow } from "@/lib/features/userInfo/userInfoSlice";
-import Finish from "./components/Finish";
-import { useAppDispatch, useAppSelector } from "@/lib/hooks/index";
+import {
+  useAppDispatch,
+  useAppSelector,
+  useCountdownSound,
+} from "@/lib/hooks/index";
+import { Flex } from "antd";
+import React from "react";
 import ControlPanel from "./components/ControlPanel";
-import { useCountdownSound } from "@/lib/hooks/index";
+import Exercise from "./components/Exercise";
+import Finish from "./components/Finish";
+import ReactSpringBg from "./components/ReactSpringBg";
+import TimerLogic from "./components/TimerLogic";
 
 const App: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -37,7 +37,12 @@ const App: React.FC = () => {
       vertical
       justify="center"
       align="center"
-      style={{ minHeight: "100vh", maxHeight: "100vh", overflow: "hidden" }}
+      style={{
+        minHeight: "100vh",
+        maxHeight: "100vh",
+        overflow: "hidden",
+        position: "relative",
+      }}
       gap={24}
     >
       <TimerLogic />
@@ -51,7 +56,7 @@ const App: React.FC = () => {
 
       {mode === "finished" && <Finish />}
 
-      <TimerBg />
+      <ReactSpringBg />
     </Flex>
   );
 };
