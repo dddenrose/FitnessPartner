@@ -29,7 +29,7 @@ const EmailPasswordForm: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [form] = Form.useForm();
 
-  const { loginWithEmailAndPassword, registerWithEmailAndPassword } = useAuth();
+  const { signIn, signUp } = useAuth();
 
   const handleLogin = async (values: FormValues) => {
     try {
@@ -37,7 +37,7 @@ const EmailPasswordForm: React.FC = () => {
       setError(null);
 
       const { email, password } = values;
-      await loginWithEmailAndPassword(email, password);
+      await signIn(email, password);
       message.success("Login successful!");
     } catch (error: any) {
       console.error("Login error:", error);
@@ -63,10 +63,10 @@ const EmailPasswordForm: React.FC = () => {
       setLoading(true);
       setError(null);
 
-      const { email, password, displayName } = values;
+      const { email, password, displayName = "" } = values;
 
       // Register the user with email, password and displayName
-      await registerWithEmailAndPassword(email, password, displayName);
+      await signUp(email, password, displayName);
 
       message.success("Registration successful!");
       setActiveTab("login");
