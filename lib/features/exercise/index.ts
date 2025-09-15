@@ -1,8 +1,84 @@
-import reducer, { exerciseSlice } from "./reducers";
-import * as exerciseActions from "./actions";
-import * as exerciseSelectors from "./selectors";
-import * as exerciseTypes from "./types";
+import reducer, {
+  // Actions
+  setWorkoutType,
+  setBpm,
+  toggleMetronome,
+  setStatus,
+  setWorkoutPlan,
+  updateCurrentExerciseTime,
+  updateCurrentRestTime,
+  moveToNextExercise,
+  skipCurrentExercise,
+  resetWorkout,
+  setError,
+  clearError,
 
-export { exerciseActions, exerciseSelectors, exerciseTypes, exerciseSlice };
+  // Selectors
+  selectStatus,
+  selectWorkoutType,
+  selectBpm,
+  selectMetronomeActive,
+  selectCurrentExercise,
+  selectRemainingExercises,
+  selectCompletedExercises,
+  selectInitialWorkoutPlan,
+  selectSessionInfo,
+  selectError,
+  selectTotalExercises,
+  selectCompletionPercentage,
+  selectIsActive,
+  selectIsPaused,
+  selectIsFinished,
 
+  // Types
+  WorkoutModeType,
+  WorkoutItem,
+  ExerciseState,
+
+  // Slice
+  exerciseSlice,
+} from "./exerciseSlice";
+
+// Export actions
+export {
+  setWorkoutType,
+  setBpm,
+  toggleMetronome,
+  setStatus,
+  setWorkoutPlan,
+  updateCurrentExerciseTime,
+  updateCurrentRestTime,
+  moveToNextExercise,
+  skipCurrentExercise,
+  resetWorkout,
+  setError,
+  clearError,
+};
+
+// Export selectors
+export {
+  selectStatus,
+  selectWorkoutType,
+  selectBpm,
+  selectMetronomeActive,
+  selectCurrentExercise,
+  selectRemainingExercises,
+  selectCompletedExercises,
+  selectInitialWorkoutPlan,
+  selectSessionInfo,
+  selectError,
+  selectTotalExercises,
+  selectCompletionPercentage,
+  selectIsActive,
+  selectIsPaused,
+  selectIsFinished,
+};
+
+// Export types
+export { WorkoutModeType, WorkoutItem, ExerciseState };
+
+// Export slice
+export { exerciseSlice };
+
+// Export reducer as default
 export default reducer;

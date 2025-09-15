@@ -7,7 +7,6 @@ import {
   WorkoutModeType,
   setWorkoutType,
   setBpm,
-  setMode,
 } from "@/lib/features/exercise/exerciseSlice";
 import { ThunderboltOutlined, RocketOutlined } from "@ant-design/icons";
 import {
@@ -25,6 +24,7 @@ import {
 import type { TabsProps } from "antd";
 import PlanForm from "../PlanForm";
 import { useRouter } from "next/navigation";
+import { setStatus } from "@/lib/features/exercise/exerciseSlice";
 
 const { Title, Text } = Typography;
 
@@ -37,7 +37,7 @@ const SimpleModeSelector: React.FC = () => {
   const router = useRouter();
 
   const handleSlowRunStart = () => {
-    dispatch(setMode("exercise"));
+    dispatch(setStatus("active"));
     router.push("/exercise");
   };
   const [bpm, setBpmState] = useState<number>(currentBpm);
