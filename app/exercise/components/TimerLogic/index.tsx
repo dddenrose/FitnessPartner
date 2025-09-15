@@ -1,16 +1,14 @@
 "use client";
 import {
+  moveToNextExercise,
+  selectCurrentExercise,
+  selectRemainingExercises,
+  selectStatus,
   updateCurrentExerciseTime,
   updateCurrentRestTime,
-  moveToNextExercise,
-  setStatus,
-  selectCurrentExercise,
-  selectStatus,
-  selectRemainingExercises,
 } from "@/lib/features/exercise/exerciseSlice";
-import { RootState } from "@/lib/store";
-import React, { useState, useEffect, useCallback, useRef } from "react";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/index";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 
 const TimerLogic = ({ children }: { children?: React.ReactNode }) => {
   const dispatch = useAppDispatch();
@@ -27,10 +25,6 @@ const TimerLogic = ({ children }: { children?: React.ReactNode }) => {
   // 用於計時的 refs，避免閉包問題
   const isRunningRef = useRef<boolean>(false);
   const isRestModeRef = useRef<boolean>(false);
-
-  // 向後兼容的選擇器
-  const time = useAppSelector((state: RootState) => state.exercise.times);
-  const pause = useAppSelector((state: RootState) => state.exercise.pause);
 
   // 當 currentExercise 改變時同步本地狀態
   useEffect(() => {
@@ -86,26 +80,13 @@ const TimerLogic = ({ children }: { children?: React.ReactNode }) => {
         return newRest;
       });
     }
-  }, [dispatch, currentExercise]);
+  }, [currentExercise, localTime, localRest, dispatch]);
 
   // 設置計時器
   useEffect(() => {
     const timer = setInterval(handleTimerTick, 1000);
     return () => clearInterval(timer);
   }, [handleTimerTick]);
-
-  // 向後兼容的模式，使用舊的時間結構
-  useEffect(() => {
-    const t = setInterval(() => {
-      if (pause || !time.length) return;
-
-      // 這裡保留舊的邏輯，但在實際渲染時使用的是上面優化的邏輯
-      // 這段代碼主要是為了保持與舊版本的兼容性
-    }, 1000);
-
-    // 這個計時器不會實際運行，僅為了保持接口兼容
-    return () => clearInterval(t);
-  }, [pause, time, dispatch]);
 
   return children;
 };
