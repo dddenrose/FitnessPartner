@@ -21,12 +21,8 @@ const TimerLogic = ({ children }: { children?: React.ReactNode }) => {
   const status = useAppSelector(selectStatus);
 
   // 本地狀態用於優化渲染頻率
-  const [localTime, setLocalTime] = useState<number>(
-    currentExercise?.time || 0
-  );
-  const [localRest, setLocalRest] = useState<number>(
-    currentExercise?.rest || 0
-  );
+  const [localTime, setLocalTime] = useState<number>(0);
+  const [localRest, setLocalRest] = useState<number>(0);
 
   // 用於計時的 refs，避免閉包問題
   const isRunningRef = useRef<boolean>(false);
@@ -42,7 +38,7 @@ const TimerLogic = ({ children }: { children?: React.ReactNode }) => {
       setLocalTime(currentExercise.time);
       setLocalRest(currentExercise.rest);
     }
-  }, [currentExercise?.id]); // 只在 ID 變化時更新
+  }, [currentExercise]); // 在 currentExercise 變化時更新
 
   // 根據 status 更新運行狀態
   useEffect(() => {
@@ -90,7 +86,7 @@ const TimerLogic = ({ children }: { children?: React.ReactNode }) => {
         return newRest;
       });
     }
-  }, [dispatch, currentExercise, localTime, localRest]);
+  }, [dispatch, currentExercise]);
 
   // 設置計時器
   useEffect(() => {
