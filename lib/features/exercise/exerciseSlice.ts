@@ -14,7 +14,6 @@ export interface WorkoutItem {
   time: number; // 運動時間 (秒)
   rest: number; // 休息時間 (秒)
   sets?: number; // 組數（適用於某些模式）
-  intensity?: number; // 強度等級 (1-10)
 }
 
 export interface ExerciseState {
@@ -48,29 +47,11 @@ export interface ExerciseState {
     lastActive: string | null; // 上次活動時間
   };
 
-  // UI 控制
-  navigationShow: boolean;
-
   // 錯誤訊息
   error: string | null;
-
-  // 向下兼容的字段
-  mode: "prepare" | "exercise" | "rest" | "finished";
-  times: {
-    name: string;
-    time: number;
-    rest: number;
-  }[];
-  pause: boolean;
-  initialTime: {
-    name: string;
-    time: number;
-    rest: number;
-  }[];
 }
 
 const initialState: ExerciseState = {
-  // 新結構
   status: "idle",
   workoutType: "standard",
   bpm: 180,
@@ -85,14 +66,7 @@ const initialState: ExerciseState = {
     pausedTime: 0,
     lastActive: null,
   },
-  navigationShow: true,
   error: null,
-
-  // 向下兼容的字段
-  mode: "prepare",
-  times: [],
-  pause: false,
-  initialTime: [],
 };
 
 export const exerciseSlice = createSlice({
@@ -140,16 +114,6 @@ export const exerciseSlice = createSlice({
 
       state.sessionInfo.lastActive = now;
       state.status = action.payload;
-
-      // 向下兼容
-      if (action.payload === "active") {
-        state.mode = "exercise";
-        state.pause = false;
-      } else if (action.payload === "paused") {
-        state.pause = true;
-      } else if (action.payload === "finished") {
-        state.mode = "finished";
-      }
     },
 
     // 設置完整的運動計劃
@@ -175,26 +139,12 @@ export const exerciseSlice = createSlice({
         pausedTime: 0,
         lastActive: null,
       };
-
-      // 向下兼容
-      state.times = workoutItems.map((item) => ({
-        name: item.name,
-        time: item.time,
-        rest: item.rest,
-      }));
-      state.initialTime = [...state.times];
-      state.mode = "prepare";
     },
 
     // 更新當前運動的剩餘時間
     updateCurrentExerciseTime: (state, action: PayloadAction<number>) => {
       if (state.currentExercise) {
         state.currentExercise.time = action.payload;
-
-        // 向下兼容
-        if (state.times.length > 0) {
-          state.times[0].time = action.payload;
-        }
       }
     },
 
@@ -202,11 +152,6 @@ export const exerciseSlice = createSlice({
     updateCurrentRestTime: (state, action: PayloadAction<number>) => {
       if (state.currentExercise) {
         state.currentExercise.rest = action.payload;
-
-        // 向下兼容
-        if (state.times.length > 0) {
-          state.times[0].rest = action.payload;
-        }
       }
     },
 
@@ -225,25 +170,10 @@ export const exerciseSlice = createSlice({
       if (state.remainingExercises.length > 0) {
         state.currentExercise = state.remainingExercises[0];
         state.remainingExercises = state.remainingExercises.slice(1);
-
-        // 向下兼容
-        state.times = [
-          {
-            name: state.currentExercise.name,
-            time: state.currentExercise.time,
-            rest: state.currentExercise.rest,
-          },
-          ...state.remainingExercises.map((item) => ({
-            name: item.name,
-            time: item.time,
-            rest: item.rest,
-          })),
-        ];
       } else {
         // 運動結束
         state.currentExercise = null;
         state.status = "finished";
-        state.mode = "finished"; // 向下兼容
 
         // 計算總運動時間
         if (state.sessionInfo.startTime) {
@@ -252,9 +182,6 @@ export const exerciseSlice = createSlice({
           state.sessionInfo.totalDuration =
             (endTime - startTime) / 1000 - state.sessionInfo.pausedTime;
         }
-
-        // 向下兼容
-        state.times = [];
       }
     },
 
@@ -263,25 +190,9 @@ export const exerciseSlice = createSlice({
       if (state.remainingExercises.length > 0) {
         state.currentExercise = state.remainingExercises[0];
         state.remainingExercises = state.remainingExercises.slice(1);
-
-        // 向下兼容
-        state.times = [
-          {
-            name: state.currentExercise.name,
-            time: state.currentExercise.time,
-            rest: state.currentExercise.rest,
-          },
-          ...state.remainingExercises.map((item) => ({
-            name: item.name,
-            time: item.time,
-            rest: item.rest,
-          })),
-        ];
       } else {
         state.currentExercise = null;
         state.status = "finished";
-        state.mode = "finished"; // 向下兼容
-        state.times = []; // 向下兼容
       }
     },
 
@@ -300,15 +211,6 @@ export const exerciseSlice = createSlice({
           pausedTime: 0,
           lastActive: null,
         };
-
-        // 向下兼容
-        state.times = state.initialWorkoutPlan.map((item) => ({
-          name: item.name,
-          time: item.time,
-          rest: item.rest,
-        }));
-        state.mode = "prepare";
-        state.pause = false;
       }
     },
 
@@ -321,76 +223,10 @@ export const exerciseSlice = createSlice({
     clearError: (state) => {
       state.error = null;
     },
-
-    // 向下兼容的 action creators
-    setMode: (state, action: PayloadAction<ExerciseState["mode"]>) => {
-      state.mode = action.payload;
-
-      // 同步到新結構
-      if (action.payload === "prepare") {
-        state.status = "prepare";
-      } else if (action.payload === "exercise") {
-        state.status = state.pause ? "paused" : "active";
-      } else if (action.payload === "rest") {
-        state.status = state.pause ? "paused" : "active";
-      } else if (action.payload === "finished") {
-        state.status = "finished";
-      }
-    },
-
-    setTime: (
-      state,
-      action: PayloadAction<
-        {
-          name: string;
-          time: number;
-          rest: number;
-        }[]
-      >
-    ) => {
-      state.times = action.payload;
-      state.initialTime = [...action.payload];
-
-      // 同步到新結構
-      if (action.payload.length > 0) {
-        const workoutItems = action.payload.map((item, index) => ({
-          id: `workout-${index}`,
-          name: item.name,
-          time: item.time,
-          rest: item.rest,
-        }));
-
-        state.initialWorkoutPlan = [...workoutItems];
-        state.currentExercise = workoutItems[0];
-        state.remainingExercises = workoutItems.slice(1);
-        state.completedExercises = [];
-      } else {
-        state.initialWorkoutPlan = [];
-        state.currentExercise = null;
-        state.remainingExercises = [];
-        state.completedExercises = [];
-      }
-    },
-
-    setPause: (state, action: PayloadAction<boolean>) => {
-      state.pause = action.payload;
-
-      // 同步到新結構
-      if (action.payload) {
-        state.status = "paused";
-      } else if (state.status === "paused") {
-        state.status = "active";
-      }
-    },
-
-    setNavigationShow: (state, action: PayloadAction<boolean>) => {
-      state.navigationShow = action.payload;
-    },
   },
 });
 
 export const {
-  // 新的 action creators
   setWorkoutType,
   setBpm,
   toggleMetronome,
@@ -403,12 +239,6 @@ export const {
   resetWorkout,
   setError,
   clearError,
-
-  // 向下兼容的 action creators
-  setMode,
-  setTime,
-  setPause,
-  setNavigationShow,
 } = exerciseSlice.actions;
 
 // 新的選擇器
@@ -448,10 +278,5 @@ export const selectIsPaused = (state: RootState) =>
   state.exercise.status === "paused";
 export const selectIsFinished = (state: RootState) =>
   state.exercise.status === "finished";
-
-// 向下兼容的選擇器
-export const selectMode = (state: RootState) => state.exercise.mode;
-export const selectTimes = (state: RootState) => state.exercise.times;
-export const selectPause = (state: RootState) => state.exercise.pause;
 
 export default exerciseSlice.reducer;
