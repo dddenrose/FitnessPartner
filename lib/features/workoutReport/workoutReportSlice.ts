@@ -219,7 +219,6 @@ const createEmptySummary = (): WorkoutSummary => ({
   totalDuration: 0,
   workoutCount: 0,
   averageDuration: 0,
-  totalCalories: 0,
   byWorkoutType: {},
 });
 
@@ -231,20 +230,19 @@ const updateSummary = (summary: WorkoutSummary, session: WorkoutSession) => {
   // 更新運動次數
   summary.workoutCount += 1;
 
-  // 更新卡路里（如果有）
-  if (session.calories) {
-    summary.totalCalories = (summary.totalCalories || 0) + session.calories;
-  }
-
   // 更新按運動類型的統計
   if (!summary.byWorkoutType[session.workoutType]) {
     summary.byWorkoutType[session.workoutType] = {
       count: 0,
       totalDuration: 0,
+      averageDuration: 0,
     };
   }
-  summary.byWorkoutType[session.workoutType].count += 1;
-  summary.byWorkoutType[session.workoutType].totalDuration += session.duration;
+
+  const typeStats = summary.byWorkoutType[session.workoutType];
+  typeStats.count += 1;
+  typeStats.totalDuration += session.duration;
+  typeStats.averageDuration = typeStats.totalDuration / typeStats.count;
 
   // 重新計算平均時長
   summary.averageDuration = summary.totalDuration / summary.workoutCount;

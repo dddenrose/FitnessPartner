@@ -1,25 +1,70 @@
-import { configureStore } from "@reduxjs/toolkit";
+import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import userInfoReducer from "./features/userInfo/userInfoSlice";
 import audioReducer from "./features/audio/audioSlice";
 import FirebaseReducer from "./features/firebase/firebaseSlice";
 import workoutReportReducer from "./features/workoutReport/workoutReportSlice";
 import exerciseReducer from "./features/exercise/exerciseSlice";
 
+// Redux-Persist imports
+import {
+  persistStore,
+  persistReducer,
+  FLUSH,
+  REHYDRATE,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER,
+} from "redux-persist";
+import storage from "redux-persist/lib/storage"; // 默認使用 localStorage
+
+// 配置 Redux-Persist
+const exercisePersistConfig = {
+  key: "exercise",
+  storage,
+  whitelist: [
+    "currentExercise",
+    "remainingExercises",
+    "completedExercises",
+    "initialWorkoutPlan",
+    "sessionInfo",
+    "workoutType",
+    "status",
+  ], // 只持久化這些欄位
+};
+
+const workoutReportPersistConfig = {
+  key: "workoutReport",
+  storage,
+  whitelist: ["reports"], // 持久化報告數據
+};
+
+// 合併所有 reducers
+const rootReducer = combineReducers({
+  userInfo: userInfoReducer,
+  exercise: persistReducer(exercisePersistConfig, exerciseReducer),
+  audio: audioReducer,
+  firebase: FirebaseReducer,
+  workoutReport: persistReducer(
+    workoutReportPersistConfig,
+    workoutReportReducer
+  ),
+});
+
 export const makeStore = () => {
   return configureStore({
-    reducer: {
-      // workout reducer 已被刪除
-      userInfo: userInfoReducer,
-      exercise: exerciseReducer,
-      audio: audioReducer,
-      firebase: FirebaseReducer,
-      workoutReport: workoutReportReducer,
-    },
+    reducer: rootReducer,
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware({
         serializableCheck: {
-          // 忽略特定路徑下的非序列化值檢查
+          // 忽略 Redux-Persist 的 actions
           ignoredActions: [
+            FLUSH,
+            REHYDRATE,
+            PAUSE,
+            PERSIST,
+            PURGE,
+            REGISTER,
             "firebase/setApp",
             "exercise/setMode",
             "userInfo/setFirebaseUser",
@@ -35,6 +80,13 @@ export const makeStore = () => {
         },
       }),
   });
+};
+
+// 創建 persistor
+export const makePersistedStore = () => {
+  const store = makeStore();
+  const persistor = persistStore(store);
+  return { store, persistor };
 };
 
 // Infer the type of makeStore

@@ -15,7 +15,7 @@ import TimerLogic from "./components/TimerLogic";
 
 const App: React.FC = () => {
   const dispatch = useAppDispatch();
-  const mode = useAppSelector((state) => state.exercise.mode);
+  const status = useAppSelector((state) => state.exercise.status);
 
   // 使用倒數音效 hook - 自動播放
   useCountdownSound({
@@ -47,14 +47,16 @@ const App: React.FC = () => {
     >
       <TimerLogic />
 
-      {mode === "exercise" && (
+      {/* 運動進行中狀態 */}
+      {(status === "active" || status === "paused") && (
         <>
           <Exercise />
           <ControlPanel />
         </>
       )}
 
-      {mode === "finished" && <Finish />}
+      {/* 運動結束狀態 */}
+      {status === "finished" && <Finish />}
 
       <ReactSpringBg />
     </Flex>

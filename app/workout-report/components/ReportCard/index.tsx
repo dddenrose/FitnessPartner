@@ -40,14 +40,6 @@ const ReportCard: React.FC<ReportCardProps> = ({
               precision={0}
             />
           </Col>
-          <Col span={12}>
-            <Statistic
-              title="卡路里"
-              value={summary.totalCalories || 0}
-              prefix={<FireOutlined />}
-              valueStyle={{ color: "#cf1322" }}
-            />
-          </Col>
         </Row>
       </Card>
     </Col>
