@@ -48,16 +48,12 @@ export function useCountdownSound(options: CountdownSoundOptions = {}) {
     restThreshold = 5,
   } = options;
 
-  // 使用新的 Redux 選擇器
+  // 使用 Redux 選擇器獲取當前狀態
   const currentExercise = useAppSelector(selectCurrentExercise);
   const status = useAppSelector(selectStatus);
-
-  // 向下兼容
-  const time = useAppSelector((state: RootState) => state.exercise.times);
   const isGlobalPlaying = useAppSelector(
     (state: RootState) => state.audio.isGlobalPlaying
   );
-  const isPause = useAppSelector((state: RootState) => state.exercise.pause);
 
   // 使用 use-sound hook 載入倒數音效
   const [playCountDown, { stop: stopCountDown }] = useSound(countDownAudio, {
@@ -71,55 +67,34 @@ export function useCountdownSound(options: CountdownSoundOptions = {}) {
    */
   const shouldPlaySound = useCallback(() => {
     // 基本條件：全局未靜音、運動未暫停
-    if (!isGlobalPlaying || status === "paused" || isPause) {
+    if (!isGlobalPlaying || status === "paused") {
       return false;
     }
 
-    // 優先使用新的數據結構
-    if (currentExercise) {
-      // 運動倒數
-      if (
-        currentExercise.time > 0 &&
-        currentExercise.time <= exerciseThreshold &&
-        currentExercise.time !== 0
-      ) {
-        return true;
-      }
-
-      // 休息倒數
-      if (
-        currentExercise.time === 0 &&
-        currentExercise.rest <= restThreshold &&
-        currentExercise.rest > 0
-      ) {
-        return true;
-      }
+    if (!currentExercise) {
+      return false;
     }
-    // 向下兼容
-    else if (time?.[0]) {
-      // 運動倒數
-      if (
-        time[0].time > 0 &&
-        time[0].time <= exerciseThreshold &&
-        time[0].time !== 0
-      ) {
-        return true;
-      }
 
-      // 休息倒數
-      if (
-        time[0].time === 0 &&
-        time[0].rest <= restThreshold &&
-        time[0].rest > 0
-      ) {
-        return true;
-      }
+    // 運動倒數
+    if (
+      currentExercise.time > 0 &&
+      currentExercise.time <= exerciseThreshold &&
+      currentExercise.time !== 0
+    ) {
+      return true;
+    }
+
+    // 休息倒數
+    if (
+      currentExercise.time === 0 &&
+      currentExercise.rest <= restThreshold &&
+      currentExercise.rest > 0
+    ) {
+      return true;
     }
 
     return false;
   }, [
-    time,
-    isPause,
     isGlobalPlaying,
     exerciseThreshold,
     restThreshold,
@@ -147,8 +122,8 @@ export function useCountdownSound(options: CountdownSoundOptions = {}) {
       stopCountDown();
     };
   }, [
-    time,
-    isPause,
+    currentExercise,
+    status,
     isGlobalPlaying,
     autoPlay,
     playCountDown,
@@ -168,11 +143,9 @@ export function useCountdownSound(options: CountdownSoundOptions = {}) {
     shouldPlaySound: shouldPlaySound(),
     isMuted: !isGlobalPlaying,
 
-    // 當前運動資訊 (優先使用新數據結構)
-    currentTime: currentExercise?.time ?? time?.[0]?.time,
-    isResting: currentExercise
-      ? currentExercise.time === 0
-      : time?.[0]?.time === 0,
-    restTime: currentExercise?.rest ?? time?.[0]?.rest,
+    // 當前運動資訊
+    currentTime: currentExercise?.time,
+    isResting: currentExercise?.time === 0,
+    restTime: currentExercise?.rest,
   };
 }
