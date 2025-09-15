@@ -7,18 +7,24 @@ import {
   WorkoutModeType,
   setWorkoutType,
   setBpm,
+  setMode,
 } from "@/lib/features/exercise/exerciseSlice";
 import { ThunderboltOutlined, RocketOutlined } from "@ant-design/icons";
 import {
-  Radio,
-  Space,
+  Tabs,
   Typography,
   Slider,
   InputNumber,
   Row,
   Col,
   Card,
+  Space,
+  Alert,
+  Button,
 } from "antd";
+import type { TabsProps } from "antd";
+import PlanForm from "../PlanForm";
+import { useRouter } from "next/navigation";
 
 const { Title, Text } = Typography;
 
@@ -27,10 +33,18 @@ const SimpleModeSelector: React.FC = () => {
   const currentMode = useAppSelector((state) => state.exercise.workoutType);
   const currentBpm = useAppSelector((state) => state.exercise.bpm) || 180;
 
+  const workoutType = useAppSelector((state) => state.exercise.workoutType);
+  const router = useRouter();
+
+  const handleSlowRunStart = () => {
+    dispatch(setMode("exercise"));
+    router.push("/exercise");
+  };
   const [bpm, setBpmState] = useState<number>(currentBpm);
 
-  const handleModeChange = (e: any) => {
-    dispatch(setWorkoutType(e.target.value as WorkoutModeType));
+  const handleModeChange = (activeKey: string) => {
+    const newMode = activeKey as WorkoutModeType;
+    dispatch(setWorkoutType(newMode));
   };
 
   const handleBpmChange = (newValue: number | null) => {
@@ -47,62 +61,66 @@ const SimpleModeSelector: React.FC = () => {
     }
   }, [currentMode, currentBpm, dispatch]);
 
-  return (
-    <div style={{ marginBottom: "20px" }}>
-      <Title level={4}>選擇運動模式</Title>
-      <Row gutter={[16, 16]}>
-        <Col span={24}>
-          <Radio.Group
-            onChange={handleModeChange}
-            value={currentMode}
-            style={{ marginTop: "10px", marginBottom: "15px" }}
-          >
-            <Space direction="vertical">
-              <Radio value="hiit">
-                <Space>
-                  <ThunderboltOutlined /> HIIT 訓練
-                </Space>
-              </Radio>
-              <Radio value="slowrun">
-                <Space>
-                  <RocketOutlined /> 超慢跑訓練
-                </Space>
-              </Radio>
-            </Space>
-          </Radio.Group>
+  // 超慢跑設定內容
+  const slowRunContent = (
+    <>
+      <Row align="middle">
+        <Col span={5}>
+          <Text>BPM (步頻):</Text>
         </Col>
-
-        {currentMode === "slowrun" && (
-          <Col span={24}>
-            <Card size="small" title="超慢跑設定" style={{ marginTop: "10px" }}>
-              <Row align="middle">
-                <Col span={5}>
-                  <Text>BPM (步頻):</Text>
-                </Col>
-                <Col span={15}>
-                  <Slider
-                    min={160}
-                    max={200}
-                    step={2}
-                    value={bpm}
-                    onChange={handleBpmChange}
-                  />
-                </Col>
-                <Col span={4}>
-                  <InputNumber
-                    min={160}
-                    max={200}
-                    style={{ marginLeft: "16px" }}
-                    value={bpm}
-                    onChange={handleBpmChange}
-                  />
-                </Col>
-              </Row>
-              <Text type="secondary">建議步頻: 180 BPM（每分鐘步數）</Text>
-            </Card>
-          </Col>
-        )}
+        <Col span={15}>
+          <Slider
+            min={160}
+            max={200}
+            step={2}
+            value={bpm}
+            onChange={handleBpmChange}
+          />
+        </Col>
+        <Col span={4}>
+          <InputNumber
+            min={160}
+            max={200}
+            style={{ marginLeft: "16px" }}
+            value={bpm}
+            onChange={handleBpmChange}
+          />
+        </Col>
       </Row>
+      <Text type="secondary">建議步頻: 180 BPM（每分鐘步數）</Text>
+      <Button
+        type="primary"
+        onClick={handleSlowRunStart}
+        size="large"
+        style={{ marginTop: "15px" }}
+      >
+        開始超慢跑訓練
+      </Button>
+    </>
+  );
+
+  const items: TabsProps["items"] = [
+    {
+      key: "slowrun",
+      label: "超慢跑訓練",
+      children: slowRunContent,
+    },
+    {
+      key: "hiit",
+      label: "HIIT 訓練",
+      children: <PlanForm />,
+    },
+  ];
+
+  return (
+    <div style={{ marginBottom: "20px", width: "100%", maxWidth: 600 }}>
+      <Tabs
+        activeKey={currentMode}
+        items={items}
+        onChange={handleModeChange}
+        style={{ marginTop: "15px" }}
+        size="large"
+      />
     </div>
   );
 };
