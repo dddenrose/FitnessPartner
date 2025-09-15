@@ -32,7 +32,6 @@ export const googleProvider = new GoogleAuthProvider();
 export const database = getDatabase(app);
 
 console.log("====Firebase app initialized");
-console.log("====Database URL:", process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL);
 console.log("====Database reference initialized:", database ? "成功" : "失敗");
 
 // Add additional scopes as needed
