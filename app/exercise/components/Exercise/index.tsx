@@ -4,6 +4,7 @@ import React from "react";
 import {
   selectCurrentExercise,
   selectIsFinished,
+  selectWorkoutType,
 } from "@/lib/features/exercise/exerciseSlice";
 import { useAppSelector } from "@/lib/hooks/redux/useRedux";
 import UnifiedTimer from "../UnifiedTimer";
@@ -12,9 +13,7 @@ const Exercise: React.FC = () => {
   // 使用選擇器
   const currentExercise = useAppSelector(selectCurrentExercise);
   const isFinished = useAppSelector(selectIsFinished);
-  
-  // 向下兼容的選擇器
-  const time = useAppSelector((state) => state.exercise.times);
+  const workoutType = useAppSelector(selectWorkoutType);
 
   // 如果運動已完成，顯示完成訊息
   if (isFinished) {
@@ -29,7 +28,8 @@ const Exercise: React.FC = () => {
   }
 
   // 使用統一的計時器，傳入不同的參數
-  const exerciseName = currentExercise?.name || time?.[0]?.name;
+  const exerciseName =
+    workoutType === "hiit" ? currentExercise?.name : "超慢跑";
   return <UnifiedTimer exerciseName={exerciseName} />;
 };
 

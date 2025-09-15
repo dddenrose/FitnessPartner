@@ -2,28 +2,9 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/redux/useRedux";
-import {
-  Card,
-  Row,
-  Col,
-  Typography,
-  Button,
-  Statistic,
-  Space,
-  Progress,
-  Switch,
-} from "antd";
-import {
-  PauseOutlined,
-  CaretRightOutlined,
-  StopOutlined,
-  SoundOutlined,
-  FieldTimeOutlined,
-} from "@ant-design/icons";
-import {
-  setStatus,
-  toggleMetronome,
-} from "@/lib/features/exercise/exerciseSlice";
+import { Typography, Space, Switch } from "antd";
+import { SoundOutlined } from "@ant-design/icons";
+import { toggleMetronome } from "@/lib/features/exercise/exerciseSlice";
 import styles from "./styles.module.css";
 
 const { Title, Text } = Typography;
@@ -40,7 +21,6 @@ const UnifiedTimer: React.FC<UnifiedTimerProps> = ({ exerciseName }) => {
   const metronomeActive = useAppSelector(
     (state) => state.exercise.metronomeActive
   );
-  const isPaused = status === "paused";
 
   const [elapsedTime, setElapsedTime] = useState(0);
   const [flashOn, setFlashOn] = useState(false);
@@ -92,94 +72,51 @@ const UnifiedTimer: React.FC<UnifiedTimerProps> = ({ exerciseName }) => {
       .padStart(2, "0")}`;
   };
 
-  const handlePauseResume = () => {
-    dispatch(setStatus(isPaused ? "active" : "paused"));
-  };
-
-  const handleStop = () => {
-    dispatch(setStatus("finished"));
-  };
-
   const handleToggleMetronome = (checked: boolean) => {
     dispatch(toggleMetronome(checked));
   };
 
   return (
-    <Card bordered={false} className={styles.timerCard}>
-      <Row gutter={[16, 16]}>
-        <Col span={24}>
-          <Title level={3} style={{ textAlign: "center", margin: "0 0 20px" }}>
-            {exerciseName ||
-              (workoutType === "slowrun" ? "超慢跑訓練" : "HIIT 訓練")}
-          </Title>
-        </Col>
-
-        {/* 步頻閃爍燈 (僅適用於超慢跑模式) */}
-        {workoutType === "slowrun" && (
-          <Col span={24} style={{ textAlign: "center", margin: "0 0 20px" }}>
-            <div
-              className={styles.flashLight}
-              style={{
-                backgroundColor: flashOn ? "#ff4d4f" : "#d9d9d9",
-                boxShadow: flashOn
-                  ? "0 0 20px 5px rgba(255, 77, 79, 0.6)"
-                  : "none",
-              }}
-            />
-            <div style={{ marginTop: 10 }}>
-              <Space>
-                <Text>節拍器:</Text>
-                <Switch
-                  checked={metronomeActive}
-                  onChange={handleToggleMetronome}
-                  checkedChildren={<SoundOutlined />}
-                  unCheckedChildren={<SoundOutlined />}
-                />
-                <Text>{bpm} BPM</Text>
-              </Space>
-            </div>
-          </Col>
-        )}
-
-        {/* 主計時器 */}
-        <Col span={24} style={{ textAlign: "center" }}>
-          <div className={styles.timeDisplay}>{formatTime(elapsedTime)}</div>
-        </Col>
-
-        {/* 控制按鈕 */}
-        <Col span={24} style={{ textAlign: "center", margin: "20px 0" }}>
+    <div className="flex flex-col items-center">
+      {/* 步頻閃爍燈 (僅適用於超慢跑模式) */}
+      {workoutType === "slowrun" && (
+        <div className="mb-8 text-center">
+          <div
+            className={styles.flashLight}
+            style={{
+              backgroundColor: flashOn ? "#ff4d4f" : "#d9d9d9",
+              boxShadow: flashOn
+                ? "0 0 20px 5px rgba(255, 77, 79, 0.6)"
+                : "none",
+              margin: "0 auto 16px",
+            }}
+          />
           <Space>
-            <Button
-              type="primary"
-              size="large"
-              shape="circle"
-              icon={isPaused ? <CaretRightOutlined /> : <PauseOutlined />}
-              onClick={handlePauseResume}
+            <Text style={{ color: "white" }}>節拍器:</Text>
+            <Switch
+              checked={metronomeActive}
+              onChange={handleToggleMetronome}
+              checkedChildren={<SoundOutlined />}
+              unCheckedChildren={<SoundOutlined />}
             />
-            <Button
-              danger
-              size="large"
-              shape="circle"
-              icon={<StopOutlined />}
-              onClick={handleStop}
-            />
+            <Text style={{ color: "white" }}>{bpm} BPM</Text>
           </Space>
-        </Col>
+        </div>
+      )}
 
-        {/* 基本運動數據 */}
-        <Col span={24}>
-          <Card size="small">
-            <Statistic
-              title="運動時間"
-              value={formatTime(elapsedTime)}
-              prefix={<FieldTimeOutlined />}
-            />
-          </Card>
-        </Col>
-      </Row>
-
-      {/* 節拍器音效 */}
-    </Card>
+      {/* 主計時器 - 使用白色大字體 */}
+      <div
+        style={{
+          fontSize: "8rem",
+          fontWeight: "bold",
+          color: "white",
+          fontFamily: "monospace",
+          textShadow: "0 0 10px rgba(255, 255, 255, 0.5)",
+        }}
+      >
+        {formatTime(elapsedTime)}
+      </div>
+    </div>
   );
 };
 
