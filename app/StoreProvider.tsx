@@ -55,7 +55,7 @@ export default function StoreProvider({
               height: "100vh",
             }}
           >
-            <Spin size="large" tip="載入中..." />
+            loading...
           </div>
         }
         persistor={persistorRef.current!}
