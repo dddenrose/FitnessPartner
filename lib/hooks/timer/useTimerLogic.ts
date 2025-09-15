@@ -2,27 +2,30 @@
 import {
   moveToNextExercise,
   selectCurrentExercise,
-  selectRemainingExercises,
   selectStatus,
   updateCurrentExerciseTime,
   updateCurrentRestTime,
 } from "@/lib/features/exercise/exerciseSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/index";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
-const TimerLogic = ({ children }: { children?: React.ReactNode }) => {
+/**
+ * 運動計時邏輯的 Hook
+ * 只專注於:計時邏輯(本地+Redux)以及切換下一個運動的時機邏輯
+ * flow: 註冊timer => 每秒觸發計時邏輯 => 更新本地狀態 => 在關鍵節點更新Redux
+ */
+export const useTimerLogic = () => {
   const dispatch = useAppDispatch();
 
-  // 使用新的選擇器
+  // Redux核心的當前運動
   const currentExercise = useAppSelector(selectCurrentExercise);
-  const remainingExercises = useAppSelector(selectRemainingExercises);
   const status = useAppSelector(selectStatus);
 
   // 本地狀態用於優化渲染頻率
   const [localTime, setLocalTime] = useState<number>(0);
   const [localRest, setLocalRest] = useState<number>(0);
 
-  // 用於計時的 refs，避免閉包問題
+  // 用於計時的 refs (訪問的值都是最新的)
   const isRunningRef = useRef<boolean>(false);
   const isRestModeRef = useRef<boolean>(false);
 
@@ -32,14 +35,14 @@ const TimerLogic = ({ children }: { children?: React.ReactNode }) => {
       setLocalTime(currentExercise.time);
       setLocalRest(currentExercise.rest);
     }
-  }, [currentExercise]); // 在 currentExercise 變化時更新
+  }, [currentExercise]);
 
   // 根據 status 更新運行狀態
   useEffect(() => {
     isRunningRef.current = status === "active";
   }, [status]);
 
-  // 處理計時邏輯的核心函數
+  // 專注在處理localTime和localRest的變化
   const handleTimerTick = useCallback(() => {
     if (!isRunningRef.current || !currentExercise) return;
 
@@ -48,7 +51,7 @@ const TimerLogic = ({ children }: { children?: React.ReactNode }) => {
       setLocalTime((prevTime) => {
         const newTime = prevTime - 1;
 
-        // 只在關鍵節點 (0，5，10...) 更新 Redux，減少 re-render
+        // 只在關鍵節點 (0，5，10...) 更新 Redux
         if (newTime === 0 || newTime % 5 === 0) {
           dispatch(updateCurrentExerciseTime(newTime));
         }
@@ -88,7 +91,10 @@ const TimerLogic = ({ children }: { children?: React.ReactNode }) => {
     return () => clearInterval(timer);
   }, [handleTimerTick]);
 
-  return children;
+  return {
+    currentTime: localTime,
+    currentRestTime: localRest,
+    isRunning: isRunningRef.current,
+    isRestMode: isRestModeRef.current,
+  };
 };
-
-export default TimerLogic;

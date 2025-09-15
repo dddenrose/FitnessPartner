@@ -4,6 +4,7 @@ import {
   useAppDispatch,
   useAppSelector,
   useCountdownSound,
+  useTimerLogic,
 } from "@/lib/hooks/index";
 import { Flex } from "antd";
 import React from "react";
@@ -11,11 +12,13 @@ import ControlPanel from "./components/ControlPanel";
 import Exercise from "./components/Exercise";
 import Finish from "./components/Finish";
 import ReactSpringBg from "./components/ReactSpringBg";
-import TimerLogic from "./components/TimerLogic";
 
 const App: React.FC = () => {
   const dispatch = useAppDispatch();
   const status = useAppSelector((state) => state.exercise.status);
+
+  // 使用計時器邏輯 hook
+  useTimerLogic();
 
   // 使用倒數音效 hook - 自動播放
   useCountdownSound({
@@ -45,8 +48,6 @@ const App: React.FC = () => {
       }}
       gap={24}
     >
-      <TimerLogic />
-
       {/* 運動進行中狀態 */}
       {(status === "active" || status === "paused") && (
         <>
