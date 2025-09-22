@@ -11,8 +11,8 @@ import {
 import { Button, Flex, Modal } from "antd";
 import { setIsGlobalPlaying } from "@/lib/features/audio/audioSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/redux/useRedux";
+import { WorkoutModeType } from "@/lib/features/exercise/exerciseSlice";
 import {
-  // 新 API
   setStatus,
   skipCurrentExercise,
   resetWorkout,
@@ -20,9 +20,6 @@ import {
   selectCurrentExercise,
   selectRemainingExercises,
   selectInitialWorkoutPlan,
-  // 向下兼容
-  setTime,
-  setPause,
 } from "@/lib/features/exercise/exerciseSlice";
 import { useRouter } from "next/navigation";
 import { useMediaQuery } from "@/lib/hooks/index";
@@ -35,16 +32,12 @@ const ControlPanel: React.FC = () => {
   const router = useRouter();
   const [modalApi, context] = Modal.useModal();
 
-  // 新的狀態選擇器
+  // 狀態選擇器
   const status = useAppSelector(selectStatus);
   const currentExercise = useAppSelector(selectCurrentExercise);
   const remainingExercises = useAppSelector(selectRemainingExercises);
   const initialWorkoutPlan = useAppSelector(selectInitialWorkoutPlan);
-
-  // 向下兼容的狀態
-  const pause = useAppSelector((state) => state.exercise.pause);
-  const time = useAppSelector((state) => state.exercise.times);
-  const initialTime = useAppSelector((state) => state.exercise.initialTime);
+  const workoutType = useAppSelector((state) => state.exercise.workoutType);
 
   // 其他狀態
   const isGlobalPlaying = useAppSelector(
@@ -56,17 +49,10 @@ const ControlPanel: React.FC = () => {
 
   // 按鈕處理函數
   const handlePause = () => {
-    // 優先使用新 API
-    if (status === "active" || status === "paused") {
-      dispatch(setStatus(status === "active" ? "paused" : "active"));
-    } else {
-      // 向下兼容
-      dispatch(setPause(!pause));
-    }
+    dispatch(setStatus(status === "active" ? "paused" : "active"));
   };
 
   const handleSkip = () => {
-    // 優先使用新 API
     if (
       currentExercise &&
       (remainingExercises.length > 0 ||
@@ -74,9 +60,6 @@ const ControlPanel: React.FC = () => {
         currentExercise.rest > 0)
     ) {
       dispatch(skipCurrentExercise());
-    } else if (time.length > 1) {
-      // 向下兼容
-      dispatch(setTime(time.slice(1)));
     }
   };
 
@@ -91,14 +74,7 @@ const ControlPanel: React.FC = () => {
       okText: "確定",
       cancelText: "取消",
       onOk: () => {
-        // 優先使用新 API
-        if (initialWorkoutPlan.length > 0) {
-          dispatch(resetWorkout());
-        } else {
-          // 向下兼容
-          dispatch(setTime(initialTime));
-          dispatch(setPause(false));
-        }
+        dispatch(resetWorkout());
         router.push("/create-workout-plan");
       },
     });
@@ -125,18 +101,20 @@ const ControlPanel: React.FC = () => {
           shape="circle"
           size="large"
         >
-          {pause ? <RightOutlined /> : <PauseOutlined />}
+          {status === "paused" ? <RightOutlined /> : <PauseOutlined />}
         </Button>
 
-        <Button
-          onClick={handleSkip}
-          style={buttonStyle}
-          type="default"
-          shape="circle"
-          size="large"
-        >
-          <DoubleRightOutlined />
-        </Button>
+        {workoutType === "hiit" && (
+          <Button
+            onClick={handleSkip}
+            style={buttonStyle}
+            type="default"
+            shape="circle"
+            size="large"
+          >
+            <DoubleRightOutlined />
+          </Button>
+        )}
 
         <Button
           onClick={handleAudio}
