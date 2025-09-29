@@ -21,10 +21,7 @@ const Finish: React.FC = () => {
     (state) => state.exercise.completedExercises
   );
   const sessionInfo = useAppSelector((state) => state.exercise.sessionInfo);
-
-  // 向下兼容
-  const initialTime = useAppSelector((state) => state.exercise.initialTime);
-  const time = useAppSelector((state) => state.exercise.times);
+  const workoutType = useAppSelector((state) => state.exercise.workoutType);
 
   // Calculate the total duration of the workout (in minutes)
   const calculateTotalDuration = () => {
@@ -38,19 +35,14 @@ const Finish: React.FC = () => {
       let totalSeconds = 0;
 
       initialWorkoutPlan.forEach((item) => {
-        totalSeconds += item.time + item.rest;
+        totalSeconds += item.time + (item.rest || 0);
       });
 
       return Math.round(totalSeconds / 60);
     }
 
-    // 向下兼容的計算方式
-    let totalSeconds = 0;
-    initialTime.forEach((item) => {
-      totalSeconds += item.time + item.rest;
-    });
-
-    return Math.round(totalSeconds / 60);
+    // 如果沒有有效數據
+    return 0;
   };
 
   // 創建儲存運動數據的函數
@@ -72,23 +64,18 @@ const Finish: React.FC = () => {
       const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD format
 
       // Create workout session data
+      // 根據運動模式處理數據
       const workoutData = {
         date: today,
         duration: calculateTotalDuration(),
-        workoutType:
-          initialWorkoutPlan.length > 0
-            ? "standard" // 使用新數據結構中的運動類型
-            : "exercise", // 向下兼容的運動類型
-        completedExercises:
-          completedExercises.length > 0
-            ? completedExercises.length // 使用新數據中已完成的運動數量
-            : initialTime.length, // 向下兼容的運動數量
+        workoutType,
+        completedExercises: completedExercises.length,
         notes:
-          initialWorkoutPlan.length > 0
-            ? `完成 ${
+          workoutType === "slowrun"
+            ? `超慢跑訓練，總時長 ${calculateTotalDuration()} 分鐘`
+            : `完成 ${
                 completedExercises.length
-              } 組運動，總時長 ${calculateTotalDuration()} 分鐘`
-            : `完成 ${initialTime.length} 組運動`,
+              } 組運動，總時長 ${calculateTotalDuration()} 分鐘`,
       };
 
       console.log("正在保存運動數據:", workoutData);
@@ -118,7 +105,13 @@ const Finish: React.FC = () => {
     } finally {
       setSaving(false);
     }
-  }, [saved, initialTime, dispatch, calculateTotalDuration]);
+  }, [
+    saved,
+    dispatch,
+    calculateTotalDuration,
+    workoutType,
+    completedExercises,
+  ]);
 
   // 使用 ref 來追蹤是否已經嘗試保存
   const attemptedSaveRef = React.useRef(false);

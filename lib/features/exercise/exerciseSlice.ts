@@ -3,23 +3,19 @@ import type { RootState } from "../../store";
 
 // 定義不同的運動模式類型
 export type WorkoutModeType =
-  | "standard" // 標準健身模式，有固定的運動和休息時間
   | "slowrun" // 超慢跑模式
-  | "hiit" // 高強度間歇訓練
-  | "custom"; // 自定義模式
+  | "hiit"; // 高強度間歇訓練
 
 export interface WorkoutItem {
   id: string; // 每個運動項目的唯一 ID
   name: string; // 運動名稱
   time: number; // 運動時間 (秒)
   rest: number; // 休息時間 (秒)
-  sets?: number; // 組數（適用於某些模式）
-  intensity?: number; // 強度等級 (1-10)
 }
 
 export interface ExerciseState {
   // 當前運動狀態
-  status: "idle" | "prepare" | "active" | "paused" | "finished";
+  status: "idle" | "active" | "paused" | "finished";
 
   // 運動模式設定
   workoutType: WorkoutModeType;
@@ -48,31 +44,13 @@ export interface ExerciseState {
     lastActive: string | null; // 上次活動時間
   };
 
-  // UI 控制
-  navigationShow: boolean;
-
   // 錯誤訊息
   error: string | null;
-
-  // 向下兼容的字段
-  mode: "prepare" | "exercise" | "rest" | "finished";
-  times: {
-    name: string;
-    time: number;
-    rest: number;
-  }[];
-  pause: boolean;
-  initialTime: {
-    name: string;
-    time: number;
-    rest: number;
-  }[];
 }
 
 const initialState: ExerciseState = {
-  // 新結構
   status: "idle",
-  workoutType: "standard",
+  workoutType: "hiit",
   bpm: 180,
   metronomeActive: true,
   currentExercise: null,
@@ -85,14 +63,7 @@ const initialState: ExerciseState = {
     pausedTime: 0,
     lastActive: null,
   },
-  navigationShow: true,
   error: null,
-
-  // 向下兼容的字段
-  mode: "prepare",
-  times: [],
-  pause: false,
-  initialTime: [],
 };
 
 export const exerciseSlice = createSlice({
@@ -140,19 +111,30 @@ export const exerciseSlice = createSlice({
 
       state.sessionInfo.lastActive = now;
       state.status = action.payload;
-
-      // 向下兼容
-      if (action.payload === "active") {
-        state.mode = "exercise";
-        state.pause = false;
-      } else if (action.payload === "paused") {
-        state.pause = true;
-      } else if (action.payload === "finished") {
-        state.mode = "finished";
-      }
     },
 
-    // 設置完整的運動計劃
+    // 開始超慢跑模式
+    startSlowRun: (state) => {
+      // 清除任何現有的運動計劃，因為超慢跑不需要
+      state.initialWorkoutPlan = [];
+      state.remainingExercises = [];
+      state.completedExercises = [];
+      state.currentExercise = null;
+      state.status = "active";
+      state.workoutType = "slowrun";
+      state.error = null;
+
+      // 重置會話信息並設置開始時間
+      const now = new Date().toISOString();
+      state.sessionInfo = {
+        startTime: now,
+        totalDuration: 0,
+        pausedTime: 0,
+        lastActive: now,
+      };
+    },
+
+    // 設置完整的運動計劃 (HIIT模式)
     setWorkoutPlan: (state, action: PayloadAction<WorkoutItem[]>) => {
       const workoutItems = action.payload;
 
@@ -165,7 +147,8 @@ export const exerciseSlice = createSlice({
       state.remainingExercises = [...workoutItems.slice(1)];
       state.completedExercises = [];
       state.currentExercise = { ...workoutItems[0] };
-      state.status = "prepare";
+      state.status = "idle";
+      state.workoutType = "hiit";
       state.error = null;
 
       // 重置會話信息
@@ -175,26 +158,12 @@ export const exerciseSlice = createSlice({
         pausedTime: 0,
         lastActive: null,
       };
-
-      // 向下兼容
-      state.times = workoutItems.map((item) => ({
-        name: item.name,
-        time: item.time,
-        rest: item.rest,
-      }));
-      state.initialTime = [...state.times];
-      state.mode = "prepare";
     },
 
     // 更新當前運動的剩餘時間
     updateCurrentExerciseTime: (state, action: PayloadAction<number>) => {
       if (state.currentExercise) {
         state.currentExercise.time = action.payload;
-
-        // 向下兼容
-        if (state.times.length > 0) {
-          state.times[0].time = action.payload;
-        }
       }
     },
 
@@ -202,11 +171,6 @@ export const exerciseSlice = createSlice({
     updateCurrentRestTime: (state, action: PayloadAction<number>) => {
       if (state.currentExercise) {
         state.currentExercise.rest = action.payload;
-
-        // 向下兼容
-        if (state.times.length > 0) {
-          state.times[0].rest = action.payload;
-        }
       }
     },
 
@@ -225,25 +189,10 @@ export const exerciseSlice = createSlice({
       if (state.remainingExercises.length > 0) {
         state.currentExercise = state.remainingExercises[0];
         state.remainingExercises = state.remainingExercises.slice(1);
-
-        // 向下兼容
-        state.times = [
-          {
-            name: state.currentExercise.name,
-            time: state.currentExercise.time,
-            rest: state.currentExercise.rest,
-          },
-          ...state.remainingExercises.map((item) => ({
-            name: item.name,
-            time: item.time,
-            rest: item.rest,
-          })),
-        ];
       } else {
         // 運動結束
         state.currentExercise = null;
         state.status = "finished";
-        state.mode = "finished"; // 向下兼容
 
         // 計算總運動時間
         if (state.sessionInfo.startTime) {
@@ -252,69 +201,103 @@ export const exerciseSlice = createSlice({
           state.sessionInfo.totalDuration =
             (endTime - startTime) / 1000 - state.sessionInfo.pausedTime;
         }
-
-        // 向下兼容
-        state.times = [];
       }
     },
 
-    // 跳過當前運動
+    // 跳過當前運動 (僅 HIIT 模式)
     skipCurrentExercise: (state) => {
+      // 確保只有 HIIT 模式可以跳過運動
+      if (state.workoutType !== "hiit") return;
+
+      // 將當前運動添加到已完成列表，但標記為已跳過
+      if (state.currentExercise) {
+        state.completedExercises.push({
+          ...state.currentExercise,
+          time: 0, // 設為0表示未完成全程
+          rest: 0,
+        });
+      }
+
       if (state.remainingExercises.length > 0) {
         state.currentExercise = state.remainingExercises[0];
         state.remainingExercises = state.remainingExercises.slice(1);
-
-        // 向下兼容
-        state.times = [
-          {
-            name: state.currentExercise.name,
-            time: state.currentExercise.time,
-            rest: state.currentExercise.rest,
-          },
-          ...state.remainingExercises.map((item) => ({
-            name: item.name,
-            time: item.time,
-            rest: item.rest,
-          })),
-        ];
       } else {
         state.currentExercise = null;
         state.status = "finished";
-        state.mode = "finished"; // 向下兼容
-        state.times = []; // 向下兼容
+
+        // 計算總時間
+        if (state.sessionInfo.startTime) {
+          const endTime = new Date().getTime();
+          const startTime = new Date(state.sessionInfo.startTime).getTime();
+          state.sessionInfo.totalDuration =
+            (endTime - startTime) / 1000 - state.sessionInfo.pausedTime;
+        }
       }
+    },
+
+    // 完成運動並記錄運動數據
+    completeWorkout: (state) => {
+      // 如果是運行中的狀態，計算總時間
+      if (state.status === "active" || state.status === "paused") {
+        // 計算總運動時間
+        if (state.sessionInfo.startTime) {
+          const endTime = new Date().getTime();
+          const startTime = new Date(state.sessionInfo.startTime).getTime();
+          state.sessionInfo.totalDuration =
+            (endTime - startTime) / 1000 - state.sessionInfo.pausedTime;
+        }
+      }
+
+      // 確保超慢跑模式也能正確記錄，添加一個虛擬完成的運動項目
+      if (
+        state.workoutType === "slowrun" &&
+        state.completedExercises.length === 0
+      ) {
+        state.completedExercises = [
+          {
+            id: "slowrun-session",
+            name: "超慢跑",
+            time: state.sessionInfo.totalDuration,
+            rest: 0,
+          },
+        ];
+
+        // 更新初始計劃以便於記錄
+        state.initialWorkoutPlan = [...state.completedExercises];
+      }
+
+      // 將狀態設為已完成
+      state.status = "finished";
     },
 
     // 重置運動計劃到初始狀態
     resetWorkout: (state) => {
-      if (state.initialWorkoutPlan.length > 0) {
+      // 重置所有基本狀態
+      state.status = "idle";
+      state.completedExercises = [];
+      state.sessionInfo = {
+        startTime: null,
+        totalDuration: 0,
+        pausedTime: 0,
+        lastActive: null,
+      };
+      state.error = null;
+
+      // 根據當前運動類型重置特定狀態
+      if (state.workoutType === "hiit" && state.initialWorkoutPlan.length > 0) {
         state.currentExercise = { ...state.initialWorkoutPlan[0] };
         state.remainingExercises = [...state.initialWorkoutPlan.slice(1)];
-        state.completedExercises = [];
-        state.status = "prepare";
-
-        // 重置會話信息
-        state.sessionInfo = {
-          startTime: null,
-          totalDuration: 0,
-          pausedTime: 0,
-          lastActive: null,
-        };
-
-        // 向下兼容
-        state.times = state.initialWorkoutPlan.map((item) => ({
-          name: item.name,
-          time: item.time,
-          rest: item.rest,
-        }));
-        state.mode = "prepare";
-        state.pause = false;
+      } else if (state.workoutType === "slowrun") {
+        // 超慢跑模式特定重置
+        state.currentExercise = null;
+        state.remainingExercises = [];
       }
     },
 
     // 設置錯誤
     setError: (state, action: PayloadAction<string>) => {
       state.error = action.payload;
+      console.error(`Exercise Error: ${action.payload}`); // 增加日誌記錄，便於調試
     },
 
     // 清除錯誤
@@ -322,80 +305,26 @@ export const exerciseSlice = createSlice({
       state.error = null;
     },
 
-    // 向下兼容的 action creators
-    setMode: (state, action: PayloadAction<ExerciseState["mode"]>) => {
-      state.mode = action.payload;
-
-      // 同步到新結構
-      if (action.payload === "prepare") {
-        state.status = "prepare";
-      } else if (action.payload === "exercise") {
-        state.status = state.pause ? "paused" : "active";
-      } else if (action.payload === "rest") {
-        state.status = state.pause ? "paused" : "active";
-      } else if (action.payload === "finished") {
-        state.status = "finished";
-      }
-    },
-
-    setTime: (
+    // 添加操作錯誤處理器
+    handleOperationError: (
       state,
-      action: PayloadAction<
-        {
-          name: string;
-          time: number;
-          rest: number;
-        }[]
-      >
+      action: PayloadAction<{ operation: string; message: string }>
     ) => {
-      state.times = action.payload;
-      state.initialTime = [...action.payload];
-
-      // 同步到新結構
-      if (action.payload.length > 0) {
-        const workoutItems = action.payload.map((item, index) => ({
-          id: `workout-${index}`,
-          name: item.name,
-          time: item.time,
-          rest: item.rest,
-        }));
-
-        state.initialWorkoutPlan = [...workoutItems];
-        state.currentExercise = workoutItems[0];
-        state.remainingExercises = workoutItems.slice(1);
-        state.completedExercises = [];
-      } else {
-        state.initialWorkoutPlan = [];
-        state.currentExercise = null;
-        state.remainingExercises = [];
-        state.completedExercises = [];
-      }
-    },
-
-    setPause: (state, action: PayloadAction<boolean>) => {
-      state.pause = action.payload;
-
-      // 同步到新結構
-      if (action.payload) {
-        state.status = "paused";
-      } else if (state.status === "paused") {
-        state.status = "active";
-      }
-    },
-
-    setNavigationShow: (state, action: PayloadAction<boolean>) => {
-      state.navigationShow = action.payload;
+      const { operation, message } = action.payload;
+      state.error = `${operation} 失敗: ${message}`;
+      console.error(`Exercise Operation Error - ${operation}: ${message}`);
     },
   },
 });
 
 export const {
-  // 新的 action creators
   setWorkoutType,
   setBpm,
   toggleMetronome,
   setStatus,
   setWorkoutPlan,
+  startSlowRun,
+  completeWorkout,
   updateCurrentExerciseTime,
   updateCurrentRestTime,
   moveToNextExercise,
@@ -403,12 +332,7 @@ export const {
   resetWorkout,
   setError,
   clearError,
-
-  // 向下兼容的 action creators
-  setMode,
-  setTime,
-  setPause,
-  setNavigationShow,
+  handleOperationError,
 } = exerciseSlice.actions;
 
 // 新的選擇器
@@ -418,6 +342,8 @@ export const selectWorkoutType = (state: RootState) =>
 export const selectBpm = (state: RootState) => state.exercise.bpm;
 export const selectMetronomeActive = (state: RootState) =>
   state.exercise.metronomeActive;
+export const selectIsSlowRun = (state: RootState) =>
+  state.exercise.workoutType === "slowrun";
 export const selectCurrentExercise = (state: RootState) =>
   state.exercise.currentExercise;
 export const selectRemainingExercises = (state: RootState) =>
@@ -431,27 +357,31 @@ export const selectSessionInfo = (state: RootState) =>
 export const selectError = (state: RootState) => state.exercise.error;
 
 // 計算選擇器
-export const selectTotalExercises = (state: RootState) =>
-  (state.exercise.currentExercise ? 1 : 0) +
-  state.exercise.completedExercises.length +
-  state.exercise.remainingExercises.length;
+export const selectTotalExercises = (state: RootState) => {
+  // 超慢跑模式沒有運動項目計數
+  if (state.exercise.workoutType === "slowrun") return 1;
+
+  // HIIT 模式計算總運動數
+  return (
+    (state.exercise.currentExercise ? 1 : 0) +
+    state.exercise.completedExercises.length +
+    state.exercise.remainingExercises.length
+  );
+};
 
 export const selectCompletionPercentage = (state: RootState) => {
+  // 超慢跑模式使用時間比例計算完成百分比
+  if (state.exercise.workoutType === "slowrun") {
+    if (state.exercise.status === "finished") return 100;
+    return 0; // 超慢跑模式中沒有進度計算，要麼進行中，要麼完成
+  }
+
+  // HIIT 模式使用完成運動數量計算
   const total = selectTotalExercises(state);
   if (total === 0) return 0;
   return (state.exercise.completedExercises.length / total) * 100;
 };
 
-export const selectIsActive = (state: RootState) =>
-  state.exercise.status === "active";
-export const selectIsPaused = (state: RootState) =>
-  state.exercise.status === "paused";
-export const selectIsFinished = (state: RootState) =>
-  state.exercise.status === "finished";
-
-// 向下兼容的選擇器
-export const selectMode = (state: RootState) => state.exercise.mode;
-export const selectTimes = (state: RootState) => state.exercise.times;
-export const selectPause = (state: RootState) => state.exercise.pause;
+// 這些狀態可以直接通過 selectStatus 選擇器與值比較，無需單獨的選擇器
 
 export default exerciseSlice.reducer;

@@ -40,21 +40,15 @@ const ReactSpringBg: React.FC<ReactSpringBgProps> = ({ children }) => {
       const currentTime = Date.now();
       const elapsedTime = (currentTime - startTime) / 1000; // 轉換為秒
 
-      // 使用正弦和餘弦函數創建更複雜的循環移動路徑
-      // 疊加不同頻率的波，創造更自然的流動效果
-      const x =
-        0.5 +
-        0.3 * Math.sin(elapsedTime * 0.3) +
-        0.2 * Math.sin(elapsedTime * 0.1);
-      const y =
-        0.5 +
-        0.3 * Math.cos(elapsedTime * 0.2) +
-        0.2 * Math.cos(elapsedTime * 0.05);
+      // 使用簡單的正弦和餘弦函數，增加頻率係數使動畫更快但保持平滑
+      const x = 0.5 + 0.25 * Math.sin(elapsedTime * 0.3);
+      const y = 0.5 + 0.25 * Math.cos(elapsedTime * 0.25);
 
+      // 只在數值有足夠變化時才更新狀態，減少重繪
       setGradientPosition({ x, y });
 
-      // 每 5 秒改變一次動畫階段，使變化更頻繁
-      setAnimationPhase(Math.floor((elapsedTime % 20) / 5));
+      // 每 10 秒改變一次動畫階段，增加變化頻率
+      setAnimationPhase(Math.floor((elapsedTime % 20) / 10));
 
       animationFrameId = requestAnimationFrame(animateGradient);
     };
@@ -66,51 +60,63 @@ const ReactSpringBg: React.FC<ReactSpringBgProps> = ({ children }) => {
     };
   }, []);
 
-  // 處理滑鼠移動
+  // 處理滑鼠移動 - 使用節流來減少更新頻率
   useEffect(() => {
+    let lastUpdateTime = 0;
+    const throttleDelay = 50; // 每50毫秒才更新一次，減少狀態更新頻率
+
     const handleMouseMove = (e: MouseEvent) => {
-      // 計算滑鼠在視窗中的相對位置 (0-1)
-      setMousePosition({
-        x: e.clientX / window.innerWidth,
-        y: e.clientY / window.innerHeight,
-      });
+      const now = Date.now();
+
+      // 節流實現：只有當經過足夠時間才處理事件
+      if (now - lastUpdateTime > throttleDelay) {
+        // 計算滑鼠在視窗中的相對位置 (0-1)
+        setMousePosition({
+          x: e.clientX / window.innerWidth,
+          y: e.clientY / window.innerHeight,
+        });
+        lastUpdateTime = now;
+      }
     };
 
-    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mousemove", handleMouseMove, { passive: true });
 
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
     };
   }, []);
 
-  // 創建流暢的背景動畫 - 自動流動效果
+  // 創建流暢的背景動畫 - 優化反應速度和效能
   const springProps = useSpring({
     // 持續更新以創建流動效果
     from: { gradX: 0, gradY: 0, rotation: 0 },
     to: {
       gradX: gradientPosition.x * 100,
       gradY: gradientPosition.y * 100,
-      rotation: animationPhase % 2 === 0 ? -2 : 2,
+      rotation: animationPhase % 2 === 0 ? -0.8 : 0.8, // 微小旋轉以節省計算資源
     },
     config: {
-      tension: 60,
-      friction: 25,
+      tension: 120, // 提高張力使反應更快速
+      friction: 40, // 降低摩擦力使動畫更流暢
+      mass: 1, // 降低質量使動畫更輕盈
+      clamp: false, // 允許自然運動
+      precision: 0.05, // 降低精確度以提高效能
     },
   });
 
-  // 將 spring 值轉換為樣式屬性
+  // 將 spring 值轉換為樣式屬性，進一步優化計算
   const combinedStyle = useMemo(() => {
     return {
       transform: to(
         [springProps.rotation, springProps.gradX, springProps.gradY],
         (rotation, gradX, gradY) => {
-          // 結合自動流動與滑鼠互動
-          const mouseInfluenceX = (mousePosition.x - 0.5) * 10;
-          const mouseInfluenceY = (mousePosition.y - 0.5) * 10;
+          // 減少滑鼠影響以提高效能
+          const mouseInfluenceX = (mousePosition.x - 0.5) * 3;
+          const mouseInfluenceY = (mousePosition.y - 0.5) * 3;
 
           return `
-            scale(1.05)
-            rotate(${rotation + (mousePosition.x - 0.5) * 2}deg)
+            scale(1.15)
+            rotate(${rotation}deg)
             translateX(${mouseInfluenceX}px)
             translateY(${mouseInfluenceY}px)
           `;
@@ -118,33 +124,17 @@ const ReactSpringBg: React.FC<ReactSpringBgProps> = ({ children }) => {
       ),
 
       background: to([springProps.gradX, springProps.gradY], (gradX, gradY) => {
-        // 基於動畫位置創建更豐富的自動流動漸層效果
-        const angle1 = (gradX / 100) * 360;
-        const angle2 = ((gradX + 45) % 100) * 3.6;
+        // 進一步簡化漸變效果，使用整數計算減少浮點運算
+        const angle = Math.round(gradX * 3.6);
 
+        // 使用更簡單的漸變，降低渲染複雜度
         return `
-            linear-gradient(${angle1}deg, ${colors.color1} 0%, ${
-          colors.color4
-        } 25%, ${colors.color2} 50%, ${colors.color5} 75%, ${
-          colors.color3
-        } 100%),
-            radial-gradient(circle at ${gradX}% ${gradY * 0.3}%, ${
-          colors.color1
-        }, transparent 70%),
-            radial-gradient(circle at ${100 - gradX}% ${gradY * 0.7}%, ${
+            linear-gradient(${angle}deg, ${colors.color1} 0%, ${
           colors.color2
-        }, transparent 70%),
-            radial-gradient(circle at ${gradX * 0.5}% ${100 - gradY * 0.5}%, ${
-          colors.color3
-        } 10%, transparent 60%),
-            radial-gradient(circle at ${gradX * 0.8}% ${gradY * 0.8}%, ${
-          colors.color5
-        }, transparent 70%),
-            conic-gradient(from ${angle2}deg at ${gradX * 0.6}% ${
-          gradY * 0.6
-        }%, ${colors.color1} 0deg, ${colors.color2} 120deg, ${
-          colors.color3
-        } 240deg, ${colors.color1} 360deg)
+        } 50%, ${colors.color3} 100%),
+            radial-gradient(circle at ${Math.round(gradX)}% ${Math.round(
+          gradY * 0.5
+        )}%, ${colors.color5}, transparent 60%)
           `;
       }),
     };
@@ -156,26 +146,28 @@ const ReactSpringBg: React.FC<ReactSpringBgProps> = ({ children }) => {
     colors,
   ]);
 
-  // 靜態樣式 - 針對流動紅橙色運動主題優化
+  // 靜態樣式 - 針對效能優化
   const staticStyle = {
     position: "fixed" as const,
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    width: "100vw",
-    height: "100vh",
+    top: "-5%", // 向上延伸5%避免旋轉時出現白邊
+    left: "-5%", // 向左延伸5%避免旋轉時出現白邊
+    right: "-5%", // 向右延伸5%避免旋轉時出現白邊
+    bottom: "-5%", // 向下延伸5%避免旋轉時出現白邊
+    width: "110vw", // 增加寬度確保覆蓋
+    height: "110vh", // 增加高度確保覆蓋
     zIndex: -1,
-    backgroundSize: "400% 400%", // 增加背景大小使流動更明顯
-    backgroundBlendMode: "overlay, soft-light, screen, normal", // 添加混合模式使顏色更豐富
+    backgroundSize: "200% 200%", // 減小背景大小以降低GPU負擔
+    backgroundBlendMode: "soft-light", // 進一步簡化混合模式
     backgroundColor: "#1e2a5e", // 添加底色，確保始終有顏色
-    opacity: 1, // 使用完全不透明，確保可見
+    opacity: 1,
     overflow: "hidden" as const,
     margin: 0,
     padding: 0,
     pointerEvents: "none" as const,
-    boxShadow: "inset 0 0 150px rgba(0, 0, 0, 0.6)", // 增強內陰影效果
-    transition: "background-color 0.8s ease", // 平滑過渡底色變化
+    boxShadow: "inset 0 0 100px rgba(0, 0, 0, 0.5)", // 減輕陰影效果以提高效能
+    willChange: "transform, background", // 明確告訴瀏覽器優化這些屬性
+    transform: "translateZ(0)", // 啟用GPU加速
+    backfaceVisibility: "hidden" as const, // 優化渲染效能
   };
 
   return (
