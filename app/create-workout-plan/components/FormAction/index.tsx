@@ -4,8 +4,7 @@ import { initialValues } from "../PlanForm/const";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import {
-  setMode,
-  setTime,
+  setWorkoutPlan,
   setWorkoutType,
 } from "@/lib/features/exercise/exerciseSlice";
 import { playAudio } from "@/lib/features/audio/audioSlice";
@@ -27,9 +26,11 @@ const FormAction = ({ children }: { children: React.ReactNode }) => {
     form.validateFields().then((values) => {
       console.log("HIIT mode form values:", values);
 
+      // 使用新的 setWorkoutPlan action 替代舊的 setTime 和 setMode
       dispatch(
-        setTime(
+        setWorkoutPlan(
           values.items.map((i) => ({
+            id: `${i.name}-${Date.now()}`, // 生成唯一ID
             name: i.name,
             time: values.time,
             rest: values.rest,
@@ -37,7 +38,7 @@ const FormAction = ({ children }: { children: React.ReactNode }) => {
         )
       );
 
-      dispatch(setMode("exercise"));
+      // 直接導航到運動頁面
       router.push("/exercise");
     });
   };
