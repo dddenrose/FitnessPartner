@@ -5,12 +5,14 @@ import {
   selectCurrentExercise,
   selectIsFinished,
   selectWorkoutType,
+  selectIsSlowRun,
 } from "@/lib/features/exercise/exerciseSlice";
-import { useAppSelector } from "@/lib/hooks/redux/useRedux";
+import { useAppSelector } from "@/lib/hooks";
 import UnifiedTimer from "../UnifiedTimer";
 
 const Exercise: React.FC = () => {
   // 使用選擇器
+  const isSlowRun = useAppSelector(selectIsSlowRun);
   const currentExercise = useAppSelector(selectCurrentExercise);
   const isFinished = useAppSelector(selectIsFinished);
   const workoutType = useAppSelector(selectWorkoutType);
@@ -28,9 +30,8 @@ const Exercise: React.FC = () => {
   }
 
   // 使用統一的計時器，傳入不同的參數
-  const exerciseName =
-    workoutType === "hiit" ? currentExercise?.name : "超慢跑";
-  return <UnifiedTimer exerciseName={exerciseName} />;
+  const exerciseName = isSlowRun ? "超慢跑" : currentExercise?.name;
+  return <UnifiedTimer exerciseName={exerciseName} isSlowRun={isSlowRun} />;
 };
 
 export default Exercise;

@@ -79,6 +79,8 @@ export const makeStore = () => {
           ignoredPaths: ["firebase.app", "userInfo.firebaseUser"],
         },
       }),
+    // 啟用 Redux DevTools
+    devTools: process.env.NODE_ENV !== "production",
   });
 };
 

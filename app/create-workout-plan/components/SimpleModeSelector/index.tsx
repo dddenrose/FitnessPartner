@@ -3,7 +3,7 @@
 import {
   WorkoutModeType,
   setBpm,
-  setStatus,
+  startSlowRun,
   setWorkoutType,
 } from "@/lib/features/exercise/exerciseSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/redux/useRedux";
@@ -25,7 +25,7 @@ const SimpleModeSelector: React.FC = () => {
   const [bpm, setBpmState] = useState<number>(currentBpm);
 
   const handleSlowRunStart = useCallback(() => {
-    dispatch(setStatus("active"));
+    dispatch(startSlowRun());
     router.push("/exercise");
   }, [dispatch, router]);
 

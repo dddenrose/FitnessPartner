@@ -116,7 +116,28 @@ export const exerciseSlice = createSlice({
       state.status = action.payload;
     },
 
-    // 設置完整的運動計劃
+    // 開始超慢跑模式
+    startSlowRun: (state) => {
+      // 清除任何現有的運動計劃，因為超慢跑不需要
+      state.initialWorkoutPlan = [];
+      state.remainingExercises = [];
+      state.completedExercises = [];
+      state.currentExercise = null;
+      state.status = "active";
+      state.workoutType = "slowrun";
+      state.error = null;
+
+      // 重置會話信息並設置開始時間
+      const now = new Date().toISOString();
+      state.sessionInfo = {
+        startTime: now,
+        totalDuration: 0,
+        pausedTime: 0,
+        lastActive: now,
+      };
+    },
+
+    // 設置完整的運動計劃 (HIIT模式)
     setWorkoutPlan: (state, action: PayloadAction<WorkoutItem[]>) => {
       const workoutItems = action.payload;
 
@@ -130,6 +151,7 @@ export const exerciseSlice = createSlice({
       state.completedExercises = [];
       state.currentExercise = { ...workoutItems[0] };
       state.status = "prepare";
+      state.workoutType = "hiit";
       state.error = null;
 
       // 重置會話信息
@@ -196,6 +218,41 @@ export const exerciseSlice = createSlice({
       }
     },
 
+    // 完成運動並記錄運動數據
+    completeWorkout: (state) => {
+      // 如果是運行中的狀態，計算總時間
+      if (state.status === "active" || state.status === "paused") {
+        // 計算總運動時間
+        if (state.sessionInfo.startTime) {
+          const endTime = new Date().getTime();
+          const startTime = new Date(state.sessionInfo.startTime).getTime();
+          state.sessionInfo.totalDuration =
+            (endTime - startTime) / 1000 - state.sessionInfo.pausedTime;
+        }
+      }
+
+      // 確保超慢跑模式也能正確記錄，添加一個虛擬完成的運動項目
+      if (
+        state.workoutType === "slowrun" &&
+        state.completedExercises.length === 0
+      ) {
+        state.completedExercises = [
+          {
+            id: "slowrun-session",
+            name: "超慢跑",
+            time: state.sessionInfo.totalDuration,
+            rest: 0,
+          },
+        ];
+
+        // 更新初始計劃以便於記錄
+        state.initialWorkoutPlan = [...state.completedExercises];
+      }
+
+      // 將狀態設為已完成
+      state.status = "finished";
+    },
+
     // 重置運動計劃到初始狀態
     resetWorkout: (state) => {
       if (state.initialWorkoutPlan.length > 0) {
@@ -232,6 +289,8 @@ export const {
   toggleMetronome,
   setStatus,
   setWorkoutPlan,
+  startSlowRun,
+  completeWorkout,
   updateCurrentExerciseTime,
   updateCurrentRestTime,
   moveToNextExercise,
@@ -248,6 +307,8 @@ export const selectWorkoutType = (state: RootState) =>
 export const selectBpm = (state: RootState) => state.exercise.bpm;
 export const selectMetronomeActive = (state: RootState) =>
   state.exercise.metronomeActive;
+export const selectIsSlowRun = (state: RootState) =>
+  state.exercise.workoutType === "slowrun";
 export const selectCurrentExercise = (state: RootState) =>
   state.exercise.currentExercise;
 export const selectRemainingExercises = (state: RootState) =>

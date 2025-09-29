@@ -5,10 +5,13 @@ import {
   MutedOutlined,
   PauseOutlined,
   RightOutlined,
-  RollbackOutlined,
+  CheckCircleOutlined,
   SoundOutlined,
+  AudioOutlined,
+  AudioMutedOutlined,
+  RollbackOutlined,
 } from "@ant-design/icons";
-import { Button, Flex, Modal } from "antd";
+import { Button, Flex, Modal, Tooltip } from "antd";
 import { setIsGlobalPlaying } from "@/lib/features/audio/audioSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/redux/useRedux";
 import { WorkoutModeType } from "@/lib/features/exercise/exerciseSlice";
@@ -16,10 +19,12 @@ import {
   setStatus,
   skipCurrentExercise,
   resetWorkout,
+  completeWorkout,
   selectStatus,
   selectCurrentExercise,
   selectRemainingExercises,
   selectInitialWorkoutPlan,
+  toggleMetronome,
 } from "@/lib/features/exercise/exerciseSlice";
 import { useRouter } from "next/navigation";
 import { useMediaQuery } from "@/lib/hooks/index";
@@ -37,12 +42,15 @@ const ControlPanel: React.FC = () => {
   const currentExercise = useAppSelector(selectCurrentExercise);
   const remainingExercises = useAppSelector(selectRemainingExercises);
   const initialWorkoutPlan = useAppSelector(selectInitialWorkoutPlan);
-  const workoutType = useAppSelector((state) => state.exercise.workoutType);
 
   // 其他狀態
   const isGlobalPlaying = useAppSelector(
     (state) => state.audio.isGlobalPlaying
   );
+  const metronomeActive = useAppSelector(
+    (state) => state.exercise.metronomeActive
+  );
+  const workoutType = useAppSelector((state) => state.exercise.workoutType);
 
   // 是否為手機版面
   const isMobile = useMediaQuery("(max-width: 768px)");
@@ -67,15 +75,36 @@ const ControlPanel: React.FC = () => {
     dispatch(setIsGlobalPlaying(!isGlobalPlaying));
   };
 
-  const handleBack = () => {
+  const handleToggleMetronome = () => {
+    dispatch(toggleMetronome(!metronomeActive));
+  };
+
+  const handleComplete = () => {
     modalApi.confirm({
-      title: "確定要返回嗎？",
-      content: "所有進度將會遺失",
-      okText: "確定",
+      title: "完成運動",
+      content: "確定要結束並記錄本次運動嗎？",
+      okText: "完成",
       cancelText: "取消",
       onOk: () => {
+        // 完成運動並記錄數據
+        dispatch(completeWorkout());
+        // 導航到報告頁面
+        router.push("/workout-report");
+      },
+    });
+  };
+
+  const handleReturn = () => {
+    modalApi.confirm({
+      title: "返回選擇",
+      content: "確定要返回嗎？當前運動進度將不會被記錄。",
+      okText: "返回",
+      cancelText: "取消",
+      onOk: () => {
+        // 重置運動狀態但不記錄數據
         dispatch(resetWorkout());
-        router.push("/create-workout-plan");
+        // 返回主頁面
+        router.push("/");
       },
     });
   };
@@ -126,11 +155,33 @@ const ControlPanel: React.FC = () => {
           {isGlobalPlaying ? <SoundOutlined /> : <MutedOutlined />}
         </Button>
 
+        {workoutType === "slowrun" && (
+          <Tooltip title={metronomeActive ? "關閉節拍燈" : "開啟節拍燈"}>
+            <Button
+              onClick={handleToggleMetronome}
+              style={buttonStyle}
+              type="default"
+              shape="circle"
+              size="large"
+            >
+              {metronomeActive ? <AudioOutlined /> : <AudioMutedOutlined />}
+            </Button>
+          </Tooltip>
+        )}
+
         <Button
-          onClick={handleBack}
+          onClick={handleComplete}
           style={buttonStyle}
-          type="primary"
-          danger
+          shape="circle"
+          size="large"
+        >
+          <CheckCircleOutlined />
+        </Button>
+
+        <Button
+          onClick={handleReturn}
+          style={buttonStyle}
+          type="default"
           shape="circle"
           size="large"
         >

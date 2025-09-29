@@ -1,0 +1,13 @@
+.flashLight {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  transition: background-color 0.05s ease, box-shadow 0.05s ease;
+}
+
+@media (max-width: 576px) {
+  .flashLight {
+    width: 60px;
+    height: 60px;
+  }
+}
