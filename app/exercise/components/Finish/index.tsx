@@ -68,7 +68,7 @@ const Finish: React.FC = () => {
       const workoutData = {
         date: today,
         duration: calculateTotalDuration(),
-        workoutType: workoutType,
+        workoutType,
         completedExercises: completedExercises.length,
         notes:
           workoutType === "slowrun"
