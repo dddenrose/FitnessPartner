@@ -103,8 +103,8 @@ const ControlPanel: React.FC = () => {
       onOk: () => {
         // 重置運動狀態但不記錄數據
         dispatch(resetWorkout());
-        // 返回主頁面
-        router.push("/");
+        // 返回運動計劃選擇頁面
+        router.push("/create-workout-plan");
       },
     });
   };

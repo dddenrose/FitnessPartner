@@ -17,8 +17,8 @@ const App: React.FC = () => {
   const dispatch = useAppDispatch();
   const status = useAppSelector((state) => state.exercise.status);
 
-  // 使用計時器邏輯 hook
-  useTimerLogic();
+  // 使用計時器邏輯 hook - 在頁面層級統一管理
+  const timerData = useTimerLogic();
 
   // 使用倒數音效 hook - 自動播放
   useCountdownSound({
@@ -51,7 +51,7 @@ const App: React.FC = () => {
       {/* 運動進行中狀態 */}
       {(status === "active" || status === "paused") && (
         <>
-          <Exercise />
+          <Exercise timerData={timerData} />
           <ControlPanel />
         </>
       )}
