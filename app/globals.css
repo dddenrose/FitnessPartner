@@ -1,3 +1,32 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* 全域 CSS 變數 */
+:root {
+  /* 基礎顏色 */
+  --color-primary: #202020ff;
+  --color-warning: #faad14;
+  --text-white: #ffffff;
+  
+  /* 字體 */
+  --font-family-mono: monospace;
+  --font-size-xl: 1.25rem;
+  --font-size-2xl: 1.5rem;
+  --font-size-3xl: 1.875rem;
+  --font-size-4xl: 2.25rem;
+  --font-size-6xl: 3.75rem;
+  --font-size-7xl: 4.5rem;
+  --font-size-9xl: 8rem;
+  
+  /* 間距 */
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  
+  /* 其他 */
+  --border-radius-full: 50%;
+  --transition-fast: 0.05s ease;
+  --transition-base: 0.2s ease-out;
+}

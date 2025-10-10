@@ -9,6 +9,7 @@ import {
 } from "@/lib/features/exercise/exerciseSlice";
 import { useAppSelector } from "@/lib/hooks";
 import UnifiedTimer from "../UnifiedTimer";
+import styles from "../../styles.module.css";
 
 interface ExerciseProps {
   timerData: {
@@ -30,12 +31,12 @@ const Exercise: React.FC<ExerciseProps> = ({ timerData }) => {
   // 如果運動已完成，顯示完成訊息
   if (isFinished) {
     return (
-      <Flex vertical align="center">
-        <Typography.Title level={2} style={{ color: "white" }}>
+      <div className={styles.finishedContainer}>
+        <Typography.Title level={2} className={styles.finishedTitle}>
           運動完成
         </Typography.Title>
-        <div className="text-6xl text-white">恭喜！</div>
-      </Flex>
+        <div className={styles.congratsText}>恭喜！</div>
+      </div>
     );
   }
 
