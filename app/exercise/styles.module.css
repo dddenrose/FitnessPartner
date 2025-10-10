@@ -1,0 +1,66 @@
+/* Exercise 頁面樣式 */
+.exerciseContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  max-height: 100vh;
+  overflow: hidden;
+  position: relative;
+  gap: var(--spacing-lg);
+}
+
+.exerciseContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-lg);
+  z-index: 10;
+}
+
+.finishedContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.finishedTitle {
+  color: var(--text-white);
+  font-size: var(--font-size-2xl);
+  margin: 0;
+}
+
+.congratsText {
+  font-size: var(--font-size-6xl);
+  color: var(--text-white);
+  text-align: center;
+  font-weight: bold;
+}
+
+/* 響應式設計 */
+@media (max-width: 768px) {
+  .exerciseContainer {
+    gap: var(--spacing-md);
+    padding: var(--spacing-sm);
+  }
+  
+  .finishedTitle {
+    font-size: var(--font-size-xl);
+  }
+  
+  .congratsText {
+    font-size: var(--font-size-4xl);
+  }
+}
+
+@media (max-width: 480px) {
+  .exerciseContainer {
+    gap: var(--spacing-sm);
+  }
+  
+  .congratsText {
+    font-size: var(--font-size-3xl);
+  }
+}

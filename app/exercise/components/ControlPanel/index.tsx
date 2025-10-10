@@ -27,7 +27,7 @@ import {
   toggleMetronome,
 } from "@/lib/features/exercise/exerciseSlice";
 import { useRouter } from "next/navigation";
-import { useMediaQuery } from "@/lib/hooks/index";
+import styles from "./styles.module.css";
 
 /**
  * 統一的控制面板組件，整合所有控制按鈕
@@ -51,9 +51,6 @@ const ControlPanel: React.FC = () => {
     (state) => state.exercise.metronomeActive
   );
   const workoutType = useAppSelector((state) => state.exercise.workoutType);
-
-  // 是否為手機版面
-  const isMobile = useMediaQuery("(max-width: 768px)");
 
   // 按鈕處理函數
   const handlePause = () => {
@@ -109,23 +106,13 @@ const ControlPanel: React.FC = () => {
     });
   };
 
-  // 按鈕樣式
-  const buttonStyle = {
-    width: isMobile ? 70 : 100,
-    height: isMobile ? 70 : 100,
-    fontSize: isMobile ? 24 : 32,
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-  };
-
   return (
     <>
       {context}
-      <Flex gap={16} wrap="wrap" justify="center">
+      <div className={styles.controlContainer}>
         <Button
           onClick={handlePause}
-          style={buttonStyle}
+          className={styles.controlButton}
           type="default"
           shape="circle"
           size="large"
@@ -136,7 +123,7 @@ const ControlPanel: React.FC = () => {
         {workoutType === "hiit" && (
           <Button
             onClick={handleSkip}
-            style={buttonStyle}
+            className={styles.controlButton}
             type="default"
             shape="circle"
             size="large"
@@ -147,7 +134,7 @@ const ControlPanel: React.FC = () => {
 
         <Button
           onClick={handleAudio}
-          style={buttonStyle}
+          className={styles.controlButton}
           type="default"
           shape="circle"
           size="large"
@@ -159,7 +146,7 @@ const ControlPanel: React.FC = () => {
           <Tooltip title={metronomeActive ? "關閉節拍燈" : "開啟節拍燈"}>
             <Button
               onClick={handleToggleMetronome}
-              style={buttonStyle}
+              className={styles.controlButton}
               type="default"
               shape="circle"
               size="large"
@@ -171,7 +158,7 @@ const ControlPanel: React.FC = () => {
 
         <Button
           onClick={handleComplete}
-          style={buttonStyle}
+          className={styles.controlButton}
           shape="circle"
           size="large"
         >
@@ -180,14 +167,14 @@ const ControlPanel: React.FC = () => {
 
         <Button
           onClick={handleReturn}
-          style={buttonStyle}
+          className={styles.controlButton}
           type="default"
           shape="circle"
           size="large"
         >
           <RollbackOutlined />
         </Button>
-      </Flex>
+      </div>
     </>
   );
 };

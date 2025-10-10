@@ -1,0 +1,52 @@
+/* ControlPanel 組件樣式 */
+.controlContainer {
+  display: flex;
+  gap: var(--spacing-md);
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.controlButton {
+  width: 100px;
+  height: 100px;
+  font-size: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: var(--transition-base);
+}
+
+.controlButton:hover {
+  transform: scale(1.05);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.controlButton:active {
+  transform: scale(0.95);
+}
+
+/* 響應式設計 - 手機版 */
+@media (max-width: 768px) {
+  .controlButton {
+    width: 70px;
+    height: 70px;
+    font-size: 1.5rem;
+  }
+  
+  .controlContainer {
+    gap: var(--spacing-sm);
+  }
+}
+
+/* 超小螢幕優化 */
+@media (max-width: 480px) {
+  .controlButton {
+    width: 60px;
+    height: 60px;
+    font-size: 1.25rem;
+  }
+  
+  .controlContainer {
+    gap: var(--spacing-xs);
+  }
+}

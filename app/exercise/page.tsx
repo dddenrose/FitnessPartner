@@ -12,6 +12,7 @@ import ControlPanel from "./components/ControlPanel";
 import Exercise from "./components/Exercise";
 import Finish from "./components/Finish";
 import ReactSpringBg from "./components/ReactSpringBg";
+import styles from "./styles.module.css";
 
 const App: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -36,31 +37,20 @@ const App: React.FC = () => {
   }, [dispatch]);
 
   return (
-    <Flex
-      vertical
-      justify="center"
-      align="center"
-      style={{
-        minHeight: "100vh",
-        maxHeight: "100vh",
-        overflow: "hidden",
-        position: "relative",
-      }}
-      gap={24}
-    >
+    <div className={styles.exerciseContainer}>
       {/* 運動進行中狀態 */}
       {(status === "active" || status === "paused") && (
-        <>
+        <div className={styles.exerciseContent}>
           <Exercise timerData={timerData} />
           <ControlPanel />
-        </>
+        </div>
       )}
 
       {/* 運動結束狀態 */}
       {status === "finished" && <Finish />}
 
       <ReactSpringBg />
-    </Flex>
+    </div>
   );
 };
 
