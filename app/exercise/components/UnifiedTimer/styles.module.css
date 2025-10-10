@@ -6,21 +6,21 @@
 }
 
 .exerciseTitle {
-  color: var(--text-white);
+  color: var(--text-primary);
   margin-bottom: var(--spacing-sm);
 }
 
 .timerDisplay {
   font-size: var(--font-size-9xl);
   font-weight: bold;
-  color: var(--text-white);
+  color: var(--text-primary);
   font-family: var(--font-family-mono);
   margin: var(--spacing-sm) 0;
   line-height: 1;
 }
 
 .phaseInfo {
-  color: var(--text-white);
+  color: var(--text-primary);
   margin-top: var(--spacing-sm);
 }
 

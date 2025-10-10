@@ -8,11 +8,14 @@ import {
   BarChartOutlined,
   ThunderboltOutlined,
   MenuOutlined,
+  BulbOutlined,
+  BulbFilled,
 } from "@ant-design/icons";
 import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
 import { routerMap } from "./const";
-import { useAppSelector } from "@/lib/hooks/index";
+import { useAppSelector, useAppDispatch } from "@/lib/hooks/index";
+import { toggleTheme, selectTheme } from "@/lib/features/theme/themeSlice";
 import UserProfileMenu from "../UserProfileMenu";
 
 // 定義導航項的圖標
@@ -75,6 +78,8 @@ const useNavigation = () => {
 // 桌面版導航組件
 const DesktopNavigation: React.FC = () => {
   const { isRouteActive, navigateTo } = useNavigation();
+  const dispatch = useAppDispatch();
+  const theme = useAppSelector(selectTheme);
 
   // 桌面版導覽項目
   const NavLink = ({ title }: { title: keyof typeof routerMap }) => {
@@ -86,7 +91,7 @@ const DesktopNavigation: React.FC = () => {
         <Button
           type="text"
           style={{
-            color: isActive ? "#333333" : "#555555",
+            color: isActive ? "var(--text-primary)" : "var(--text-secondary)",
             fontSize: 13,
             letterSpacing: 0.8,
             fontWeight: isActive ? 600 : 400,
@@ -98,7 +103,9 @@ const DesktopNavigation: React.FC = () => {
             alignItems: "center",
             gap: 6,
             overflow: "hidden",
-            background: isActive ? "rgba(240, 240, 240, 0.8)" : "transparent",
+            background: isActive
+              ? "var(--bg-tertiary)"
+              : "transparent",
             transition: "all 0.3s ease",
           }}
           onClick={() => navigateTo(targetPath)}
@@ -116,7 +123,23 @@ const DesktopNavigation: React.FC = () => {
         <NavLink title="Workout Plan" />
         <NavLink title="Workout Report" />
       </Flex>
-      <Space align="center">
+      <Space align="center" size={12}>
+        <Tooltip title={theme === "dark" ? "切換到亮色模式" : "切換到暗色模式"}>
+          <Button
+            type="text"
+            icon={theme === "dark" ? <BulbOutlined /> : <BulbFilled />}
+            onClick={() => dispatch(toggleTheme())}
+            style={{
+              fontSize: 16,
+              color: "var(--text-primary)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              width: 36,
+              height: 36,
+            }}
+          />
+        </Tooltip>
         <UserProfileMenu />
       </Space>
     </>
@@ -127,6 +150,8 @@ const DesktopNavigation: React.FC = () => {
 const MobileNavigation: React.FC = () => {
   const { pathname, drawerVisible, setDrawerVisible, navigateTo } =
     useNavigation();
+  const dispatch = useAppDispatch();
+  const theme = useAppSelector(selectTheme);
 
   return (
     <Flex align="center" justify="space-between" style={{ width: "100%" }}>
@@ -136,13 +161,31 @@ const MobileNavigation: React.FC = () => {
         onClick={() => setDrawerVisible(true)}
         style={{
           fontSize: 16,
-          color: "#333333",
+          color: "var(--text-primary)",
           padding: "0 12px",
           background: "transparent",
           border: "none",
         }}
       />
-      <UserProfileMenu />
+      <Flex align="center" gap={8}>
+        <Tooltip title={theme === "dark" ? "切換到亮色模式" : "切換到暗色模式"}>
+          <Button
+            type="text"
+            icon={theme === "dark" ? <BulbOutlined /> : <BulbFilled />}
+            onClick={() => dispatch(toggleTheme())}
+            style={{
+              fontSize: 16,
+              color: "var(--text-primary)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              width: 36,
+              height: 36,
+            }}
+          />
+        </Tooltip>
+        <UserProfileMenu />
+      </Flex>
 
       <Drawer
         title="選單"
@@ -194,14 +237,14 @@ const Navigation: React.FC = () => {
       justify="center"
       style={{
         width: "100%",
-        backgroundColor: "rgba(255, 255, 255, 0.3)",
-        backdropFilter: "blur(8px)",
+        backgroundColor: "var(--bg-primary)",
+        backdropFilter: "blur(12px)",
         height: "44px",
-        boxShadow: "0 2px 10px rgba(0, 0, 0, 0.05)",
+        boxShadow: "0 2px 10px var(--shadow-color)",
         position: "fixed",
         top: 0,
         zIndex: 2,
-        borderBottom: "1px solid rgba(0, 0, 0, 0.06)",
+        borderBottom: "1px solid var(--border-color)",
       }}
     >
       <Flex

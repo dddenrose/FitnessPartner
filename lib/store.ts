@@ -4,6 +4,7 @@ import audioReducer from "./features/audio/audioSlice";
 import FirebaseReducer from "./features/firebase/firebaseSlice";
 import workoutReportReducer from "./features/workoutReport/workoutReportSlice";
 import exerciseReducer from "./features/exercise/exerciseSlice";
+import themeReducer from "./features/theme/themeSlice";
 
 // Redux-Persist imports
 import {
@@ -39,6 +40,12 @@ const workoutReportPersistConfig = {
   whitelist: ["reports"], // 持久化報告數據
 };
 
+const themePersistConfig = {
+  key: "theme",
+  storage,
+  whitelist: ["mode"], // 持久化主題模式
+};
+
 // 合併所有 reducers
 const rootReducer = combineReducers({
   userInfo: userInfoReducer,
@@ -49,6 +56,7 @@ const rootReducer = combineReducers({
     workoutReportPersistConfig,
     workoutReportReducer
   ),
+  theme: persistReducer(themePersistConfig, themeReducer),
 });
 
 export const makeStore = () => {

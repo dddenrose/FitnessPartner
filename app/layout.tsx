@@ -6,6 +6,8 @@ import { Bricolage_Grotesque, Inter } from "next/font/google";
 import Navigation from "./components/Navigation";
 import OutletWrapper from "./components/OutletWrapper";
 import StoreProvider from "./StoreProvider";
+import ThemeProvider from "./components/ThemeProvider";
+import DynamicAntdTheme from "./components/DynamicAntdTheme";
 import "./globals.css";
 import { initializeApp } from "firebase/app";
 import { firebaseConfig } from "./firebase";
@@ -37,24 +39,20 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${roboto.className} p-0 m-0`}>
         <AntdRegistry>
-          <ConfigProvider
-            theme={{
-              token: {
-                colorPrimary: "#202020FF",
-              },
-            }}
-          >
-            <StoreProvider>
-              <Flex vertical justify="flex-start">
-                <AuthProvider>
-                  <Navigation />
-                  <AppRouterCacheProvider>
-                    <OutletWrapper>{children}</OutletWrapper>
-                  </AppRouterCacheProvider>
-                </AuthProvider>
-              </Flex>
-            </StoreProvider>
-          </ConfigProvider>
+          <StoreProvider>
+            <ThemeProvider>
+              <DynamicAntdTheme>
+                <Flex vertical justify="flex-start">
+                  <AuthProvider>
+                    <Navigation />
+                    <AppRouterCacheProvider>
+                      <OutletWrapper>{children}</OutletWrapper>
+                    </AppRouterCacheProvider>
+                  </AuthProvider>
+                </Flex>
+              </DynamicAntdTheme>
+            </ThemeProvider>
+          </StoreProvider>
         </AntdRegistry>
       </body>
     </html>
