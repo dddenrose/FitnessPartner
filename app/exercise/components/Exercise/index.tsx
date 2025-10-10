@@ -10,7 +10,16 @@ import {
 import { useAppSelector } from "@/lib/hooks";
 import UnifiedTimer from "../UnifiedTimer";
 
-const Exercise: React.FC = () => {
+interface ExerciseProps {
+  timerData: {
+    currentTime: number;
+    currentRestTime: number;
+    isRunning: boolean;
+    isRestMode: boolean;
+  };
+}
+
+const Exercise: React.FC<ExerciseProps> = ({ timerData }) => {
   // 使用選擇器
   const isSlowRun = useAppSelector(selectIsSlowRun);
   const currentExercise = useAppSelector(selectCurrentExercise);
@@ -32,7 +41,13 @@ const Exercise: React.FC = () => {
 
   // 使用統一的計時器，傳入不同的參數
   const exerciseName = isSlowRun ? "超慢跑" : currentExercise?.name;
-  return <UnifiedTimer exerciseName={exerciseName} isSlowRun={isSlowRun} />;
+  return (
+    <UnifiedTimer
+      exerciseName={exerciseName}
+      isSlowRun={isSlowRun}
+      timerData={timerData}
+    />
+  );
 };
 
 export default Exercise;

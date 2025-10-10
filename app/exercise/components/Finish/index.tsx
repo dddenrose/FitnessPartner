@@ -116,26 +116,35 @@ const Finish: React.FC = () => {
   // 使用 ref 來追蹤是否已經嘗試保存
   const attemptedSaveRef = React.useRef(false);
 
-  // 在組件載入時嘗試保存一次且僅一次
+  // 在組件載入時嘗試保存一次且僅一次並自動導航至報表頁面
   useEffect(() => {
     // 只在首次渲染時嘗試保存一次
     if (!saved && !saving && !attemptedSaveRef.current) {
       attemptedSaveRef.current = true; // 標記已嘗試保存
       console.log("自動保存運動記錄...");
 
-      saveWorkoutData().catch((error) => {
-        console.error("儲存過程中出現錯誤:", error);
-        setSaving(false);
-        message.error("儲存運動記錄失敗，請確認您是否已登入。");
-      });
+      saveWorkoutData()
+        .then((success) => {
+          if (success) {
+            // 成功保存後自動導航到報表頁面
+            setTimeout(() => {
+              router.push("/workout-report");
+            }, 1000); // 延遲一秒跳轉，讓用戶看到完成提示
+          }
+        })
+        .catch((error) => {
+          console.error("儲存過程中出現錯誤:", error);
+          setSaving(false);
+          message.error("儲存運動記錄失敗，請確認您是否已登入。");
+        });
     }
-  }, [saved, saving, saveWorkoutData]);
+  }, [saved, saving, saveWorkoutData, router]);
 
   // 處理完成按鈕點擊
   const handleFinish = async () => {
-    // 如果已經保存了，直接導航
+    // 如果已經保存了，直接導航到報表頁面
     if (saved) {
-      router.push("/");
+      router.push("/workout-report");
       return;
     }
 
@@ -145,10 +154,10 @@ const Finish: React.FC = () => {
       return;
     }
 
-    // 如果還沒保存，先保存再導航
+    // 如果還沒保存，先保存再導航到報表頁面
     const saveSuccess = await saveWorkoutData();
     if (saveSuccess) {
-      router.push("/");
+      router.push("/workout-report");
     }
   };
 
@@ -179,7 +188,7 @@ const Finish: React.FC = () => {
       )}
 
       <Button type="primary" onClick={handleFinish} loading={saving}>
-        {saved ? "返回首頁" : "完成並儲存"}
+        {saved ? "查看報表" : "完成並查看報表"}
       </Button>
     </Flex>
   );

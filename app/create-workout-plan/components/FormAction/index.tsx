@@ -6,6 +6,7 @@ import { useDispatch } from "react-redux";
 import {
   setWorkoutPlan,
   setWorkoutType,
+  setStatus,
 } from "@/lib/features/exercise/exerciseSlice";
 import { playAudio } from "@/lib/features/audio/audioSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/redux/useRedux";
@@ -37,6 +38,9 @@ const FormAction = ({ children }: { children: React.ReactNode }) => {
           }))
         )
       );
+
+      // 設置運動狀態為活動狀態，這樣可以自動啟動計時器
+      dispatch(setStatus("active"));
 
       // 直接導航到運動頁面
       router.push("/exercise");
