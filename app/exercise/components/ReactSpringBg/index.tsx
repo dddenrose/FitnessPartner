@@ -1,5 +1,7 @@
 import React, { useState, useEffect, ReactNode, useMemo } from "react";
 import { useSpring, animated, to } from "@react-spring/web";
+import { useAppSelector } from "@/lib/hooks/index";
+import { selectTheme } from "@/lib/features/theme/themeSlice";
 
 interface ReactSpringBgProps {
   children?: ReactNode;
@@ -8,8 +10,10 @@ interface ReactSpringBgProps {
 /**
  * 使用 React Spring 創建的互動式漸變背景動畫
  * 具有自動流動的漸層效果和滑鼠互動功能
+ * 支援亮色/暗色主題切換
  */
 const ReactSpringBg: React.FC<ReactSpringBgProps> = ({ children }) => {
+  const theme = useAppSelector(selectTheme);
   // 使用狀態控制動畫階段
   const [animationPhase, setAnimationPhase] = useState(0);
 
@@ -19,17 +23,28 @@ const ReactSpringBg: React.FC<ReactSpringBgProps> = ({ children }) => {
   // 追踪滑鼠位置
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
-  // 定義顏色 - 使用更鮮豔的紅色、橘色和深色系，增加運動活力和動態感
+  // 定義顏色 - 根據主題使用不同的顏色系統
   const colors = useMemo(() => {
-    return {
-      color1: "#ff2a2a", // 更鮮豔的紅色
-      color2: "#ff9500", // 更明亮的橙色
-      color3: "#1e2a5e", // 更深的藍色，作為對比
-      // 增加額外的漸變點顏色
-      color4: "#ff4d4d", // 略淡的紅色，增加漸層變化
-      color5: "#ffbd00", // 金黃色，增強活力感
-    };
-  }, []);
+    if (theme === "dark") {
+      // Dark theme: SpaceX-inspired deep space colors
+      return {
+        color1: "#000814", // Deep space black-blue
+        color2: "#001d3d", // Dark navy
+        color3: "#003566", // Medium blue
+        color4: "#001122", // Very dark blue
+        color5: "#004080", // Accent blue
+      };
+    } else {
+      // Light theme: Clean, sophisticated light colors
+      return {
+        color1: "#e3f2fd", // Light blue
+        color2: "#bbdefb", // Sky blue
+        color3: "#90caf9", // Bright blue
+        color4: "#d6eaff", // Very light blue
+        color5: "#64b5f6", // Medium bright blue
+      };
+    }
+  }, [theme]);
 
   // 設置自動流動動畫
   useEffect(() => {
@@ -158,13 +173,16 @@ const ReactSpringBg: React.FC<ReactSpringBgProps> = ({ children }) => {
     zIndex: -1,
     backgroundSize: "200% 200%", // 減小背景大小以降低GPU負擔
     backgroundBlendMode: "soft-light", // 進一步簡化混合模式
-    backgroundColor: "#1e2a5e", // 添加底色，確保始終有顏色
+    backgroundColor: theme === "dark" ? "#000814" : "#e3f2fd", // 主題相關底色
     opacity: 1,
     overflow: "hidden" as const,
     margin: 0,
     padding: 0,
     pointerEvents: "none" as const,
-    boxShadow: "inset 0 0 100px rgba(0, 0, 0, 0.5)", // 減輕陰影效果以提高效能
+    boxShadow:
+      theme === "dark"
+        ? "inset 0 0 100px rgba(0, 0, 0, 0.5)"
+        : "inset 0 0 100px rgba(0, 0, 0, 0.05)", // 減輕陰影效果以提高效能
     willChange: "transform, background", // 明確告訴瀏覽器優化這些屬性
     transform: "translateZ(0)", // 啟用GPU加速
     backfaceVisibility: "hidden" as const, // 優化渲染效能
