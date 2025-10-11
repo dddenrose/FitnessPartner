@@ -8,8 +8,8 @@
   --color-primary: #000000;
   --color-secondary: #0a0a0a;
   --color-tertiary: #1a1a1a;
-  --color-accent: #005288;
-  --color-accent-light: #0066aa;
+  --color-accent: #0066aa;
+  --color-accent-light: #0088dd;
   --color-warning: #faad14;
   --text-primary: #ffffff;
   --text-secondary: #b0b0b0;
@@ -17,15 +17,15 @@
   --bg-primary: #000000;
   --bg-secondary: #0a0a0a;
   --bg-tertiary: #1a1a1a;
-  --border-color: rgba(255, 255, 255, 0.1);
+  --border-color: rgba(0, 102, 170, 0.2);
   --shadow-color: rgba(0, 0, 0, 0.5);
   
-  /* Background gradient colors for ReactSpringBg */
+  /* Background gradient colors for ReactSpringBg - Enhanced SpaceX style */
   --gradient-color-1: #000814;
-  --gradient-color-2: #001d3d;
-  --gradient-color-3: #003566;
-  --gradient-color-4: #001122;
-  --gradient-color-5: #004080;
+  --gradient-color-2: #001529;
+  --gradient-color-3: #002447;
+  --gradient-color-4: #000a14;
+  --gradient-color-5: #003d66;
   
   /* 字體 */
   --font-family-mono: monospace;
