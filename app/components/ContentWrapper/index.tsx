@@ -9,7 +9,7 @@ const ContentWrapper = ({ children }: { children: React.ReactNode }) => {
       style={{
         width: "100%",
         padding: 32,
-        backgroundColor: "#E8E8E8FF",
+        backgroundColor: "var(--bg-secondary)",
         minHeight: "100vh",
       }}
     >

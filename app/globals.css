@@ -15,18 +15,18 @@
   --text-secondary: #b0b0b0;
   --text-tertiary: #808080;
   --bg-primary: #000000;
-  --bg-secondary: #0a0a0a;
+  --bg-secondary: #303030;
   --bg-tertiary: #1a1a1a;
   --border-color: rgba(0, 102, 170, 0.2);
   --shadow-color: rgba(0, 0, 0, 0.5);
-  
+
   /* Background gradient colors for ReactSpringBg - Enhanced SpaceX style */
   --gradient-color-1: #000814;
   --gradient-color-2: #001529;
   --gradient-color-3: #002447;
   --gradient-color-4: #000a14;
   --gradient-color-5: #003d66;
-  
+
   /* 字體 */
   --font-family-mono: monospace;
   --font-size-xl: 1.25rem;
@@ -36,13 +36,13 @@
   --font-size-6xl: 3.75rem;
   --font-size-7xl: 4.5rem;
   --font-size-9xl: 8rem;
-  
+
   /* 間距 */
   --spacing-xs: 0.25rem;
   --spacing-sm: 0.5rem;
   --spacing-md: 1rem;
   --spacing-lg: 1.5rem;
-  
+
   /* 其他 */
   --border-radius-full: 50%;
   --transition-fast: 0.05s ease;
@@ -67,7 +67,7 @@
   --bg-tertiary: #e9ecef;
   --border-color: rgba(0, 0, 0, 0.1);
   --shadow-color: rgba(0, 0, 0, 0.1);
-  
+
   /* Background gradient colors for ReactSpringBg */
   --gradient-color-1: #e3f2fd;
   --gradient-color-2: #bbdefb;
@@ -78,7 +78,6 @@
 
 /* Smooth transitions for theme changes */
 * {
-  transition: background-color var(--transition-theme), 
-              color var(--transition-theme),
-              border-color var(--transition-theme);
+  transition: background-color var(--transition-theme),
+    color var(--transition-theme), border-color var(--transition-theme);
 }
