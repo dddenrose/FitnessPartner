@@ -10,7 +10,7 @@ const CreateWorkoutPlan = () => {
   const isMobile = useMediaQuery("(max-width: 768px)");
 
   const content = (
-    <RadiusBg>
+    <RadiusBg style={{ borderRadius: isMobile ? 0 : 8 }}>
       <ImageBlock />
       <SimpleModeSelector />
     </RadiusBg>

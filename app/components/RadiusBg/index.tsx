@@ -1,7 +1,13 @@
 import { Flex } from "antd";
 import React from "react";
 
-const RadiusBg = ({ children }: { children: React.ReactNode }) => {
+const RadiusBg = ({
+  children,
+  style,
+}: {
+  children: React.ReactNode;
+  style?: React.CSSProperties;
+}) => {
   return (
     <Flex
       vertical
@@ -13,6 +19,7 @@ const RadiusBg = ({ children }: { children: React.ReactNode }) => {
         backgroundColor: "var(--bg-primary)",
         borderRadius: 8,
         minHeight: "100vh",
+        ...style,
       }}
     >
       {children}

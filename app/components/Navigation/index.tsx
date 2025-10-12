@@ -103,9 +103,7 @@ const DesktopNavigation: React.FC = () => {
             alignItems: "center",
             gap: 6,
             overflow: "hidden",
-            background: isActive
-              ? "var(--bg-tertiary)"
-              : "transparent",
+            background: isActive ? "var(--bg-tertiary)" : "transparent",
             transition: "all 0.3s ease",
           }}
           onClick={() => navigateTo(targetPath)}
@@ -194,6 +192,17 @@ const MobileNavigation: React.FC = () => {
         open={drawerVisible}
         width="100%"
         height="100%"
+        styles={{
+          body: {
+            padding: 0,
+            backgroundColor: "#000000",
+          },
+          header: {
+            backgroundColor: "#000000",
+            borderBottom: "1px solid #333333",
+            color: "#ffffff",
+          },
+        }}
       >
         <Menu
           mode="vertical"
@@ -201,7 +210,10 @@ const MobileNavigation: React.FC = () => {
           style={{
             border: "none",
             fontSize: "16px",
+            backgroundColor: "#000000",
+            color: "#ffffff",
           }}
+          theme="dark"
           items={[
             {
               key: routerMap["Home"],
