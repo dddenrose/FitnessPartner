@@ -3,6 +3,9 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 100%;
+  max-width: 100%;
+  overflow: visible;
 }
 
 .exerciseTitle {
@@ -32,6 +35,17 @@
   transition: background-color 0.05s ease, box-shadow 0.05s ease;
 }
 
+/* BPM 檢測器相關佈局 */
+.bpmContainer {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--spacing-md);
+  width: 100%;
+  margin-top: var(--spacing-md);
+}
+
 /* 響應式設計 */
 @media (max-width: 768px) {
   .timerDisplay {
@@ -42,18 +56,27 @@
     width: 60px;
     height: 60px;
   }
-  
+
   .exerciseTitle {
     font-size: var(--font-size-xl);
   }
-  
+
   .phaseInfo {
     font-size: 1.125rem;
+  }
+
+  .bpmContainer {
+    flex-direction: column;
+    align-items: center;
   }
 }
 
 @media (max-width: 480px) {
   .timerDisplay {
     font-size: var(--font-size-6xl);
+  }
+
+  .container {
+    padding: 0 var(--spacing-sm);
   }
 }

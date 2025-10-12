@@ -4,6 +4,14 @@
   gap: var(--spacing-md);
   flex-wrap: wrap;
   justify-content: center;
+  margin-top: var(--spacing-md);
+  position: sticky;
+  bottom: 0;
+  z-index: 20;
+  padding: var(--spacing-sm);
+  background-color: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(5px);
+  border-radius: var(--border-radius-md);
 }
 
 .controlButton {
@@ -31,7 +39,7 @@
 }
 
 .controlButton:active {
-  transform: scale(1.0);
+  transform: scale(1);
   box-shadow: 0 0 15px rgba(0, 102, 170, 0.6);
 }
 
@@ -44,7 +52,7 @@
     min-height: 70px !important;
     font-size: 1.5rem;
   }
-  
+
   .controlContainer {
     gap: var(--spacing-sm);
   }
@@ -59,7 +67,7 @@
     min-height: 60px !important;
     font-size: 1.25rem;
   }
-  
+
   .controlContainer {
     gap: var(--spacing-xs);
   }
