@@ -13,6 +13,11 @@
   - [資料流架構](#資料流架構)
   - [儲存方案](#儲存方案)
   - [第三方服務整合](#第三方服務整合)
+  - [架構圖](#架構圖)
+    - [應用架構總覽](#應用架構總覽)
+    - [資料流架構圖](#資料流架構圖)
+    - [元件結構圖](#元件結構圖)
+    - [數據模型圖](#數據模型圖)
 
 ---
 
@@ -123,3 +128,175 @@ Neo Fitness Partner 是一款專注於健身和跑步訓練的 Web 應用程式�
 - **Firebase**：身份驗證、數據儲存
 - **Chart.js**：數據視覺化
 - **Web Audio API**：節拍器和提示音效
+
+### 架構圖
+
+以下架構圖展示了 Neo Fitness Partner 應用的整體結構、資料流、元件層次和數據模型。
+
+#### 應用架構總覽
+
+下圖展示了整個應用的架構，包括前端框架、狀態管理、數據處理和功能模塊之間的關係。
+
+```mermaid
+graph TD
+    User(使用者) --> |使用| App[Neo Fitness Partner 應用]
+
+    subgraph "前端框架"
+        App --> NextJS[Next.js 14]
+        NextJS --> React[React 元件]
+        NextJS --> Router[Next.js 路由]
+    end
+
+    subgraph "狀態管理"
+        React --> |使用| Redux[Redux Toolkit]
+        Redux --> ExerciseSlice[exercise 切片]
+        Redux --> AudioSlice[audio 切片]
+        Redux --> ThemeSlice[theme 切片]
+        Redux --> UserInfoSlice[userInfo 切片]
+        Redux --> WorkoutReportSlice[workoutReport 切片]
+        Redux --> FirebaseSlice[firebase 切片]
+    end
+
+    subgraph "數據處理"
+        Redux --> |存取| Firebase[(Firebase)]
+        Firebase --> Authentication[身份驗證]
+        Firebase --> Firestore[Firestore 數據庫]
+    end
+
+    subgraph "UI 元件"
+        React --> AntDesign[Ant Design]
+        React --> CustomComponents[自定義元件]
+        React --> CSSModules[CSS Modules]
+        React --> TailwindCSS[Tailwind CSS]
+    end
+
+    subgraph "功能模塊"
+        App --> HomePage[首頁]
+        App --> WorkoutPlanPage[運動計劃頁]
+        App --> ExercisePage[運動執行頁]
+        App --> ReportPage[報表頁]
+        App --> LoginPage[登入頁]
+
+        ExercisePage --> HIITMode[HIIT 模式]
+        ExercisePage --> SlowRunMode[超慢跑模式]
+
+        HIITMode --> Timer[計時器]
+        HIITMode --> ExerciseControls[運動控制]
+
+        SlowRunMode --> Metronome[節拍器]
+        SlowRunMode --> RunningControls[跑步控制]
+    end
+
+    subgraph "音效系統"
+        AudioSlice --> WebAudioAPI[Web Audio API]
+        WebAudioAPI --> CountdownSound[倒計時音效]
+        WebAudioAPI --> MetronomeSound[節拍器音效]
+    end
+```
+
+#### 資料流架構圖
+
+此圖展示了應用中資料的流動方式，從用戶交互到 Redux actions、reducers、store 及與 Firebase 的交互。
+
+```mermaid
+flowchart TB
+    User([使用者]) --> |互動| UI[UI 元件]
+    UI --> |觸發| Actions[Redux Actions]
+    Actions --> |處理| Reducers[Redux Reducers]
+    Reducers --> |更新| Store[Redux Store]
+    Store --> |資料訂閱| UI
+
+    subgraph "異步操作"
+        Actions --> |API 請求| Firebase[(Firebase)]
+        Firebase --> |回傳資料| Actions
+    end
+
+    subgraph "狀態管理"
+        Store --> ExerciseState[運動狀態]
+        Store --> AudioState[音效狀態]
+        Store --> ThemeState[主題狀態]
+        Store --> UserState[使用者狀態]
+        Store --> ReportState[報表狀態]
+    end
+```
+
+#### 元件結構圖
+
+此圖展示了應用的元件層次結構，從頂層的 App 元件到各個頁面及其子元件。
+
+```mermaid
+graph TD
+    App[App] --> Layout[Layout]
+    Layout --> |路由| Pages[頁面元件]
+    Layout --> Navigation[導航元件]
+    Layout --> AuthProvider[認證提供者]
+    Layout --> ThemeProvider[主題提供者]
+
+    Pages --> HomePage[首頁]
+    Pages --> LoginPage[登入頁]
+    Pages --> WorkoutPlanPage[運動計劃頁]
+    Pages --> ExercisePage[運動執行頁]
+    Pages --> ReportPage[報表頁]
+
+    WorkoutPlanPage --> FormContent[表單內容]
+    WorkoutPlanPage --> FormAction[表單操作]
+    WorkoutPlanPage --> SimpleModeSelector[模式選擇器]
+
+    ExercisePage --> ControlPanel[控制面板]
+    ExercisePage --> Exercise[運動顯示]
+    ExercisePage --> UnifiedTimer[統一計時器]
+    ExercisePage --> Metronome[節拍器]
+    ExercisePage --> ReactSpringBg[背景動畫]
+
+    ReportPage --> FilterPanel[篩選面板]
+    ReportPage --> ReportContent[報表內容]
+    ReportPage --> DateRangePicker[日期範圍選擇器]
+    ReportPage --> ReportCard[報表卡片]
+```
+
+#### 數據模型圖
+
+此圖展示了主要數據實體及其之間的關係。
+
+```mermaid
+classDiagram
+    class User {
+        +String uid
+        +String email
+        +String displayName
+        +Object settings
+    }
+
+    class WorkoutPlan {
+        +String id
+        +String userId
+        +String workoutType
+        +Array exercises
+        +Number duration
+        +Number restTime
+        +Number bpm
+    }
+
+    class WorkoutReport {
+        +String id
+        +String userId
+        +Date timestamp
+        +String workoutType
+        +Number duration
+        +Array exercises
+        +Object stats
+    }
+
+    class Exercise {
+        +String id
+        +String name
+        +Number duration
+        +String imageUrl
+        +String description
+    }
+
+    User "1" -- "n" WorkoutPlan : creates
+    User "1" -- "n" WorkoutReport : has
+    WorkoutPlan "1" -- "n" Exercise : contains
+    WorkoutReport "1" -- "n" Exercise : records
+```
