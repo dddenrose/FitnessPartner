@@ -4,16 +4,20 @@ import ContentWrapper from "../components/ContentWrapper";
 import RadiusBg from "../components/RadiusBg";
 import ImageBlock from "./components/ImageBlock";
 import SimpleModeSelector from "./components/SimpleModeSelector";
+import { useMediaQuery } from "@/lib/hooks/index";
 
 const CreateWorkoutPlan = () => {
-  return (
-    <ContentWrapper>
-      <RadiusBg>
-        <ImageBlock />
-        <SimpleModeSelector />
-      </RadiusBg>
-    </ContentWrapper>
+  const isMobile = useMediaQuery("(max-width: 768px)");
+
+  const content = (
+    <RadiusBg>
+      <ImageBlock />
+      <SimpleModeSelector />
+    </RadiusBg>
   );
+
+  // 在手機模式下不使用 ContentWrapper，避免內容過於擁擠
+  return isMobile ? content : <ContentWrapper>{content}</ContentWrapper>;
 };
 
 export default CreateWorkoutPlan;
