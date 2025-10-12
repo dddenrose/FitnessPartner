@@ -2,8 +2,9 @@
 
 import React, { useState, useEffect } from "react";
 import { useAppSelector } from "@/lib/hooks/redux/useRedux";
-import { Typography } from "antd";
+import { Typography, Switch, Flex } from "antd";
 import Metronome from "../Metronome";
+import BpmDetector from "../BpmDetector";
 import {
   selectCurrentExercise,
   selectWorkoutType,
@@ -36,6 +37,9 @@ const UnifiedTimer: React.FC<UnifiedTimerProps> = ({
   const { currentTime, currentRestTime, isRestMode } = timerData;
 
   const [elapsedTime, setElapsedTime] = useState(0); // 更新經過的時間 (僅用於慢跑模式)
+  const [enableBpmDetector, setEnableBpmDetector] = useState(false); // 控制 BPM 檢測器的開關
+  const [recentBpm, setRecentBpm] = useState<number>(0); // 記錄即時 BPM
+  const [averageBpm, setAverageBpm] = useState<number>(0); // 記錄平均 BPM
   useEffect(() => {
     let timer: NodeJS.Timeout;
 
@@ -57,6 +61,14 @@ const UnifiedTimer: React.FC<UnifiedTimerProps> = ({
     return `${mins.toString().padStart(2, "0")}:${secs
       .toString()
       .padStart(2, "0")}`;
+  };
+
+  // 處理從 BPM 檢測器回傳的數值
+  const handleBpmDetected = (recent: number, average: number) => {
+    setRecentBpm(recent);
+    if (average > 0) {
+      setAverageBpm(average);
+    }
   };
 
   return (
@@ -83,6 +95,30 @@ const UnifiedTimer: React.FC<UnifiedTimerProps> = ({
         <Title level={3} className={styles.phaseInfo}>
           {isRestMode ? "下一個: " + (currentExercise?.name || "") : "運動中"}
         </Title>
+      )}
+
+      {/* 超慢跑模式下的 BPM 檢測器開關 */}
+      {isSlowRun && status === "active" && (
+        <Flex vertical align="center" gap="middle" style={{ marginTop: 20 }}>
+          <Flex gap="small" align="center">
+            <Typography.Text style={{ color: "white" }}>
+              步頻檢測：
+            </Typography.Text>
+            <Switch
+              checked={enableBpmDetector}
+              onChange={(checked) => setEnableBpmDetector(checked)}
+            />
+          </Flex>
+
+          {/* 當開啟檢測器時顯示 BPM 檢測器 */}
+          {enableBpmDetector && (
+            <BpmDetector
+              isActive={enableBpmDetector && status === "active"}
+              onBpmDetected={handleBpmDetected}
+              isDebug={true} // 預設開啟調試模式，方便調整算法
+            />
+          )}
+        </Flex>
       )}
     </div>
   );
