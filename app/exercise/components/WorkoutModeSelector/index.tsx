@@ -14,9 +14,8 @@ import {
   RocketOutlined,
   SettingOutlined,
 } from "@ant-design/icons";
-import { Card, Row, Col, Typography } from "antd";
-
-const { Title } = Typography;
+import { Card, Row, Col } from "antd";
+import styles from "./styles.module.css";
 
 interface ModeTileProps {
   mode: WorkoutModeType;
@@ -38,34 +37,25 @@ const ModeTile: React.FC<ModeTileProps> = ({
   return (
     <Card
       hoverable
-      className={`workout-mode-card ${isSelected ? "selected-mode" : ""}`}
+      className={`${styles.modeCard} ${isSelected ? styles.modeCardSelected : ""}`}
       onClick={onClick}
-      style={{
-        margin: "10px",
-        border: isSelected ? "2px solid #1890ff" : "1px solid #f0f0f0",
-        backgroundColor: isSelected ? "#e6f7ff" : "white",
-      }}
     >
-      <div style={{ textAlign: "center", padding: "10px" }}>
+      <div className={styles.modeCardContent}>
         <div
-          style={{
-            fontSize: "2rem",
-            marginBottom: "10px",
-            color: isSelected ? "#1890ff" : "#595959",
-          }}
+          className={`${styles.modeIcon} ${
+            isSelected ? styles.modeIconSelected : styles.modeIconDefault
+          }`}
         >
           {icon}
         </div>
-        <Title
-          level={4}
-          style={{
-            margin: "0 0 10px 0",
-            color: isSelected ? "#1890ff" : "inherit",
-          }}
+        <h4
+          className={`${styles.modeTitle} ${
+            isSelected ? styles.modeTitleSelected : ""
+          }`}
         >
           {title}
-        </Title>
-        <p style={{ color: "#8c8c8c" }}>{description}</p>
+        </h4>
+        <p className={styles.modeDescription}>{description}</p>
       </div>
     </Card>
   );
@@ -107,10 +97,10 @@ const WorkoutModeSelector: React.FC = () => {
   ];
 
   return (
-    <div className="workout-mode-selector">
-      <Title level={3} style={{ margin: "20px 0", textAlign: "center" }}>
+    <div className={styles.workoutModeSelector}>
+      <h3 className={styles.selectorTitle}>
         選擇運動模式
-      </Title>
+      </h3>
 
       <Row gutter={[16, 16]} justify="center">
         {workoutModes.map((modeData) => (

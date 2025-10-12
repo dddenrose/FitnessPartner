@@ -22,11 +22,9 @@ const WorkoutReportPage: React.FC = () => {
   const loading = useAppSelector(selectWorkoutReportLoading);
   const selectedTimeRange = useAppSelector(selectSelectedTimeRange);
 
-  // 初始化状态
   const [dateRange, setDateRange] = useState(getDefaultDateRange());
   const [error, setError] = useState<string | null>(null);
 
-  // 加载数据
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -63,15 +61,15 @@ const WorkoutReportPage: React.FC = () => {
       <div className="container mx-auto p-4">
         <Title level={1}>運動報表</Title>
 
-        {/* 过滤面板组件 */}
-        <FilterPanel
-          dateRange={dateRange}
-          selectedTimeRange={selectedTimeRange}
-          onDateRangeChange={handleDateRangeChange}
-          onTimeRangeChange={handleTimeRangeChange}
-        />
+        <div style={{ marginBottom: "24px" }}>
+          <FilterPanel
+            dateRange={dateRange}
+            selectedTimeRange={selectedTimeRange}
+            onDateRangeChange={handleDateRangeChange}
+            onTimeRangeChange={handleTimeRangeChange}
+          />
+        </div>
 
-        {/* 报表内容组件 */}
         <ReportContent
           loading={loading}
           error={error}

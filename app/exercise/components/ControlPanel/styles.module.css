@@ -1,4 +1,4 @@
-/* ControlPanel 組件樣式 */
+/* ControlPanel 組件樣式 - SpaceX inspired */
 .controlContainer {
   display: flex;
   gap: var(--spacing-md);
@@ -7,29 +7,41 @@
 }
 
 .controlButton {
-  width: 100px;
-  height: 100px;
+  width: 100px !important;
+  height: 100px !important;
+  min-width: 100px !important;
+  min-height: 100px !important;
   font-size: 2rem;
   display: flex;
   justify-content: center;
   align-items: center;
   transition: var(--transition-base);
+  border-radius: 50% !important;
+  border: 2px solid var(--border-color) !important;
+  background: rgba(0, 102, 170, 0.1) !important;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .controlButton:hover {
-  transform: scale(1.05);
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  transform: scale(1.1);
+  box-shadow: 0 0 20px rgba(0, 102, 170, 0.5), 0 8px 20px rgba(0, 0, 0, 0.4);
+  border-color: var(--color-accent) !important;
+  background: rgba(0, 102, 170, 0.2) !important;
 }
 
 .controlButton:active {
-  transform: scale(0.95);
+  transform: scale(1.0);
+  box-shadow: 0 0 15px rgba(0, 102, 170, 0.6);
 }
 
 /* 響應式設計 - 手機版 */
 @media (max-width: 768px) {
   .controlButton {
-    width: 70px;
-    height: 70px;
+    width: 70px !important;
+    height: 70px !important;
+    min-width: 70px !important;
+    min-height: 70px !important;
     font-size: 1.5rem;
   }
   
@@ -41,8 +53,10 @@
 /* 超小螢幕優化 */
 @media (max-width: 480px) {
   .controlButton {
-    width: 60px;
-    height: 60px;
+    width: 60px !important;
+    height: 60px !important;
+    min-width: 60px !important;
+    min-height: 60px !important;
     font-size: 1.25rem;
   }
   

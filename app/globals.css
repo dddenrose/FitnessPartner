@@ -2,13 +2,31 @@
 @tailwind components;
 @tailwind utilities;
 
-/* 全域 CSS 變數 */
+/* 全域 CSS 變數 - Dark Theme (預設) */
 :root {
-  /* 基礎顏色 */
-  --color-primary: #202020ff;
+  /* 基礎顏色 - Dark Theme (SpaceX inspired) */
+  --color-primary: #000000;
+  --color-secondary: #0a0a0a;
+  --color-tertiary: #1a1a1a;
+  --color-accent: #0066aa;
+  --color-accent-light: #0088dd;
   --color-warning: #faad14;
-  --text-white: #ffffff;
-  
+  --text-primary: #ffffff;
+  --text-secondary: #b0b0b0;
+  --text-tertiary: #808080;
+  --bg-primary: #000000;
+  --bg-secondary: #303030;
+  --bg-tertiary: #1a1a1a;
+  --border-color: rgba(0, 102, 170, 0.2);
+  --shadow-color: rgba(0, 0, 0, 0.5);
+
+  /* Background gradient colors for ReactSpringBg - Enhanced SpaceX style */
+  --gradient-color-1: #000814;
+  --gradient-color-2: #001529;
+  --gradient-color-3: #002447;
+  --gradient-color-4: #000a14;
+  --gradient-color-5: #003d66;
+
   /* 字體 */
   --font-family-mono: monospace;
   --font-size-xl: 1.25rem;
@@ -18,15 +36,48 @@
   --font-size-6xl: 3.75rem;
   --font-size-7xl: 4.5rem;
   --font-size-9xl: 8rem;
-  
+
   /* 間距 */
   --spacing-xs: 0.25rem;
   --spacing-sm: 0.5rem;
   --spacing-md: 1rem;
   --spacing-lg: 1.5rem;
-  
+
   /* 其他 */
   --border-radius-full: 50%;
   --transition-fast: 0.05s ease;
   --transition-base: 0.2s ease-out;
+  --transition-theme: 0.3s ease;
+}
+
+/* Light Theme */
+[data-theme="light"] {
+  /* 基礎顏色 - Light Theme */
+  --color-primary: #ffffff;
+  --color-secondary: #f8f9fa;
+  --color-tertiary: #e9ecef;
+  --color-accent: #0066aa;
+  --color-accent-light: #3399cc;
+  --color-warning: #ff9500;
+  --text-primary: #1a1a1a;
+  --text-secondary: #4a4a4a;
+  --text-tertiary: #6a6a6a;
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8f9fa;
+  --bg-tertiary: #e9ecef;
+  --border-color: rgba(0, 0, 0, 0.1);
+  --shadow-color: rgba(0, 0, 0, 0.1);
+
+  /* Background gradient colors for ReactSpringBg */
+  --gradient-color-1: #e3f2fd;
+  --gradient-color-2: #bbdefb;
+  --gradient-color-3: #90caf9;
+  --gradient-color-4: #d6eaff;
+  --gradient-color-5: #64b5f6;
+}
+
+/* Smooth transitions for theme changes */
+* {
+  transition: background-color var(--transition-theme),
+    color var(--transition-theme), border-color var(--transition-theme);
 }
