@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../../store";
+import { WORKOUT_MODE_TABS } from "@/app/create-workout-plan/components/SimpleModeSelector/const";
 
 // 定義不同的運動模式類型
 export type WorkoutModeType =
@@ -50,7 +51,7 @@ export interface ExerciseState {
 
 const initialState: ExerciseState = {
   status: "idle",
-  workoutType: "hiit",
+  workoutType: WORKOUT_MODE_TABS.SLOWRUN,
   bpm: 180,
   metronomeActive: true,
   currentExercise: null,
