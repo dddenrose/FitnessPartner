@@ -42,11 +42,7 @@ const UnifiedTimer: React.FC<UnifiedTimerProps> = ({
 
   const [elapsedTime, setElapsedTime] = useState(0); // 更新經過的時間 (僅用於慢跑模式)
   const [enableBpmDetector, setEnableBpmDetector] = useState(false); // 控制 BPM 檢測器的開關
-  const [recentBpm, setRecentBpm] = useState<number>(0); // 記錄即時 BPM
-  const [averageBpm, setAverageBpm] = useState<number>(0); // 記錄平均 BPM
-  const [displayMode, setDisplayMode] = useState<"recent" | "average">(
-    "recent"
-  ); // 顯示模式
+
   useEffect(() => {
     let timer: NodeJS.Timeout;
 
@@ -70,14 +66,6 @@ const UnifiedTimer: React.FC<UnifiedTimerProps> = ({
       .padStart(2, "0")}`;
   };
 
-  // 處理從 BPM 檢測器回傳的數值
-  const handleBpmDetected = (recent: number, average: number) => {
-    setRecentBpm(recent);
-    if (average > 0) {
-      setAverageBpm(average);
-    }
-  };
-
   // 檢查 BPM 與目標 BPM 的差距，決定顯示顏色
   const getBpmStatusColor = (bpm: number) => {
     if (bpm === 0) return "#666"; // 無數據
@@ -89,11 +77,6 @@ const UnifiedTimer: React.FC<UnifiedTimerProps> = ({
     } else {
       return "#f5222d"; // 高於目標：紅色
     }
-  };
-
-  // 獲取當前顯示的 BPM
-  const getCurrentBpm = () => {
-    return displayMode === "recent" ? recentBpm : averageBpm;
   };
 
   return (
@@ -142,54 +125,7 @@ const UnifiedTimer: React.FC<UnifiedTimerProps> = ({
 
           {/* 當開啟檢測器時顯示 BPM 檢測器和數據 */}
           {enableBpmDetector && (
-            <div className={styles.bpmContainer}>
-              <div>
-                <BpmDetector
-                  isActive={enableBpmDetector && status === "active"}
-                  onBpmDetected={handleBpmDetected}
-                  isDebug={true} // 預設開啟調試模式，方便調整算法
-                />
-              </div>
-
-              {/* BPM 指示燈和指標顯示 */}
-              <Flex
-                vertical
-                align="center"
-                gap="middle"
-                style={{ padding: "10px 20px" }}
-              >
-                {/* BPM 指示燈 */}
-                <div
-                  className={styles.flashLight}
-                  style={{
-                    backgroundColor: getBpmStatusColor(getCurrentBpm()),
-                    boxShadow: `0 0 20px ${getBpmStatusColor(getCurrentBpm())}`,
-                  }}
-                ></div>
-
-                {/* BPM 數值顯示 */}
-                <Flex vertical align="center">
-                  <Segmented
-                    options={[
-                      { label: "即時BPM", value: "recent" },
-                      { label: "平均BPM", value: "average" },
-                    ]}
-                    value={displayMode}
-                    onChange={(value) =>
-                      setDisplayMode(value as "recent" | "average")
-                    }
-                  />
-
-                  <Title level={2} style={{ color: "white", margin: "10px 0" }}>
-                    {displayMode === "recent" ? recentBpm : averageBpm} BPM
-                  </Title>
-
-                  <Typography.Text style={{ color: "white" }}>
-                    目標: {targetBpm} BPM (±{tolerance})
-                  </Typography.Text>
-                </Flex>
-              </Flex>
-            </div>
+            <BpmDetector isActive={enableBpmDetector && status === "active"} />
           )}
         </div>
       )}
