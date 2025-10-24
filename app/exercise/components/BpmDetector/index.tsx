@@ -91,10 +91,7 @@ const BpmDetector: React.FC<BpmDetectorProps> = ({
 
   // 計算顯示的 BPM 和匹配百分比
   const displayedBpm = displayMode === "recent" ? recentBpm : averageBpm;
-  const matchPercentage = Math.min(
-    100,
-    Math.max(0, 100 - (Math.abs(displayedBpm - targetBpm) / targetBpm) * 100)
-  );
+
   const isInRange = Math.abs(displayedBpm - targetBpm) <= tolerance;
 
   if (!isActive) return null;
