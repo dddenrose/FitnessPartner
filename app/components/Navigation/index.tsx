@@ -253,9 +253,6 @@ const Navigation: React.FC = () => {
         backdropFilter: "blur(12px)",
         height: "44px",
         boxShadow: "0 2px 10px var(--shadow-color)",
-        position: "fixed",
-        top: 0,
-        zIndex: 2,
         borderBottom: "1px solid var(--border-color)",
       }}
     >

@@ -12,8 +12,8 @@ const OutletWrapper: React.FC<{
   return (
     <div
       style={{
-        padding: isNavigationShow ? "36px 0px 0px 0px" : 0,
-        overflowX: "hidden",
+        overflowY: "auto",
+        height: "100vh",
       }}
     >
       {children}

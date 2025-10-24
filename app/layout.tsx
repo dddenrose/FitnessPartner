@@ -37,19 +37,24 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${roboto.className} p-0 m-0`}>
+      <body
+        className={`${roboto.className} p-0 m-0`}
+        style={{
+          overflow: "hidden",
+        }}
+      >
         <AntdRegistry>
           <StoreProvider>
             <ThemeProvider>
               <DynamicAntdTheme>
-                <Flex vertical justify="flex-start">
-                  <AuthProvider>
+                <AuthProvider>
+                  <Flex vertical justify="flex-start">
                     <Navigation />
                     <AppRouterCacheProvider>
                       <OutletWrapper>{children}</OutletWrapper>
                     </AppRouterCacheProvider>
-                  </AuthProvider>
-                </Flex>
+                  </Flex>
+                </AuthProvider>
               </DynamicAntdTheme>
             </ThemeProvider>
           </StoreProvider>
