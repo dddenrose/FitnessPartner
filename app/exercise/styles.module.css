@@ -2,9 +2,11 @@
 .exerciseContainer {
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: center;
+  min-height: 100%;
   gap: var(--spacing-lg);
+  padding: 16px 0;
 }
 
 .exerciseContent {

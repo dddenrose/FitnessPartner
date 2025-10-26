@@ -13,7 +13,8 @@ const OutletWrapper: React.FC<{
     <div
       style={{
         overflowY: "auto",
-        height: "100vh",
+        overflowX: "hidden",
+        height: "calc(100vh - 44px)",
       }}
     >
       {children}
