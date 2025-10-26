@@ -24,7 +24,7 @@ const Metronome: React.FC<MetronomeProps> = ({ visible }) => {
   if (!visible || !metronomeActive) return null;
 
   return (
-    <div className="mb-8 text-center">
+    <div className="text-center">
       <div
         className={styles.flashLight}
         style={{

@@ -88,9 +88,6 @@ const UnifiedTimer: React.FC<UnifiedTimerProps> = ({
 
   return (
     <div className={styles.container}>
-      {/* 節拍器組件 - 僅在慢跑模式下顯示 */}
-      <Metronome visible={isSlowRun} />
-
       {/* 顯示當前運動名稱 - HIIT 模式 */}
       {workoutType === "hiit" && currentExercise && (
         <Title level={2} className={styles.exerciseTitle}>
@@ -100,6 +97,8 @@ const UnifiedTimer: React.FC<UnifiedTimerProps> = ({
 
       {/* 主計時器 - 使用CSS modules */}
       <div className={styles.timerDisplay}>
+        {/* 節拍器組件 - 僅在慢跑模式下顯示 */}
+        <Metronome visible={isSlowRun} />
         {isSlowRun
           ? formatTime(elapsedTime)
           : formatTime(isRestMode ? currentRestTime : currentTime)}
