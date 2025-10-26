@@ -98,21 +98,6 @@ const BpmDetector: React.FC<BpmDetectorProps> = ({
 
   return (
     <Flex vertical align="center" style={{ marginTop: 20 }}>
-      <Title level={4} style={{ color: "white", marginBottom: 16 }}>
-        步頻監測
-      </Title>
-
-      {/* 模式選擇 */}
-      <Segmented
-        value={displayMode}
-        onChange={(value) => setDisplayMode(value as "recent" | "average")}
-        options={[
-          { label: "即時", value: "recent" },
-          { label: "平均", value: "average" },
-        ]}
-        style={{ marginBottom: 16 }}
-      />
-
       {/* 攝像頭容器 */}
       <div className={styles.cameraContainer}>
         <video ref={videoRef} className={styles.video} autoPlay playsInline />
@@ -122,17 +107,6 @@ const BpmDetector: React.FC<BpmDetectorProps> = ({
           width={640}
           height={480}
         />
-
-        {/* 檢測狀態指示器 */}
-        <div
-          className={styles.detectionIndicator}
-          style={{
-            backgroundColor: displayedBpm > 0 ? "#52c41a" : "#1890ff",
-            boxShadow: `0 0 10px ${displayedBpm > 0 ? "#52c41a" : "#1890ff"}`,
-          }}
-        >
-          {displayedBpm > 0 ? "✓" : "⋯"}
-        </div>
 
         {/* 不活動狀態提示 */}
         {inactivityDetected && (
@@ -147,27 +121,35 @@ const BpmDetector: React.FC<BpmDetectorProps> = ({
         )}
 
         {/* 目標 BPM 區間指示器 */}
-        <div className={styles.bpmTargetZone}>
-          <div
-            className={styles.bpmZoneIndicator}
-            style={{
-              backgroundColor: isInRange
-                ? "rgba(82, 196, 26, 0.6)"
-                : "rgba(255, 77, 79, 0.6)",
-            }}
-          ></div>
-          <span
-            style={{
-              color: "white",
-              fontSize: "12px",
-              position: "absolute",
-              bottom: "5px",
-              right: "5px",
-            }}
-          >
+        <Flex
+          justify="space-between"
+          align="center"
+          style={{
+            color: "white",
+            fontSize: "12px",
+            position: "absolute",
+            bottom: "0px",
+            right: "0px",
+            width: "100%",
+            backgroundColor: isInRange
+              ? "rgba(82, 196, 26, 0.6)"
+              : "rgba(255, 77, 79, 0.6)",
+            padding: "8px",
+          }}
+        >
+          <Segmented
+            value={displayMode}
+            onChange={(value) => setDisplayMode(value as "recent" | "average")}
+            options={[
+              { label: "即時", value: "recent" },
+              { label: "平均", value: "average" },
+            ]}
+          />
+          {displayedBpm} BPM
+          <div>
             目標: {targetBpm - tolerance} - {targetBpm + tolerance} BPM
-          </span>
-        </div>
+          </div>
+        </Flex>
 
         {/* 錯誤提示 */}
         {error && (
@@ -176,23 +158,6 @@ const BpmDetector: React.FC<BpmDetectorProps> = ({
           </div>
         )}
       </div>
-
-      {/* BPM 顯示和進度 */}
-      <Flex gap="middle" style={{ marginTop: 20 }} align="center">
-        <Tooltip
-          title={`${displayMode === "recent" ? "最近5秒" : "全程"}平均步頻`}
-        >
-          <Title
-            level={3}
-            style={{
-              color: displayedBpm > 0 ? "#52c41a" : "white",
-              margin: 0,
-            }}
-          >
-            {displayedBpm} BPM
-          </Title>
-        </Tooltip>
-      </Flex>
     </Flex>
   );
 };

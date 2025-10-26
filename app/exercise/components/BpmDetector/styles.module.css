@@ -63,15 +63,6 @@
   transition: all 0.3s ease;
 }
 
-.bpmTargetZone {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 24px;
-  background-color: rgba(0, 0, 0, 0.5);
-}
-
 .bpmZoneIndicator {
   position: absolute;
   top: 0;
@@ -84,7 +75,7 @@
 /* 不活動提醒 - 改為小型通知而非全屏覆蓋 */
 .inactivityAlert {
   position: absolute;
-  top: 40px;
+  top: 8px;
   right: 8px;
   background-color: rgba(250, 140, 22, 0.85);
   color: white;

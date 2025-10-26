@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useAppSelector } from "@/lib/hooks/redux/useRedux";
+import { useAppSelector, useAppDispatch } from "@/lib/hooks/redux/useRedux";
 import { Typography, Switch, Flex, Segmented } from "antd";
 import Metronome from "../Metronome";
 import BpmDetector from "../BpmDetector";
@@ -9,6 +9,10 @@ import {
   selectCurrentExercise,
   selectWorkoutType,
 } from "@/lib/features/exercise/exerciseSlice";
+import {
+  selectBpmDetectorEnabled,
+  setBpmDetectorEnabled,
+} from "@/lib/features/bpmDetector/bpmDetectorSlice";
 import styles from "./styles.module.css";
 
 const { Title } = Typography;
@@ -29,6 +33,7 @@ const UnifiedTimer: React.FC<UnifiedTimerProps> = ({
   isSlowRun = false,
   timerData,
 }) => {
+  const dispatch = useAppDispatch();
   const status = useAppSelector((state) => state.exercise.status);
   const workoutType = useAppSelector(selectWorkoutType);
   const currentExercise = useAppSelector(selectCurrentExercise);
@@ -37,11 +42,13 @@ const UnifiedTimer: React.FC<UnifiedTimerProps> = ({
   // BPM 容許誤差
   const tolerance = 10;
 
+  // 從 Redux 獲取 BPM 檢測器開關狀態
+  const enableBpmDetector = useAppSelector(selectBpmDetectorEnabled);
+
   // 使用從父組件傳遞下來的 timer 數據，而不是重複調用 hook
   const { currentTime, currentRestTime, isRestMode } = timerData;
 
   const [elapsedTime, setElapsedTime] = useState(0); // 更新經過的時間 (僅用於慢跑模式)
-  const [enableBpmDetector, setEnableBpmDetector] = useState(false); // 控制 BPM 檢測器的開關
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
@@ -108,21 +115,6 @@ const UnifiedTimer: React.FC<UnifiedTimerProps> = ({
       {/* 超慢跑模式下的 BPM 檢測器開關 */}
       {isSlowRun && status === "active" && (
         <div>
-          <Flex
-            gap="small"
-            align="center"
-            justify="center"
-            style={{ marginTop: 20, marginBottom: 20 }}
-          >
-            <Typography.Text style={{ color: "white" }}>
-              步頻檢測：
-            </Typography.Text>
-            <Switch
-              checked={enableBpmDetector}
-              onChange={(checked) => setEnableBpmDetector(checked)}
-            />
-          </Flex>
-
           {/* 當開啟檢測器時顯示 BPM 檢測器和數據 */}
           {enableBpmDetector && (
             <BpmDetector isActive={enableBpmDetector && status === "active"} />
