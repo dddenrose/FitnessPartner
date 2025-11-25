@@ -16,6 +16,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: var(--spacing-lg);
   font-size: var(--font-size-9xl);
   font-weight: bold;
   color: var(--text-primary);
