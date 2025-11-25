@@ -1,5 +1,41 @@
 import { useRef, useCallback, useState } from "react";
 
+// ==================== BPM 計算常數 ====================
+/** BPM 轉換係數 */
+const BPM_CONVERSION_FACTOR = 0.75;
+
+/** 腳踝運動評分權重 */
+const ANKLE_MOVEMENT_WEIGHT = 0.5;
+const ANKLE_ALTERNATION_WEIGHT = 0.5;
+const ANKLE_FORWARD_WEIGHT = 0.8;
+
+/** 手肘運動評分權重 */
+const ELBOW_MOVEMENT_WEIGHT = 1.2;
+const ELBOW_ALTERNATION_WEIGHT = 0.8;
+const ELBOW_FORWARD_WEIGHT = 1.0;
+
+/** 步伐偵測閾值 */
+const MOVEMENT_SCORE_THRESHOLD = 7.8;
+const SIGNIFICANT_MOVEMENT_THRESHOLD = 3.0;
+
+/** BPM 有效範圍 */
+const MIN_VALID_BPM = 80;
+const MAX_VALID_BPM = 280;
+
+/** 時間窗口配置 */
+const RECENT_TIME_WINDOW = 5000; // 5秒內的步伐
+const MIN_STEP_INTERVAL = 150; // 最小步伐間隔（毫秒）
+const MAX_AVERAGE_INTERVAL = 2000; // 計算平均 BPM 的最大間隔
+
+/** 最小步伐檢測數 */
+const MIN_RECENT_STEPS = 3; // 計算即時 BPM 需要的最小步伐數
+const MIN_AVERAGE_STEPS = 4; // 計算平均 BPM 需要的最小步伐數
+
+/** 關鍵點置信度閾值 */
+const KEYPOINT_CONFIDENCE_THRESHOLD = 0.3;
+
+// ========================================================
+
 interface UseBpmCalculationProps {
   targetBpm: number;
   onBpmDetected?: (recentBpm: number, averageBpm: number) => void;
@@ -59,10 +95,12 @@ export const useBpmCalculation = ({
     const leftAnkleMovement = Math.abs(leftAnkleDiff);
     const rightAnkleMovement = Math.abs(rightAnkleDiff);
 
-    score += (leftAnkleMovement + rightAnkleMovement) * 0.5;
+    score += (leftAnkleMovement + rightAnkleMovement) * ANKLE_MOVEMENT_WEIGHT;
 
     if (leftAnkleDiff * rightAnkleDiff < 0) {
-      score += Math.min(leftAnkleMovement, rightAnkleMovement) * 0.5;
+      score +=
+        Math.min(leftAnkleMovement, rightAnkleMovement) *
+        ANKLE_ALTERNATION_WEIGHT;
     }
 
     if (lastKeypoints.leftAnkleX && lastKeypoints.rightAnkleX) {
@@ -72,7 +110,7 @@ export const useBpmCalculation = ({
         Math.abs(leftAnkleXDiff),
         Math.abs(rightAnkleXDiff)
       );
-      score += ankleForwardMovement * 0.8;
+      score += ankleForwardMovement * ANKLE_FORWARD_WEIGHT;
     }
 
     return score;
@@ -100,10 +138,12 @@ export const useBpmCalculation = ({
     const leftElbowMovement = Math.abs(leftElbowDiff);
     const rightElbowMovement = Math.abs(rightElbowDiff);
 
-    score += (leftElbowMovement + rightElbowMovement) * 1.2;
+    score += (leftElbowMovement + rightElbowMovement) * ELBOW_MOVEMENT_WEIGHT;
 
     if (leftElbowDiff * rightElbowDiff < 0) {
-      score += Math.min(leftElbowMovement, rightElbowMovement) * 0.8;
+      score +=
+        Math.min(leftElbowMovement, rightElbowMovement) *
+        ELBOW_ALTERNATION_WEIGHT;
     }
 
     if (lastKeypoints.leftElbowX && lastKeypoints.rightElbowX) {
@@ -113,7 +153,7 @@ export const useBpmCalculation = ({
         Math.abs(leftElbowXDiff),
         Math.abs(rightElbowXDiff)
       );
-      score += elbowForwardMovement * 1.0;
+      score += elbowForwardMovement * ELBOW_FORWARD_WEIGHT;
     }
 
     return score;
@@ -137,7 +177,7 @@ export const useBpmCalculation = ({
 
     const avgInterval =
       intervals.reduce((sum, val) => sum + val, 0) / intervals.length;
-    return Math.round((60000 / avgInterval) * 0.7);
+    return Math.round((60000 / avgInterval) * BPM_CONVERSION_FACTOR);
   };
 
   const calculateBpm = useCallback(
@@ -159,18 +199,18 @@ export const useBpmCalculation = ({
       const anklesVisible =
         leftAnkle &&
         rightAnkle &&
-        leftAnkle.score > 0.3 &&
-        rightAnkle.score > 0.3;
+        leftAnkle.score > KEYPOINT_CONFIDENCE_THRESHOLD &&
+        rightAnkle.score > KEYPOINT_CONFIDENCE_THRESHOLD;
       const elbowsVisible =
         leftElbow &&
         rightElbow &&
-        leftElbow.score > 0.3 &&
-        rightElbow.score > 0.3;
+        leftElbow.score > KEYPOINT_CONFIDENCE_THRESHOLD &&
+        rightElbow.score > KEYPOINT_CONFIDENCE_THRESHOLD;
       const shouldersVisible =
         leftShoulder &&
         rightShoulder &&
-        leftShoulder.score > 0.3 &&
-        rightShoulder.score > 0.3;
+        leftShoulder.score > KEYPOINT_CONFIDENCE_THRESHOLD &&
+        rightShoulder.score > KEYPOINT_CONFIDENCE_THRESHOLD;
 
       if (!anklesVisible && (!elbowsVisible || !shouldersVisible)) {
         return;
@@ -216,20 +256,24 @@ export const useBpmCalculation = ({
       }
 
       // 檢測活動
-      const significantMovement = movementScore > 3.0;
+      const significantMovement =
+        movementScore > SIGNIFICANT_MOVEMENT_THRESHOLD;
       if (significantMovement && onActivityDetected) {
         onActivityDetected(Date.now());
       }
 
       // 步伐檢測
-      const threshold = 7.8;
+      const threshold = MOVEMENT_SCORE_THRESHOLD;
       if (movementScore > threshold) {
         const now = Date.now();
         if (onActivityDetected) {
           onActivityDetected(now);
         }
 
-        const minStepInterval = Math.max(150, 60000 / (targetBpm * 2));
+        const minStepInterval = Math.max(
+          MIN_STEP_INTERVAL,
+          60000 / (targetBpm * 2)
+        );
         const lastTimestamp =
           stepTimestamps.current[stepTimestamps.current.length - 1];
 
@@ -238,28 +282,34 @@ export const useBpmCalculation = ({
           allStepTimestamps.current.push(now);
 
           // 計算即時 BPM
-          const recentTimeWindow = now - 5000;
+          const recentTimeWindow = now - RECENT_TIME_WINDOW;
           stepTimestamps.current = stepTimestamps.current.filter(
             (ts) => ts > recentTimeWindow
           );
 
-          if (stepTimestamps.current.length >= 3) {
+          if (stepTimestamps.current.length >= MIN_RECENT_STEPS) {
             const calculatedRecentBpm = calculateBpmFromIntervals(
               stepTimestamps.current
             );
-            if (calculatedRecentBpm >= 80 && calculatedRecentBpm <= 280) {
+            if (
+              calculatedRecentBpm >= MIN_VALID_BPM &&
+              calculatedRecentBpm <= MAX_VALID_BPM
+            ) {
               setRecentBpm(calculatedRecentBpm);
               recentBpmRef.current = calculatedRecentBpm;
             }
           }
 
           // 計算平均 BPM
-          if (allStepTimestamps.current.length >= 4) {
+          if (allStepTimestamps.current.length >= MIN_AVERAGE_STEPS) {
             const calculatedAverageBpm = calculateBpmFromIntervals(
               allStepTimestamps.current,
-              2000
+              MAX_AVERAGE_INTERVAL
             );
-            if (calculatedAverageBpm >= 80 && calculatedAverageBpm <= 280) {
+            if (
+              calculatedAverageBpm >= MIN_VALID_BPM &&
+              calculatedAverageBpm <= MAX_VALID_BPM
+            ) {
               setAverageBpm(calculatedAverageBpm);
               averageBpmRef.current = calculatedAverageBpm;
             }
