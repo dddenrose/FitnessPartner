@@ -96,33 +96,194 @@ Neo Fitness Partner 是一款專注於健身和跑步訓練的 Web 應用程式�
 
 - **框架**：Next.js 14 (React)
 - **UI 庫**：Ant Design + 客製化樣式
-- **狀態管理**：Redux Toolkit
+- **狀態管理**：Redux Toolkit + Redux Persist
 - **樣式方案**：
-  - CSS Modules
-  - Tailwind CSS
-  - Inline Styles
+  - CSS Modules（主要）
+  - Tailwind CSS（輔助）
+  - Ant Design 主題系統
 - **動畫效果**：
-  - React Spring
-  - CSS 動畫
-- **音效處理**：Web Audio API
+  - React Spring（背景動態效果）
+  - CSS 動畫（介面過渡）
+- **音效處理**：Web Audio API + use-sound
+
+### 檔案分層架構
+
+#### 1. 應用層結構
+
+```
+/app                    # Next.js 應用目錄
+  /components           # 共用元件
+  /[feature]            # 功能頁面（如 exercise, create-workout-plan）
+    /page.tsx           # 頁面入口
+    /components         # 功能專屬元件
+      /[ComponentName]  # 獨立元件
+        /index.tsx      # 元件主檔
+        /styles.module.css # 元件樣式
+        /const.ts       # 元件常數
+  /interface            # TypeScript 介面定義
+  /static               # 靜態資源
+
+/lib                    # 邏輯層與共用功能
+  /features             # Redux 功能模組（slices）
+  /hooks                # 自定義 Hooks
+  /utils                # 工具函數
+```
+
+#### 2. 元件結構標準
+
+每個元件遵循一致的結構模式：
+
+```
+/ComponentName
+  /index.tsx           # 元件主檔
+  /styles.module.css   # 封裝的樣式
+  /const.ts            # 元件相關常數（若需要）
+  /components          # 子元件（若需要）
+```
 
 ### 資料流架構
 
-#### Redux 資料流
+#### Redux 資料流設計
+
+- **分層設計**：
+
+  ```
+  /lib/features/[domain]/[domain]Slice.ts  # Redux 切片
+  /lib/store.ts                           # 全局 store 配置
+  ```
 
 - **Store 設計**：
-  - `exercise`: 運動狀態、計時器、運動列表
-  - `audio`: 音效控制和狀態
-  - `theme`: 主題設定 (亮色/暗色)
-  - `userInfo`: 使用者資訊和設定
+
+  - `exercise`: 運動狀態、計時器、運動類型與列表管理
+  - `audio`: 音效控制與靜音狀態
+  - `theme`: 主題設定（亮色/暗色模式）
+  - `userInfo`: 使用者資訊、設定與 UI 狀態
+  - `firebase`: Firebase 連接狀態管理
   - `workoutReport`: 運動報告與統計數據
+
+- **持久化策略**：
+  使用 Redux-Persist 針對關鍵資料實現持久化：
+  ```typescript
+  const exercisePersistConfig = {
+    key: "exercise",
+    storage,
+    whitelist: ["currentExercise", "remainingExercises", "workoutType"],
+  };
+  ```
 
 #### 資料流程
 
 1. **用戶操作** → 觸發 Action
 2. **Reducer** → 更新 State
-3. **Selector** → 組件訂閱並獲取資料
+3. **Selectors** → 使用 TypeScript 類型安全選擇器獲取資料
 4. **UI 渲染** → 反映最新狀態
+
+### Hooks 架構與運用
+
+#### 1. 自定義 Hooks 分類
+
+- **狀態邏輯封裝**：
+
+  - `/lib/hooks/timer/useTimerLogic.ts` - 計時器核心邏輯
+  - `/lib/hooks/useMetronome.ts` - 節拍器功能
+
+- **UI 功能封裝**：
+
+  - `/lib/hooks/ui/useMediaQuery.ts` - 響應式設計支援
+
+- **Redux 整合**：
+
+  - `/lib/hooks/redux/useRedux.ts` - 類型安全的 Redux Hooks
+
+  ```typescript
+  export const useAppDispatch = useDispatch.withTypes<AppDispatch>();
+  export const useAppSelector = useSelector.withTypes<RootState>();
+  ```
+
+- **音效處理**：
+
+  - `/lib/hooks/audio/useCountdownSound.ts` - 倒數音效處理
+
+- **身份驗證**：
+  - `/lib/hooks/auth/useAuth.ts` - Firebase 認證整合
+
+#### 2. Hooks 設計原則
+
+- **單一職責**：每個 Hook 專注於解決特定問題
+- **可重用性**：跨組件共享邏輯
+- **關注點分離**：UI 邏輯與業務邏輯分離
+- **類型安全**：完整的 TypeScript 類型支持
+
+例如，計時器邏輯實現：
+
+```typescript
+/**
+ * 運動計時邏輯的 Hook
+ * 只專注於:計時邏輯(本地+Redux)以及切換下一個運動的時機邏輯
+ * flow: 註冊timer => 每秒觸發計時邏輯 => 更新本地狀態 => 在關鍵節點更新Redux
+ */
+export const useTimerLogic = () => {
+  // 邏輯實現...
+};
+```
+
+### 常數定義方式
+
+採用模組化的常數定義策略：
+
+1. **功能模組常數**：
+
+   - 每個功能模組的常數放在該模組下的 `const.ts` 中
+
+   ```typescript
+   // app/create-workout-plan/components/FormContent/const.ts
+   export const workoutItems = [
+     "登山者",
+     "俯臥撐",
+     "深蹲",
+     // ...
+   ];
+   ```
+
+2. **路由映射**：
+
+   ```typescript
+   // app/components/Navigation/const.ts
+   export const routerMap = {
+     Home: "/",
+     "Workout Plan": "/create-workout-plan",
+     // ...
+   };
+   ```
+
+3. **樣式變數**：
+   - 使用 CSS 自定義屬性在 `globals.css` 中定義全局變數
+   ```css
+   :root {
+     --color-primary: #202020ff;
+     --spacing-md: 1rem;
+     /* ... */
+   }
+   ```
+
+### 樣式架構
+
+採用 CSS Modules 為主體的混合式架構：
+
+1. **CSS Modules 核心原則**：
+
+   - 元件特定樣式使用 `.module.css` 文件隔離
+   - 響應式設計集成在 CSS Modules 中
+   - 通過類名命名實現樣式範圍隔離
+
+2. **全局變數系統**：
+
+   - 在 `globals.css` 中定義顏色、間距、字體等全局變數
+   - 在 CSS Modules 中引用全局變數，確保一致性
+
+3. **Ant Design 主題整合**：
+   - 通過 ConfigProvider 集中配置主題
+   - 針對特定組件通過 CSS Modules 覆寫樣式
 
 ### 儲存方案
 
@@ -158,6 +319,7 @@ graph TD
 
     subgraph "狀態管理"
         React --> |使用| Redux[Redux Toolkit]
+        Redux --> ReduxPersist[Redux Persist]
         Redux --> ExerciseSlice[exercise 切片]
         Redux --> AudioSlice[audio 切片]
         Redux --> ThemeSlice[theme 切片]
@@ -177,6 +339,7 @@ graph TD
         React --> CustomComponents[自定義元件]
         React --> CSSModules[CSS Modules]
         React --> TailwindCSS[Tailwind CSS]
+        React --> ReactSpring[React Spring]
     end
 
     subgraph "功能模塊"
@@ -198,8 +361,18 @@ graph TD
 
     subgraph "音效系統"
         AudioSlice --> WebAudioAPI[Web Audio API]
-        WebAudioAPI --> CountdownSound[倒計時音效]
-        WebAudioAPI --> MetronomeSound[節拍器音效]
+        WebAudioAPI --> UseSound[use-sound 庫]
+        UseSound --> CountdownSound[倒計時音效]
+        UseSound --> MetronomeSound[節拍器音效]
+    end
+
+    subgraph "Hooks 架構"
+        React --> CustomHooks[自定義 Hooks]
+        CustomHooks --> TimerHooks[計時器邏輯]
+        CustomHooks --> AudioHooks[音效處理]
+        CustomHooks --> AuthHooks[認證邏輯]
+        CustomHooks --> UIHooks[UI 邏輯]
+        CustomHooks --> ReduxHooks[Redux 整合]
     end
 ```
 
@@ -214,6 +387,8 @@ flowchart TB
     Actions --> |處理| Reducers[Redux Reducers]
     Reducers --> |更新| Store[Redux Store]
     Store --> |資料訂閱| UI
+    Store --> |持久化| LocalStorage[(Local Storage)]
+    LocalStorage --> |恢復| Store
 
     subgraph "異步操作"
         Actions --> |API 請求| Firebase[(Firebase)]
@@ -226,46 +401,64 @@ flowchart TB
         Store --> ThemeState[主題狀態]
         Store --> UserState[使用者狀態]
         Store --> ReportState[報表狀態]
+        Store --> FirebaseState[Firebase 狀態]
+    end
+
+    subgraph "自定義 Hooks"
+        UI --> CustomHooks[自定義 Hooks]
+        CustomHooks --> |使用| Store
+        CustomHooks --> |更新| Actions
     end
 ```
 
 #### 元件結構圖
 
-此圖展示了應用的元件層次結構，從頂層的 App 元件到各個頁面及其子元件。
+此圖展示了應用的元件層次結構和檔案組織方式。
 
 ```mermaid
 graph TD
     App[App] --> Layout[Layout]
+    App --> StoreProvider[StoreProvider]
     Layout --> |路由| Pages[頁面元件]
     Layout --> Navigation[導航元件]
     Layout --> AuthProvider[認證提供者]
     Layout --> ThemeProvider[主題提供者]
 
-    Pages --> HomePage[首頁]
-    Pages --> LoginPage[登入頁]
-    Pages --> WorkoutPlanPage[運動計劃頁]
-    Pages --> ExercisePage[運動執行頁]
-    Pages --> ReportPage[報表頁]
+    subgraph "頁面結構"
+        Pages --> HomePage[首頁]
+        Pages --> LoginPage[登入頁]
+        Pages --> WorkoutPlanPage[運動計劃頁]
+        Pages --> ExercisePage[運動執行頁]
+        Pages --> ReportPage[報表頁]
+    end
 
-    WorkoutPlanPage --> FormContent[表單內容]
-    WorkoutPlanPage --> FormAction[表單操作]
-    WorkoutPlanPage --> SimpleModeSelector[模式選擇器]
+    subgraph "元件檔案結構"
+        Component[元件] --> IndexFile["index.tsx (元件主檔)"]
+        Component --> StyleFile["styles.module.css (樣式)"]
+        Component --> ConstFile["const.ts (常數定義)"]
+        Component --> SubComponents["components/ (子元件)"]
+    end
 
-    ExercisePage --> ControlPanel[控制面板]
-    ExercisePage --> Exercise[運動顯示]
-    ExercisePage --> UnifiedTimer[統一計時器]
-    ExercisePage --> Metronome[節拍器]
-    ExercisePage --> ReactSpringBg[背景動畫]
+    subgraph "工作流頁面組件"
+        WorkoutPlanPage --> FormContent[表單內容]
+        WorkoutPlanPage --> FormAction[表單操作]
+        WorkoutPlanPage --> SimpleModeSelector[模式選擇器]
+        WorkoutPlanPage --> PlanForm[計劃表單]
+        WorkoutPlanPage --> PopularSet[熱門組合]
 
-    ReportPage --> FilterPanel[篩選面板]
-    ReportPage --> ReportContent[報表內容]
-    ReportPage --> DateRangePicker[日期範圍選擇器]
-    ReportPage --> ReportCard[報表卡片]
+        ExercisePage --> ControlPanel[控制面板]
+        ExercisePage --> Exercise[運動顯示]
+        ExercisePage --> UnifiedTimer[統一計時器]
+        ExercisePage --> Metronome[節拍器]
+        ExercisePage --> ReactSpringBg[背景動畫]
+        ExercisePage --> TimerBg[計時器背景]
+        ExercisePage --> WorkoutModeSelector[運動模式選擇器]
+    end
 ```
 
-#### 數據模型圖
+#### 數據與邏輯架構圖
 
-此圖展示了主要數據實體及其之間的關係。
+此圖展示了主要數據實體及其與邏輯層的關係。
 
 ```mermaid
 classDiagram
@@ -300,12 +493,42 @@ classDiagram
         +String id
         +String name
         +Number duration
-        +String imageUrl
-        +String description
+        +Number rest
+    }
+
+    class ExerciseSlice {
+        +String workoutType
+        +String status
+        +WorkoutItem currentExercise
+        +WorkoutItem[] remainingExercises
+        +WorkoutItem[] completedExercises
+        +setWorkoutPlan()
+        +startExercise()
+        +pauseExercise()
+        +finishExercise()
+        +moveToNextExercise()
+    }
+
+    class AudioSlice {
+        +Boolean muted
+        +toggleMuted()
+        +setMuted()
+    }
+
+    class Hooks {
+        +useTimerLogic()
+        +useMetronome()
+        +useCountdownSound()
+        +useAuth()
+        +useMediaQuery()
     }
 
     User "1" -- "n" WorkoutPlan : creates
     User "1" -- "n" WorkoutReport : has
     WorkoutPlan "1" -- "n" Exercise : contains
     WorkoutReport "1" -- "n" Exercise : records
+    ExerciseSlice -- Exercise : manages
+    ExerciseSlice -- WorkoutPlan : configures
+    AudioSlice -- Hooks : consumed by
+    ExerciseSlice -- Hooks : consumed by
 ```

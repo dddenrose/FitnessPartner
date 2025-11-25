@@ -4,11 +4,9 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
-  max-height: 100vh;
-  overflow: hidden;
-  position: relative;
+  min-height: 100%;
   gap: var(--spacing-lg);
+  padding: 16px 0;
 }
 
 .exerciseContent {
@@ -16,7 +14,7 @@
   flex-direction: column;
   align-items: center;
   gap: var(--spacing-lg);
-  z-index: 10;
+  width: 100%;
 }
 
 .finishedContainer {
@@ -43,13 +41,12 @@
 @media (max-width: 768px) {
   .exerciseContainer {
     gap: var(--spacing-md);
-    padding: var(--spacing-sm);
   }
-  
+
   .finishedTitle {
     font-size: var(--font-size-xl);
   }
-  
+
   .congratsText {
     font-size: var(--font-size-4xl);
   }
@@ -59,7 +56,7 @@
   .exerciseContainer {
     gap: var(--spacing-sm);
   }
-  
+
   .congratsText {
     font-size: var(--font-size-3xl);
   }

@@ -6,6 +6,7 @@ import {
   useCountdownSound,
   useTimerLogic,
 } from "@/lib/hooks/index";
+import { selectIsSlowRun } from "@/lib/features/exercise/exerciseSlice";
 import { Flex } from "antd";
 import React from "react";
 import ControlPanel from "./components/ControlPanel";
@@ -17,6 +18,7 @@ import styles from "./styles.module.css";
 const App: React.FC = () => {
   const dispatch = useAppDispatch();
   const status = useAppSelector((state) => state.exercise.status);
+  const isSlowRun = useAppSelector(selectIsSlowRun); // 添加檢查是否為慢跑模式
 
   // 使用計時器邏輯 hook - 在頁面層級統一管理
   const timerData = useTimerLogic();

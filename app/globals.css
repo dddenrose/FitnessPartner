@@ -81,3 +81,42 @@
   transition: background-color var(--transition-theme),
     color var(--transition-theme), border-color var(--transition-theme);
 }
+
+/* ========== 自訂滾動條樣式 ========== */
+/* Webkit 瀏覽器 (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+  width: 6px; /* 滾動條寬度 - 更瘦 */
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 102, 170, 0.25);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 102, 170, 0.5);
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 102, 170, 0.25) transparent;
+}
+
+/* Light Theme 滾動條調整 */
+[data-theme="light"] {
+  scrollbar-color: rgba(100, 150, 200, 0.3) transparent;
+}
+
+[data-theme="light"] ::-webkit-scrollbar-thumb {
+  background: rgba(100, 150, 200, 0.3);
+}
+
+[data-theme="light"] ::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 150, 200, 0.6);
+}

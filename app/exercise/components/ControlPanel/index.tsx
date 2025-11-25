@@ -10,8 +10,9 @@ import {
   AudioOutlined,
   AudioMutedOutlined,
   RollbackOutlined,
+  OpenAIOutlined,
 } from "@ant-design/icons";
-import { Button, Flex, Modal, Tooltip } from "antd";
+import { Button, Flex, Modal, Switch, Tooltip, Typography } from "antd";
 import { setIsGlobalPlaying } from "@/lib/features/audio/audioSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/redux/useRedux";
 import { WorkoutModeType } from "@/lib/features/exercise/exerciseSlice";
@@ -28,6 +29,10 @@ import {
 } from "@/lib/features/exercise/exerciseSlice";
 import { useRouter } from "next/navigation";
 import styles from "./styles.module.css";
+import {
+  setBpmDetectorEnabled,
+  toggleBpmDetector,
+} from "@/lib/features/bpmDetector/bpmDetectorSlice";
 
 /**
  * 統一的控制面板組件，整合所有控制按鈕
@@ -42,6 +47,9 @@ const ControlPanel: React.FC = () => {
   const currentExercise = useAppSelector(selectCurrentExercise);
   const remainingExercises = useAppSelector(selectRemainingExercises);
   const initialWorkoutPlan = useAppSelector(selectInitialWorkoutPlan);
+  const enableBpmDetector = useAppSelector(
+    (state) => state.bpmDetector.enabled
+  );
 
   // 其他狀態
   const isGlobalPlaying = useAppSelector(
@@ -143,17 +151,30 @@ const ControlPanel: React.FC = () => {
         </Button>
 
         {workoutType === "slowrun" && (
-          <Tooltip title={metronomeActive ? "關閉節拍燈" : "開啟節拍燈"}>
+          <>
             <Button
-              onClick={handleToggleMetronome}
+              onClick={() => dispatch(toggleBpmDetector())}
               className={styles.controlButton}
-              type="default"
+              type={enableBpmDetector ? "primary" : "default"}
               shape="circle"
               size="large"
+              title="步頻檢測"
             >
-              {metronomeActive ? <AudioOutlined /> : <AudioMutedOutlined />}
+              <OpenAIOutlined />
             </Button>
-          </Tooltip>
+
+            <Tooltip title={metronomeActive ? "關閉節拍燈" : "開啟節拍燈"}>
+              <Button
+                onClick={handleToggleMetronome}
+                className={styles.controlButton}
+                type="default"
+                shape="circle"
+                size="large"
+              >
+                {metronomeActive ? <AudioOutlined /> : <AudioMutedOutlined />}
+              </Button>
+            </Tooltip>
+          </>
         )}
 
         <Button

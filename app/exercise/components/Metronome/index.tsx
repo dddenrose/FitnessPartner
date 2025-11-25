@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Typography } from "antd";
+import { Flex, Typography } from "antd";
 import { useAppSelector } from "@/lib/hooks/redux/useRedux";
 import { useMetronome } from "@/lib/hooks";
 import styles from "./styles.module.css";
@@ -24,7 +24,7 @@ const Metronome: React.FC<MetronomeProps> = ({ visible }) => {
   if (!visible || !metronomeActive) return null;
 
   return (
-    <div className="mb-8 text-center">
+    <Flex vertical align="center">
       <div
         className={styles.flashLight}
         style={{
@@ -33,8 +33,8 @@ const Metronome: React.FC<MetronomeProps> = ({ visible }) => {
           margin: "0 auto 16px",
         }}
       />
-      <Text style={{ color: "white" }}>{bpm} BPM</Text>
-    </div>
+      <Text style={{ color: "white", fontSize: "0.8rem" }}>{bpm} BPM</Text>
+    </Flex>
   );
 };
 
