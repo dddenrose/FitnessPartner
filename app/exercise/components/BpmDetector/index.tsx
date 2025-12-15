@@ -9,6 +9,11 @@ import {
   useInactivityDetection,
 } from "@/lib/hooks";
 import { drawKeypoints, drawSkeleton } from "@/lib/utils/poseDrawing";
+import {
+  calculateRotationAngle,
+  getRotatedCanvasSize,
+  applyCanvasRotation,
+} from "@/lib/utils/canvasRotation";
 import styles from "./styles.module.css";
 
 const { Text, Title } = Typography;
@@ -53,16 +58,24 @@ const BpmDetector: React.FC<BpmDetectorProps> = ({
     async function detectPoseAndCalculateBpm() {
       if (!video || video.paused || video.ended) return;
 
-      // ✅ RWD 自適應：確保 Canvas 尺寸與 Video 實際尺寸同步
+      // 取得 video 原始尺寸
       const videoWidth = video.videoWidth;
       const videoHeight = video.videoHeight;
 
-      if (
-        canvas &&
-        (canvas.width !== videoWidth || canvas.height !== videoHeight)
-      ) {
-        canvas.width = videoWidth;
-        canvas.height = videoHeight;
+      // 計算需要的旋轉角度（支援 4 個方向）
+      const rotationAngle = calculateRotationAngle(videoWidth, videoHeight);
+
+      // 根據旋轉角度設定 Canvas 尺寸
+      if (canvas) {
+        const { width, height } = getRotatedCanvasSize(
+          videoWidth,
+          videoHeight,
+          rotationAngle
+        );
+        if (canvas.width !== width || canvas.height !== height) {
+          canvas.width = width;
+          canvas.height = height;
+        }
       }
 
       try {
@@ -70,19 +83,28 @@ const BpmDetector: React.FC<BpmDetectorProps> = ({
 
         // 無論是否有偵測到人物，都要先清除 Canvas
         if (canvas && ctx) {
+          ctx.save();
           ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+          // 應用旋轉變換
+          applyCanvasRotation(ctx, canvas, rotationAngle);
         }
 
         if (poses && poses.length > 0) {
           const pose = poses[0];
 
           if (canvas && ctx) {
-            // ✅ 傳入實際的寬高進行繪製
-            drawKeypoints(pose.keypoints, ctx, canvas.width, canvas.height);
-            drawSkeleton(pose.keypoints, ctx, canvas.width, canvas.height);
+            // 傳入原始 video 的寬高（MoveNet 回傳的座標基於原始尺寸）
+            drawKeypoints(pose.keypoints, ctx, videoWidth, videoHeight);
+            drawSkeleton(pose.keypoints, ctx, videoWidth, videoHeight);
           }
 
           calculateBpm(pose.keypoints, updateActivityTime);
+        }
+
+        // 恢復 context 狀態
+        if (canvas && ctx) {
+          ctx.restore();
         }
       } catch (err) {
         console.error("Pose detection error:", err);
