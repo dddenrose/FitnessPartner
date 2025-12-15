@@ -4,56 +4,30 @@
  */
 
 /**
- * 計算需要的旋轉角度
- * @param videoWidth - Video 原始寬度
- * @param videoHeight - Video 原始高度
- * @returns 旋轉角度 (0, 90, 180, 270)
+ * 計算需要的旋轉角度（簡化版本）
+ * 直接比較 video 原始尺寸與實際顯示尺寸，避免依賴不可靠的 API
+ * @param videoElement - Video 元素
+ * @returns 旋轉角度 (0 或 90)
  */
 export const calculateRotationAngle = (
-  videoWidth: number,
-  videoHeight: number
+  videoElement: HTMLVideoElement
 ): number => {
-  // 嘗試取得螢幕方向
-  if (typeof window === "undefined" || !window.screen?.orientation) {
-    // 降級方案：根據視窗尺寸判斷
-    const windowWidth = window.innerWidth;
-    const windowHeight = window.innerHeight;
+  const videoWidth = videoElement.videoWidth;
+  const videoHeight = videoElement.videoHeight;
+  const displayWidth = videoElement.clientWidth;
+  const displayHeight = videoElement.clientHeight;
 
-    // 如果 video 是橫的但視窗是直的
-    if (videoWidth > videoHeight && windowHeight > windowWidth) {
-      return 90;
-    }
-    // 如果 video 是直的但視窗是橫的
-    if (videoWidth < videoHeight && windowWidth > windowHeight) {
-      return 270;
-    }
-    return 0;
-  }
+  // 判斷 video 原始方向（橫向 or 直向）
+  const videoIsLandscape = videoWidth > videoHeight;
 
-  const orientation = window.screen.orientation.type;
-  const isVideoLandscape = videoWidth > videoHeight;
+  // 判斷實際顯示方向（橫向 or 直向）
+  const displayIsLandscape = displayWidth > displayHeight;
 
-  // Portrait 模式
-  if (orientation.includes("portrait")) {
-    if (isVideoLandscape) {
-      // Video 是橫的，螢幕是直的
-      return orientation === "portrait-secondary" ? 270 : 90;
-    }
-    // Video 和螢幕都是直的
-    return orientation === "portrait-secondary" ? 180 : 0;
-  }
+  // 如果 video 和顯示的方向不一致，需要旋轉 90 度
+  // 例如：video 是橫的 (640x480) 但顯示是直的 -> 需要旋轉
+  const needsRotation = videoIsLandscape !== displayIsLandscape;
 
-  // Landscape 模式
-  if (orientation.includes("landscape")) {
-    if (!isVideoLandscape) {
-      // Video 是直的，螢幕是橫的
-      return orientation === "landscape-secondary" ? 270 : 90;
-    }
-    // Video 和螢幕都是橫的，但可能是相反方向
-    return orientation === "landscape-secondary" ? 180 : 0;
-  }
-
-  return 0;
+  return needsRotation ? 90 : 0;
 };
 
 /**
@@ -68,13 +42,7 @@ export const getRotatedCanvasSize = (
   videoHeight: number,
   rotationAngle: number
 ): { width: number; height: number } => {
-  // 90° 或 270° 需要對調寬高
-  if (rotationAngle === 90 || rotationAngle === 270) {
-    return {
-      width: videoHeight,
-      height: videoWidth,
-    };
-  }
+  // 90 度或 270 度需要對調寬高
 
   return {
     width: videoWidth,

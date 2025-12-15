@@ -62,8 +62,8 @@ const BpmDetector: React.FC<BpmDetectorProps> = ({
       const videoWidth = video.videoWidth;
       const videoHeight = video.videoHeight;
 
-      // 計算需要的旋轉角度（支援 4 個方向）
-      const rotationAngle = calculateRotationAngle(videoWidth, videoHeight);
+      // 計算需要的旋轉角度（傳入 video 元素以比較實際顯示尺寸）
+      const rotationAngle = calculateRotationAngle(video);
 
       // 根據旋轉角度設定 Canvas 尺寸
       if (canvas) {
