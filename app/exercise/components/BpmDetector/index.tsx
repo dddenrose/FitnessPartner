@@ -53,6 +53,18 @@ const BpmDetector: React.FC<BpmDetectorProps> = ({
     async function detectPoseAndCalculateBpm() {
       if (!video || video.paused || video.ended) return;
 
+      // ✅ RWD 自適應：確保 Canvas 尺寸與 Video 實際尺寸同步
+      const videoWidth = video.videoWidth;
+      const videoHeight = video.videoHeight;
+
+      if (
+        canvas &&
+        (canvas.width !== videoWidth || canvas.height !== videoHeight)
+      ) {
+        canvas.width = videoWidth;
+        canvas.height = videoHeight;
+      }
+
       try {
         const poses = await detector?.estimatePoses(video);
 
@@ -65,8 +77,9 @@ const BpmDetector: React.FC<BpmDetectorProps> = ({
           const pose = poses[0];
 
           if (canvas && ctx) {
-            drawKeypoints(pose.keypoints, ctx);
-            drawSkeleton(pose.keypoints, ctx);
+            // ✅ 傳入實際的寬高進行繪製
+            drawKeypoints(pose.keypoints, ctx, canvas.width, canvas.height);
+            drawSkeleton(pose.keypoints, ctx, canvas.width, canvas.height);
           }
 
           calculateBpm(pose.keypoints, updateActivityTime);
@@ -105,12 +118,7 @@ const BpmDetector: React.FC<BpmDetectorProps> = ({
       {/* 攝像頭容器 */}
       <div className={styles.cameraContainer}>
         <video ref={videoRef} className={styles.video} autoPlay playsInline />
-        <canvas
-          ref={canvasRef}
-          className={styles.canvas}
-          width={640}
-          height={480}
-        />
+        <canvas ref={canvasRef} className={styles.canvas} />
 
         {/* 不活動狀態提示 */}
         {inactivityDetected && (
