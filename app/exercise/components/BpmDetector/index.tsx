@@ -56,17 +56,21 @@ const BpmDetector: React.FC<BpmDetectorProps> = ({
       try {
         const poses = await detector?.estimatePoses(video);
 
-        if (!poses || poses.length === 0) return;
-
-        const pose = poses[0];
-
+        // 無論是否有偵測到人物，都要先清除 Canvas
         if (canvas && ctx) {
           ctx.clearRect(0, 0, canvas.width, canvas.height);
-          drawKeypoints(pose.keypoints, ctx);
-          drawSkeleton(pose.keypoints, ctx);
         }
 
-        calculateBpm(pose.keypoints, updateActivityTime);
+        if (poses && poses.length > 0) {
+          const pose = poses[0];
+
+          if (canvas && ctx) {
+            drawKeypoints(pose.keypoints, ctx);
+            drawSkeleton(pose.keypoints, ctx);
+          }
+
+          calculateBpm(pose.keypoints, updateActivityTime);
+        }
       } catch (err) {
         console.error("Pose detection error:", err);
       }
