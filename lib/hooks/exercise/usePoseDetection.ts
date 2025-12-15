@@ -53,8 +53,13 @@ export const usePoseDetection = ({ isActive }: UsePoseDetectionProps) => {
       if (!videoElement) return;
 
       try {
+        // 使用 ideal 寬高，讓瀏覽器選擇最佳解析度（適應手機直向/橫向）
         const stream = await navigator.mediaDevices.getUserMedia({
-          video: { facingMode: "user", width: 640, height: 480 },
+          video: {
+            facingMode: "user",
+            width: { ideal: 640 },
+            height: { ideal: 480 },
+          },
           audio: false,
         });
 

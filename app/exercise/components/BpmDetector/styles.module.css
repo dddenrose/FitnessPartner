@@ -1,17 +1,23 @@
 .cameraContainer {
   position: relative;
-  width: 320px;
-  height: 240px;
+  /* RWD: 使用百分比寬度但限制最大寬度 */
+  width: 100%;
+  max-width: 500px; /* 限制最大寬度 */
   margin-bottom: 16px;
   border-radius: 8px;
   overflow: hidden;
   border: 2px solid rgba(255, 255, 255, 0.2);
+  /* 讓容器置中 */
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .video {
   width: 100%;
-  height: 100%;
-  object-fit: cover;
+  height: auto; /* 讓高度自適應 */
+  max-height: 320px; /* 限制最大高度 */
+  display: block; /* 消除底部間隙 */
+  object-fit: contain; /* 確保完整顯示不裁切 */
   transform: scaleX(-1); /* 鏡像顯示 */
 }
 
