@@ -158,6 +158,35 @@ const BpmDetector: React.FC<BpmDetectorProps> = ({
         <video ref={videoRef} className={styles.video} autoPlay playsInline />
         <canvas ref={canvasRef} className={styles.canvas} />
 
+        {/* 調試信息顯示 */}
+        <div
+          style={{
+            position: "absolute",
+            top: "50px",
+            left: "10px",
+            background: "rgba(0,0,0,0.9)",
+            color: "#0f0",
+            padding: "8px",
+            fontSize: "11px",
+            zIndex: 999,
+            fontFamily: "monospace",
+            lineHeight: "1.4",
+            borderRadius: "4px",
+          }}
+        >
+          Video: {videoRef.current?.videoWidth || 0} x{" "}
+          {videoRef.current?.videoHeight || 0}
+          <br />
+          Display: {videoRef.current?.clientWidth || 0} x{" "}
+          {videoRef.current?.clientHeight || 0}
+          <br />
+          Canvas: {canvasRef.current?.width || 0} x{" "}
+          {canvasRef.current?.height || 0}
+          <br />
+          Rotate:{" "}
+          {videoRef.current ? calculateRotationAngle(videoRef.current) : 0}°
+        </div>
+
         {/* 不活動狀態提示 */}
         {inactivityDetected && (
           <div className={styles.inactivityAlert}>
