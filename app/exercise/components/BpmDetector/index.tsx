@@ -92,11 +92,11 @@ const BpmDetector: React.FC<BpmDetectorProps> = ({
             ctx.translate(canvas.width, 0);
             ctx.scale(-1, 1);
           } else if (rotationAngle === 90) {
-            // 需要旋轉 90 度：先旋轉，再做鏡像
-            ctx.rotate(Math.PI / 2);
-            ctx.translate(0, -canvas.width);
-            // 旋轉後的鏡像：沿著新的水平軸（原本的垂直軸）翻轉
-            ctx.translate(canvas.height, 0);
+            // 需要旋轉 90 度：使用逆時針旋轉來修正方向
+            ctx.rotate(-Math.PI / 2);
+            ctx.translate(-canvas.height, 0);
+            // 旋轉後的鏡像
+            ctx.translate(canvas.width, 0);
             ctx.scale(-1, 1);
           }
         }
