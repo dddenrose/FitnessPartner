@@ -14,20 +14,12 @@ export const calculateRotationAngle = (
 ): number => {
   const videoWidth = videoElement.videoWidth;
   const videoHeight = videoElement.videoHeight;
-  const displayWidth = videoElement.clientWidth;
-  const displayHeight = videoElement.clientHeight;
 
-  // 判斷 video 原始方向（橫向 or 直向）
-  const videoIsLandscape = videoWidth > videoHeight;
+  // 當 video 是直向時（高度 > 寬度），MoveNet 的座標系統可能還是橫向的
+  // 所以需要旋轉 90 度來對齊
+  const videoIsPortrait = videoHeight > videoWidth;
 
-  // 判斷實際顯示方向（橫向 or 直向）
-  const displayIsLandscape = displayWidth > displayHeight;
-
-  // 當 video 和顯示的方向不一致時，才需要旋轉 90 度
-  // 例如：video 是橫的但顯示是直的，或 video 是直的但顯示是橫的
-  const needsRotation = videoIsLandscape !== displayIsLandscape;
-
-  return needsRotation ? 90 : 0;
+  return videoIsPortrait ? 90 : 0;
 };
 
 /**
