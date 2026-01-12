@@ -23,9 +23,9 @@ export const calculateRotationAngle = (
   // 判斷實際顯示方向（橫向 or 直向）
   const displayIsLandscape = displayWidth > displayHeight;
 
-  // 如果 video 和顯示的方向不一致，需要旋轉 90 度
-  // 例如：video 是橫的 (640x480) 但顯示是直的 -> 需要旋轉
-  const needsRotation = videoIsLandscape !== displayIsLandscape;
+  // 反轉邏輯：如果 video 和顯示的方向一致，才需要旋轉 90 度
+  // 因為手機前鏡頭的座標系統與實際顯示方向相反
+  const needsRotation = videoIsLandscape === displayIsLandscape;
 
   return needsRotation ? 90 : 0;
 };
