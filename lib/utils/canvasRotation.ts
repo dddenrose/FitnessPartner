@@ -43,6 +43,12 @@ export const getRotatedCanvasSize = (
   rotationAngle: number
 ): { width: number; height: number } => {
   // 90 度或 270 度需要對調寬高
+  if (rotationAngle === 90 || rotationAngle === 270) {
+    return {
+      width: videoHeight,
+      height: videoWidth,
+    };
+  }
 
   return {
     width: videoWidth,
