@@ -86,7 +86,11 @@ const BpmDetector: React.FC<BpmDetectorProps> = ({
           ctx.save();
           ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-          // 應用旋轉變換
+          // 先應用鏡像效果（讓畫面左右對調，模擬鏡子效果）
+          ctx.translate(canvas.width, 0);
+          ctx.scale(-1, 1);
+
+          // 再應用旋轉變換
           applyCanvasRotation(ctx, canvas, rotationAngle);
         }
 

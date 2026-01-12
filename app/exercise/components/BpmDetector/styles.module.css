@@ -27,7 +27,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  transform: scaleX(-1); /* 鏡像顯示 */
+  /* 移除 transform，改由 JS 控制鏡像和旋轉 */
 }
 
 .errorOverlay {
