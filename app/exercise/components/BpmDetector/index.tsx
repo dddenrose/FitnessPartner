@@ -98,7 +98,8 @@ const BpmDetector: React.FC<BpmDetectorProps> = ({
           const pose = poses[0];
 
           if (canvas && ctx) {
-            // 傳入原始 video 的寬高（MoveNet 回傳的座標基於原始尺寸）
+            // MoveNet 回傳的座標是基於 video 原始尺寸 (videoWidth x videoHeight)
+            // 我們已經透過旋轉處理了方向問題，所以直接使用原始尺寸即可
             drawKeypoints(pose.keypoints, ctx, videoWidth, videoHeight);
             drawSkeleton(pose.keypoints, ctx, videoWidth, videoHeight);
           }
@@ -138,6 +139,10 @@ const BpmDetector: React.FC<BpmDetectorProps> = ({
   const isInRange = Math.abs(displayedBpm - targetBpm) <= tolerance;
 
   if (!isActive) return null;
+
+  // Vercel 環境變數（自動注入）
+  const buildId =
+    process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA?.slice(0, 7) || "dev";
 
   return (
     <Flex vertical align="center" style={{ marginTop: 20 }}>
@@ -195,6 +200,18 @@ const BpmDetector: React.FC<BpmDetectorProps> = ({
             <Text style={{ color: "white" }}>{error}</Text>
           </div>
         )}
+      </div>
+
+      {/* 版本標記 - 不明顯的顯示在底部 */}
+      <div
+        style={{
+          marginTop: "8px",
+          fontSize: "10px",
+          color: "rgba(0, 0, 0, 0.25)",
+          userSelect: "none",
+        }}
+      >
+        {buildId}
       </div>
     </Flex>
   );

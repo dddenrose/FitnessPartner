@@ -73,16 +73,18 @@ export const applyCanvasRotation = (
 
   switch (rotationAngle) {
     case 90:
-      ctx.translate(width, 0);
+      // 順時針旋轉 90 度：先旋轉，再向下平移修正位置
       ctx.rotate(Math.PI / 2);
+      ctx.translate(0, -width);
       break;
     case 180:
       ctx.translate(width, height);
       ctx.rotate(Math.PI);
       break;
     case 270:
-      ctx.translate(0, height);
+      // 逆時針旋轉 90 度：先旋轉，再向右平移修正位置
       ctx.rotate(-Math.PI / 2);
+      ctx.translate(-height, 0);
       break;
   }
 };
