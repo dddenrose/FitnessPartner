@@ -5,17 +5,21 @@
 
 /**
  * 計算需要的旋轉角度（簡化版本）
- * 現代瀏覽器的 <video> 通常已經自動處理了旋轉，videoWidth/Height 會直接反映最終顯示的方向。
- * 因此，我們不需要再手動旋轉座標系統，否則會導致座標錯亂或畫布比例錯誤。
+ * 直接比較 video 原始尺寸與實際顯示尺寸，避免依賴不可靠的 API
  * @param videoElement - Video 元素
- * @returns 始終回傳 0，直接使用瀏覽器提供的影像方向
+ * @returns 旋轉角度 (0 或 90)
  */
 export const calculateRotationAngle = (
   videoElement: HTMLVideoElement
 ): number => {
-  // 即使在直式手機上，我們也希望直接使用瀏覽器處理好的直向影像流 (e.g. 480x640)
-  // 並對應到同尺寸的 Canvas，只做水平鏡像處理即可。
-  return 0;
+  const videoWidth = videoElement.videoWidth;
+  const videoHeight = videoElement.videoHeight;
+
+  // 當 video 是直向時（高度 > 寬度），MoveNet 的座標系統可能還是橫向的
+  // 所以需要旋轉 90 度來對齊
+  const videoIsPortrait = videoHeight > videoWidth;
+
+  return videoIsPortrait ? 90 : 0;
 };
 
 /**
