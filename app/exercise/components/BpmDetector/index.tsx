@@ -192,6 +192,18 @@ const BpmDetector: React.FC<BpmDetectorProps> = ({
           <br />
           Rotate:{" "}
           {videoRef.current ? calculateRotationAngle(videoRef.current) : 0}°
+          <br />
+          Orn:{" "}
+          {typeof window !== "undefined"
+            ? window.screen?.orientation?.angle ??
+              (window as any).orientation ??
+              "N/A"
+            : "N/A"}
+          <br />
+          Type:{" "}
+          {typeof window !== "undefined"
+            ? window.screen?.orientation?.type ?? "N/A"
+            : "N/A"}
         </div>
 
         {/* 不活動狀態提示 */}
