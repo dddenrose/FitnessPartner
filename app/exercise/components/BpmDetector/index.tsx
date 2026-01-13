@@ -94,7 +94,10 @@ const BpmDetector: React.FC<BpmDetectorProps> = ({
           } else if (rotationAngle === 90) {
             // 需要旋轉 90 度：使用逆時針旋轉來修正方向
             ctx.rotate(-Math.PI / 2);
-            ctx.translate(-canvas.height, 0);
+            // 修正平移量：因為現在 Canvas 寬高未對調 (是直向)，
+            // 旋轉後要移回視野，應該是平移原本的「寬度」距離 (短邊, e.g. 480)。
+            // 使用 videoWidth (480) 才是正確的平移量。
+            ctx.translate(-videoWidth, 0);
             // 旋轉後的鏡像
             ctx.translate(canvas.width, 0);
             ctx.scale(-1, 1);
