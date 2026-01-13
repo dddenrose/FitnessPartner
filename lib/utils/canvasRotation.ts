@@ -15,28 +15,49 @@ export const calculateRotationAngle = (
   const videoWidth = videoElement.videoWidth;
   const videoHeight = videoElement.videoHeight;
 
-  // 當 video 是直向時（高度 > 寬度），MoveNet 的座標系統可能還是橫向的
-  // 所以需要旋轉 90 度來對齊
-  const videoIsPortrait = videoHeight > videoWidth;
-
-  if (videoIsPortrait) {
+  // 1. 直式判斷 (Portrait)
+  // 當 video 高度 > 寬度時，一定是直向。
+  if (videoHeight > videoWidth) {
     return 90;
   }
 
-  // 如果是橫向，檢查是否為逆時針橫躺 (Landscape Secondary)
-  // 這通常會導致繪製的骨架上下顛倒，因此需要 180 度的修正
-  if (
-    typeof window !== "undefined" &&
-    window.screen &&
-    window.screen.orientation
-  ) {
-    const { type, angle } = window.screen.orientation;
-    // landscape-secondary 通常是 270 度或 -90 度
-    if (type === "landscape-secondary" || angle === 270 || angle === -90) {
-      return 180;
+  // 2. 橫式判斷 (Landscape)
+  // 此時 videoWidth > videoHeight (e.g. 640x480)。
+  // 我們只需要區分是「順時針橫躺 (Primary)」還是「逆時針橫躺 (Secondary)」。
+
+  if (typeof window !== "undefined") {
+    // 優先使用標準 Screen Orientation API
+    if (window.screen && window.screen.orientation) {
+      const { type, angle } = window.screen.orientation;
+
+      // 如果明確是 Secondary (逆時針)，才回傳 180
+      // 270度通常是逆時針橫躺
+      if (
+        type.includes("landscape-secondary") ||
+        angle === 270 ||
+        angle === -90
+      ) {
+        return 180;
+      }
+
+      // 如果是 Primary (順時針, 0 或 90)，直接回傳 0
+      if (type.includes("landscape-primary") || angle === 90 || angle === 0) {
+        return 0;
+      }
+    }
+
+    // Fallback: 檢查舊版 window.orientation (針對部分 iOS Safari 或舊 Android WebView)
+    const winOrientation = (window as any).orientation;
+    if (typeof winOrientation === "number") {
+      // 在大多數設備上，-90 代表逆時針橫躺
+      if (winOrientation === -90 || winOrientation === 270) {
+        return 180;
+      }
     }
   }
 
+  // 預設情況 (包含順時針橫躺、PC 瀏覽器、或無法偵測方向的橫向視窗)
+  // 回傳 0，維持原本測試正常的設定 (只做水平鏡像)
   return 0;
 };
 
