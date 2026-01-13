@@ -23,6 +23,10 @@ export const calculateRotationAngle = (
 
   // 2. 橫式判斷 (Landscape)
   if (typeof window !== "undefined") {
+    // 依據 Log 分析：
+    // landscape-secondary (270度/逆時針) -> 原為 180 (顛倒)，修正為 0 (正常)
+    // landscape-primary (90度/順時針/0度) -> 原為 0 (顛倒)，修正為 180 (旋轉/翻轉)
+
     // 優先檢查明確的 "secondary" 類型 (此為大多數裝置的逆時針橫躺)
     if (
       window.screen &&
@@ -30,29 +34,42 @@ export const calculateRotationAngle = (
       window.screen.orientation.type &&
       window.screen.orientation.type.includes("landscape-secondary")
     ) {
-      return 180;
+      // 逆時針橫躺 (270/-90) 現在改為 0 (標準鏡像)
+      return 0;
     }
 
     // 其次檢查 window.orientation (iOS Safari 常見)
-    // -90 通常代表逆時針橫躺 (Home鍵在左側)
-    // 注意：不要使用 270，因為某些裝置的 landscape-primary 可能是 270 (雖然罕見)
-    // 除非我們有把握它是 secondary。
     const winOrientation = (window as any).orientation;
     if (typeof winOrientation === "number" && winOrientation === -90) {
-      return 180;
+      // 逆時針橫躺 (-90) 現在改為 0
+      return 0;
     }
 
-    // 針對 window.screen.orientation.angle 為 -90 的情況 (部分瀏覽器支援)
+    // 針對 window.screen.orientation.angle 為 -90 的情況
     if (
       window.screen &&
       window.screen.orientation &&
       window.screen.orientation.angle === -90
     ) {
+      // 逆時針橫躺 (-90) 現在改為 0
+      return 0;
+    }
+
+    // 如果是明確的 Landscape Primary (90 或 0)
+    // 在手機瀏覽器上，這通常就是順時針橫躺，而根據觀察到的現象，這時需要 180 度翻轉
+    if (
+      window.screen &&
+      window.screen.orientation &&
+      window.screen.orientation.type &&
+      window.screen.orientation.type.includes("landscape-primary")
+    ) {
       return 180;
     }
   }
 
-  // 預設情況 (包含順時針橫躺、PC 瀏覽器)
+  // 預設情況 (包含PC瀏覽器、無法辨識的橫向)
+  // 保持使用 0 (標準鏡像)，因為通常PC不涉及旋轉問題
+  // 但如果發現在某些特定手機瀏覽器上預設需要180，可以在這裡調整，但目前先針對明確的 Primary 類型做修正
   return 0;
 };
 
