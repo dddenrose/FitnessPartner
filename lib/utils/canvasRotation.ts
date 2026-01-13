@@ -22,42 +22,37 @@ export const calculateRotationAngle = (
   }
 
   // 2. 橫式判斷 (Landscape)
-  // 此時 videoWidth > videoHeight (e.g. 640x480)。
-  // 我們只需要區分是「順時針橫躺 (Primary)」還是「逆時針橫躺 (Secondary)」。
-
   if (typeof window !== "undefined") {
-    // 優先使用標準 Screen Orientation API
-    if (window.screen && window.screen.orientation) {
-      const { type, angle } = window.screen.orientation;
-
-      // 如果明確是 Secondary (逆時針)，才回傳 180
-      // 270度通常是逆時針橫躺
-      if (
-        type.includes("landscape-secondary") ||
-        angle === 270 ||
-        angle === -90
-      ) {
-        return 180;
-      }
-
-      // 如果是 Primary (順時針, 0 或 90)，直接回傳 0
-      if (type.includes("landscape-primary") || angle === 90 || angle === 0) {
-        return 0;
-      }
+    // 優先檢查明確的 "secondary" 類型 (此為大多數裝置的逆時針橫躺)
+    if (
+      window.screen &&
+      window.screen.orientation &&
+      window.screen.orientation.type &&
+      window.screen.orientation.type.includes("landscape-secondary")
+    ) {
+      return 180;
     }
 
-    // Fallback: 檢查舊版 window.orientation (針對部分 iOS Safari 或舊 Android WebView)
+    // 其次檢查 window.orientation (iOS Safari 常見)
+    // -90 通常代表逆時針橫躺 (Home鍵在左側)
+    // 注意：不要使用 270，因為某些裝置的 landscape-primary 可能是 270 (雖然罕見)
+    // 除非我們有把握它是 secondary。
     const winOrientation = (window as any).orientation;
-    if (typeof winOrientation === "number") {
-      // 在大多數設備上，-90 代表逆時針橫躺
-      if (winOrientation === -90 || winOrientation === 270) {
-        return 180;
-      }
+    if (typeof winOrientation === "number" && winOrientation === -90) {
+      return 180;
+    }
+
+    // 針對 window.screen.orientation.angle 為 -90 的情況 (部分瀏覽器支援)
+    if (
+      window.screen &&
+      window.screen.orientation &&
+      window.screen.orientation.angle === -90
+    ) {
+      return 180;
     }
   }
 
-  // 預設情況 (包含順時針橫躺、PC 瀏覽器、或無法偵測方向的橫向視窗)
-  // 回傳 0，維持原本測試正常的設定 (只做水平鏡像)
+  // 預設情況 (包含順時針橫躺、PC 瀏覽器)
   return 0;
 };
 
