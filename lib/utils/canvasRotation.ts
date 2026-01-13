@@ -19,7 +19,25 @@ export const calculateRotationAngle = (
   // 所以需要旋轉 90 度來對齊
   const videoIsPortrait = videoHeight > videoWidth;
 
-  return videoIsPortrait ? 90 : 0;
+  if (videoIsPortrait) {
+    return 90;
+  }
+
+  // 如果是橫向，檢查是否為逆時針橫躺 (Landscape Secondary)
+  // 這通常會導致繪製的骨架上下顛倒，因此需要 180 度的修正
+  if (
+    typeof window !== "undefined" &&
+    window.screen &&
+    window.screen.orientation
+  ) {
+    const { type, angle } = window.screen.orientation;
+    // landscape-secondary 通常是 270 度或 -90 度
+    if (type === "landscape-secondary" || angle === 270 || angle === -90) {
+      return 180;
+    }
+  }
+
+  return 0;
 };
 
 /**
