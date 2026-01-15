@@ -16,17 +16,13 @@ export const calculateRotationAngle = (
   const videoHeight = videoElement.videoHeight;
 
   // 1. 直式判斷 (Portrait)
-  // 當 video 高度 > 寬度時，一定是直向。
+  // 當 video 高度 > 寬度時，代表影片串流本身已經是直向，不需要額外旋轉矯正
   if (videoHeight > videoWidth) {
-    return 90;
+    return 0;
   }
 
   // 2. 橫式判斷 (Landscape)
   if (typeof window !== "undefined") {
-    // 依據 Log 分析：
-    // landscape-secondary (270度/逆時針) -> 原為 180 (顛倒)，修正為 0 (正常)
-    // landscape-primary (90度/順時針/0度) -> 原為 0 (顛倒)，修正為 180 (旋轉/翻轉)
-
     // 優先檢查明確的 "secondary" 類型 (此為大多數裝置的逆時針橫躺)
     if (
       window.screen &&
@@ -34,29 +30,20 @@ export const calculateRotationAngle = (
       window.screen.orientation.type &&
       window.screen.orientation.type.includes("landscape-secondary")
     ) {
-      // 逆時針橫躺 (270/-90) 現在改為 0 (標準鏡像)
       return 0;
     }
 
-    // 其次檢查 window.orientation (iOS Safari 常見)
-    const winOrientation = (window as any).orientation;
-    if (typeof winOrientation === "number" && winOrientation === -90) {
-      // 逆時針橫躺 (-90) 現在改為 0
-      return 0;
-    }
-
-    // 針對 window.screen.orientation.angle 為 -90 的情況
+    // 針對 window.screen.orientation.angle 為 -90 的情況 (逆時針橫躺)
     if (
       window.screen &&
       window.screen.orientation &&
       window.screen.orientation.angle === -90
     ) {
-      // 逆時針橫躺 (-90) 現在改為 0
       return 0;
     }
 
-    // 如果是明確的 Landscape Primary (90 或 0)
-    // 在手機瀏覽器上，這通常就是順時針橫躺，而根據觀察到的現象，這時需要 180 度翻轉
+    // 如果是明確的 Landscape Primary (通常是順時針橫躺)
+    // 根據觀察到的現象，這時需要 180 度翻轉以校正感測器方向
     if (
       window.screen &&
       window.screen.orientation &&
@@ -67,9 +54,7 @@ export const calculateRotationAngle = (
     }
   }
 
-  // 預設情況 (包含PC瀏覽器、無法辨識的橫向)
-  // 保持使用 0 (標準鏡像)，因為通常PC不涉及旋轉問題
-  // 但如果發現在某些特定手機瀏覽器上預設需要180，可以在這裡調整，但目前先針對明確的 Primary 類型做修正
+  // 預設情況 (PC 瀏覽器、無法辨識的橫向)
   return 0;
 };
 

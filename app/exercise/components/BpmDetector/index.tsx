@@ -46,6 +46,28 @@ const BpmDetector: React.FC<BpmDetectorProps> = ({
     isActive,
   });
 
+  // 增加一個穩定旋轉角度的 state，避免每幀計算
+  const [stableRotation, setStableRotation] = useState(0);
+
+  // 監聽螢幕旋轉與攝像頭準備狀態
+  useEffect(() => {
+    if (!isActive || !videoRef.current || !cameraReady) return;
+
+    const updateRotation = () => {
+      if (videoRef.current) {
+        setStableRotation(calculateRotationAngle(videoRef.current));
+      }
+    };
+
+    window.addEventListener("orientationchange", updateRotation);
+    videoRef.current.addEventListener("loadedmetadata", updateRotation);
+    updateRotation();
+
+    return () => {
+      window.removeEventListener("orientationchange", updateRotation);
+    };
+  }, [isActive, cameraReady, videoRef]);
+
   // 運行姿態檢測
   useEffect(() => {
     if (!detector || !videoRef.current || !cameraReady || !isActive) return;
@@ -61,68 +83,48 @@ const BpmDetector: React.FC<BpmDetectorProps> = ({
       // 取得 video 原始尺寸
       const videoWidth = video.videoWidth;
       const videoHeight = video.videoHeight;
+      const rotationAngle = stableRotation;
 
-      // 計算需要的旋轉角度（傳入 video 元素以比較實際顯示尺寸）
-      const rotationAngle = calculateRotationAngle(video);
-
-      // 根據旋轉角度設定 Canvas 尺寸
+      // 確保畫布尺寸與影像原始解析度一致
       if (canvas) {
-        const { width, height } = getRotatedCanvasSize(
-          videoWidth,
-          videoHeight,
-          rotationAngle
-        );
-        if (canvas.width !== width || canvas.height !== height) {
-          canvas.width = width;
-          canvas.height = height;
+        if (canvas.width !== videoWidth || canvas.height !== videoHeight) {
+          canvas.width = videoWidth;
+          canvas.height = videoHeight;
         }
       }
 
       try {
         const poses = await detector?.estimatePoses(video);
 
-        // 無論是否有偵測到人物，都要先清除 Canvas
         if (canvas && ctx) {
           ctx.save();
           ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-          // 根據旋轉角度決定變換順序
-          if (rotationAngle === 0) {
-            // 不需旋轉：只做水平鏡像
+          // 核心修正：根據穩定的旋轉角度與影像比例處理變換
+          if (videoHeight > videoWidth || rotationAngle === 0) {
+            // 直式影像或標準橫式：只需處理水平鏡像
             ctx.translate(canvas.width, 0);
             ctx.scale(-1, 1);
           } else if (rotationAngle === 180) {
-            // 逆時針橫躺：需要垂直翻轉修正 (配合鏡像變成旋轉 180 度)
+            // 處理橫向 primary 可能產生的倒置
             ctx.translate(canvas.width, canvas.height);
             ctx.scale(-1, -1);
           } else if (rotationAngle === 90) {
-            // 需要旋轉 90 度：使用逆時針旋轉來修正方向
-            ctx.rotate(-Math.PI / 2);
-            // 修正平移量：因為現在 Canvas 寬高未對調 (是直向)，
-            // 旋轉後要移回視野，應該是平移原本的「寬度」距離 (短邊, e.g. 480)。
-            // 使用 videoWidth (480) 才是正確的平移量。
-            ctx.translate(-videoWidth, 0);
-            // 旋轉後的鏡像
+            // 需要垂直旋轉時的處理
             ctx.translate(canvas.width, 0);
+            ctx.rotate(Math.PI / 2);
+            ctx.translate(0, -canvas.width);
             ctx.scale(-1, 1);
           }
-        }
 
-        if (poses && poses.length > 0) {
-          const pose = poses[0];
-
-          if (canvas && ctx) {
-            // MoveNet 回傳的座標是基於 video 原始尺寸 (videoWidth x videoHeight)
-            // 我們已經透過旋轉處理了方向問題，所以直接使用原始尺寸即可
+          if (poses && poses.length > 0) {
+            const pose = poses[0];
+            // 直接由 ctx 的 transform 處理座標映射
             drawKeypoints(pose.keypoints, ctx, videoWidth, videoHeight);
             drawSkeleton(pose.keypoints, ctx, videoWidth, videoHeight);
+            calculateBpm(pose.keypoints, updateActivityTime);
           }
 
-          calculateBpm(pose.keypoints, updateActivityTime);
-        }
-
-        // 恢復 context 狀態
-        if (canvas && ctx) {
           ctx.restore();
         }
       } catch (err) {
@@ -145,6 +147,7 @@ const BpmDetector: React.FC<BpmDetectorProps> = ({
     updateActivityTime,
     videoRef,
     canvasRef,
+    stableRotation,
   ]);
 
   // 計算顯示的 BPM 和匹配百分比
@@ -190,8 +193,7 @@ const BpmDetector: React.FC<BpmDetectorProps> = ({
           Canvas: {canvasRef.current?.width || 0} x{" "}
           {canvasRef.current?.height || 0}
           <br />
-          Rotate:{" "}
-          {videoRef.current ? calculateRotationAngle(videoRef.current) : 0}°
+          Stable Rotate: {stableRotation}°
           <br />
           Orn:{" "}
           {typeof window !== "undefined"
