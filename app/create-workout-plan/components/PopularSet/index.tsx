@@ -1,4 +1,4 @@
-import { Button, Flex, Form, List, Typography } from "antd";
+import { Button, Card, Flex, Form, Row, Col, Typography, Space } from "antd";
 import { options, set } from "./const";
 import { CreateWorkoutPlanForm } from "@/app/interface/CreateWorkoutPlan";
 
@@ -13,22 +13,45 @@ const PopularSet = () => {
   };
 
   return (
-    <Flex vertical>
-      <Typography.Title level={4}>熱門組合</Typography.Title>
-      <List
-        itemLayout="horizontal"
-        dataSource={options}
-        renderItem={(item, index) => (
-          <List.Item>
-            <Flex gap={8} align="center">
-              <Button type="text" onClick={() => handleOnclick(item.key)}>
-                {item.title}
-              </Button>
-              <span style={{ color: "gray" }}>{item.description}</span>
-            </Flex>
-          </List.Item>
-        )}
-      />
+    <Flex vertical gap={16}>
+      <div>
+        <Typography.Title level={4} style={{ margin: 0 }}>
+          熱門訓練組合
+        </Typography.Title>
+        <Typography.Text type="secondary">
+          快速選擇預設的運動組合
+        </Typography.Text>
+      </div>
+
+      <Row gutter={[16, 16]}>
+        {options.map((item) => (
+          <Col key={item.key} xs={24} sm={12} md={8}>
+            <Card
+              hoverable
+              onClick={() => handleOnclick(item.key)}
+              style={{
+                cursor: "pointer",
+                height: "100%",
+                backgroundColor: "var(--bg-secondary)",
+                borderColor: "var(--border-primary)",
+              }}
+              bodyStyle={{ padding: "16px" }}
+            >
+              <Space direction="vertical" style={{ width: "100%" }} size={8}>
+                <Typography.Title level={5} style={{ margin: 0 }}>
+                  {item.title}
+                </Typography.Title>
+                <Typography.Text type="secondary" style={{ fontSize: "12px" }}>
+                  {item.description}
+                </Typography.Text>
+                <Button type="primary" block size="small">
+                  選擇此組合
+                </Button>
+              </Space>
+            </Card>
+          </Col>
+        ))}
+      </Row>
     </Flex>
   );
 };

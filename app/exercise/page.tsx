@@ -7,8 +7,8 @@ import {
   useTimerLogic,
 } from "@/lib/hooks/index";
 import { selectIsSlowRun } from "@/lib/features/exercise/exerciseSlice";
-import { Flex } from "antd";
-import React from "react";
+import { Flex, Spin } from "antd";
+import React, { Suspense } from "react";
 import ControlPanel from "./components/ControlPanel";
 import Exercise from "./components/Exercise";
 import Finish from "./components/Finish";
@@ -43,13 +43,45 @@ const App: React.FC = () => {
       {/* 運動進行中狀態 */}
       {(status === "active" || status === "paused") && (
         <div className={styles.exerciseContent}>
-          <Exercise timerData={timerData} />
+          <Suspense
+            fallback={
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  minHeight: "100vh",
+                }}
+              >
+                <Spin tip="初始化運動中..." />
+              </div>
+            }
+          >
+            <Exercise timerData={timerData} />
+          </Suspense>
           <ControlPanel />
         </div>
       )}
 
       {/* 運動結束狀態 */}
-      {status === "finished" && <Finish />}
+      {status === "finished" && (
+        <Suspense
+          fallback={
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                minHeight: "100vh",
+              }}
+            >
+              <Spin tip="載入完成畫面..." />
+            </div>
+          }
+        >
+          <Finish />
+        </Suspense>
+      )}
 
       <ReactSpringBg />
     </div>

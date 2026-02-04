@@ -1,6 +1,6 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import { Typography } from "antd";
+import React, { Suspense, useEffect, useState } from "react";
+import { Typography, Spin } from "antd";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/index";
 import {
   generateWorkoutReport,
@@ -70,14 +70,29 @@ const WorkoutReportPage: React.FC = () => {
           />
         </div>
 
-        <ReportContent
-          loading={loading}
-          error={error}
-          report={report}
-          selectedTimeRange={selectedTimeRange}
-          dateRange={dateRange}
-          dispatch={dispatch}
-        />
+        <Suspense
+          fallback={
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                minHeight: "400px",
+              }}
+            >
+              <Spin tip="載入報表中..." />
+            </div>
+          }
+        >
+          <ReportContent
+            loading={loading}
+            error={error}
+            report={report}
+            selectedTimeRange={selectedTimeRange}
+            dateRange={dateRange}
+            dispatch={dispatch}
+          />
+        </Suspense>
       </div>
     </ContentWrapper>
   );

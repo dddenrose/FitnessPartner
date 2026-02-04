@@ -7,7 +7,7 @@ import SimpleModeSelector from "./components/SimpleModeSelector";
 import { useMediaQuery } from "@/lib/hooks/index";
 
 const CreateWorkoutPlan = () => {
-  const isMobile = useMediaQuery("(max-width: 768px)");
+  const isMobile = useMediaQuery("mobile");
 
   const content = (
     <RadiusBg style={{ borderRadius: isMobile ? 0 : 8 }}>

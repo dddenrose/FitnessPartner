@@ -12,7 +12,7 @@ const Story = ({ imageSrc }: { imageSrc: any }) => (
   <div className="flex w-4/5 gap-4">
     <div className={classNames("w-1/2", "h-80", "flex-1")}>
       <Image
-        alt="image"
+        alt="我們的故事插圖"
         src={imageSrc}
         className={classNames(
           "object-cover",

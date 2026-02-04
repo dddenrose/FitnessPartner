@@ -14,39 +14,39 @@
 }
 
 .modeCard {
-  margin: 10px;
+  margin: var(--spacing-sm);
   border: 1px solid var(--border-color);
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--bg-card);
   backdrop-filter: blur(10px);
   transition: all var(--transition-base);
-  border-radius: 12px;
+  border-radius: var(--border-radius-lg);
   overflow: hidden;
 }
 
 .modeCard:hover {
   transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(0, 102, 170, 0.2);
-  border-color: rgba(0, 102, 170, 0.3);
+  box-shadow: var(--shadow-accent);
+  border-color: var(--color-accent-light);
 }
 
 .modeCardSelected {
   border: 2px solid var(--color-accent);
-  background: rgba(0, 102, 170, 0.1);
-  box-shadow: 0 0 20px rgba(0, 102, 170, 0.3);
+  background: var(--bg-hover);
+  box-shadow: var(--shadow-accent);
 }
 
 .modeCardSelected:hover {
-  box-shadow: 0 0 30px rgba(0, 102, 170, 0.5);
+  box-shadow: var(--shadow-accent-strong);
 }
 
 .modeCardContent {
   text-align: center;
-  padding: 20px;
+  padding: var(--spacing-lg);
 }
 
 .modeIcon {
-  font-size: 2.5rem;
-  margin-bottom: 15px;
+  font-size: var(--font-size-4xl);
+  margin-bottom: var(--spacing-md);
   transition: all var(--transition-base);
 }
 
@@ -63,10 +63,10 @@
 }
 
 .modeTitle {
-  margin: 0 0 10px 0;
+  margin: 0 0 var(--spacing-sm) 0;
   color: var(--text-primary);
   font-weight: 600;
-  font-size: 1.1rem;
+  font-size: var(--font-size-lg);
 }
 
 .modeTitleSelected {
@@ -76,12 +76,12 @@
 .modeDescription {
   color: var(--text-secondary);
   margin: 0;
-  font-size: 0.9rem;
+  font-size: var(--font-size-sm);
   line-height: 1.5;
 }
 
 /* Responsive design */
-@media (max-width: 768px) {
+@media (max-width: 1023px) {
   .workoutModeSelector {
     padding: var(--spacing-md);
   }
@@ -103,7 +103,7 @@
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 639px) {
   .modeCardContent {
     padding: 15px;
   }

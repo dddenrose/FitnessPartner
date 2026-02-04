@@ -12,32 +12,32 @@
   height: 100px !important;
   min-width: 100px !important;
   min-height: 100px !important;
-  font-size: 2rem;
+  font-size: var(--font-size-3xl);
   display: flex;
   justify-content: center;
   align-items: center;
   transition: var(--transition-base);
-  border-radius: 50% !important;
+  border-radius: var(--border-radius-full) !important;
   border: 2px solid var(--border-color) !important;
-  background: rgba(0, 102, 170, 0.1) !important;
+  background: var(--bg-card) !important;
   backdrop-filter: blur(10px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--shadow-md);
 }
 
 .controlButton:hover {
   transform: scale(1.1);
-  box-shadow: 0 0 20px rgba(0, 102, 170, 0.5), 0 8px 20px rgba(0, 0, 0, 0.4);
+  box-shadow: var(--shadow-accent), var(--shadow-lg);
   border-color: var(--color-accent) !important;
-  background: rgba(0, 102, 170, 0.2) !important;
+  background: var(--bg-hover) !important;
 }
 
 .controlButton:active {
   transform: scale(1);
-  box-shadow: 0 0 15px rgba(0, 102, 170, 0.6);
+  box-shadow: var(--shadow-accent-strong);
 }
 
 /* 響應式設計 - 手機版 */
-@media (max-width: 768px) {
+@media (max-width: 1023px) {
   .controlButton {
     width: 70px !important;
     height: 70px !important;
@@ -52,7 +52,7 @@
 }
 
 /* 超小螢幕優化 */
-@media (max-width: 480px) {
+@media (max-width: 639px) {
   .controlButton {
     width: 60px !important;
     height: 60px !important;

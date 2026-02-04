@@ -13,9 +13,12 @@ const Introduction = () => {
       className={classNames(
         "flex",
         "w-full",
-        "h-80",
+        "min-h-[20rem]",
+        "md:h-80",
         "justify-center",
-        "align-middle"
+        "items-center",
+        "py-8",
+        "md:py-0"
       )}
       style={{
         background:
@@ -24,28 +27,39 @@ const Introduction = () => {
     >
       <div
         className={classNames(
-          "sm: flex-col",
-          "md:flex-row",
-          "w-4/5",
           "flex",
-          "p-6",
+          "flex-col",
+          "md:flex-row",
+          "w-11/12",
+          "md:w-4/5",
+          "gap-6",
+          "md:gap-8",
+          "p-4",
+          "md:p-6",
           "justify-center",
-          "align-middle",
-          "content-center"
+          "items-center"
         )}
       >
-        <div className={classNames("text-9xl", "flex-1", roboto.className)}>
+        <div
+          className={classNames(
+            "text-6xl",
+            "md:text-8xl",
+            "lg:text-9xl",
+            "flex-1",
+            "text-center",
+            "md:text-left",
+            roboto.className
+          )}
+        >
           neo
         </div>
         <div
           className={classNames(
             "text-sm",
+            "md:text-base",
             "flex-1",
-            "top-0",
-            "left-0",
-            "right-0",
-            roboto.className,
-            "text-base"
+            "leading-relaxed",
+            roboto.className
           )}
         >
           Neo
@@ -53,7 +67,7 @@ const Introduction = () => {
           Tabata 有氧運動、HIIT 等訓練模式。
           <br />
           <br />
-          <span className={classNames("hidden", "sm:block")}>
+          <span className={classNames("hidden", "md:block")}>
             Neo Fitness Companion is a free workout assistant app that helps
             users plan exercise schedules and routines. It allows users to
             follow preset workout durations to enhance training efficiency,
