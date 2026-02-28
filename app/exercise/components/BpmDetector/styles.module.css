@@ -44,6 +44,44 @@
   border-radius: var(--border-radius-md);
 }
 
+.errorText {
+  color: white;
+}
+
+/* 底部 BPM 指示列 */
+.bpmBar {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 100%;
+  color: white;
+  font-size: 12px;
+  padding: 8px;
+}
+
+.bpmBarInRange {
+  background-color: rgba(82, 196, 26, 0.6);
+}
+
+.bpmBarOutOfRange {
+  background-color: rgba(255, 77, 79, 0.6);
+}
+
+/* 不活動提示文字 */
+.inactivityAlertText {
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+/* 版本標記 */
+.buildId {
+  margin-top: 8px;
+  font-size: 10px;
+  color: rgba(0, 0, 0, 0.25);
+  user-select: none;
+}
+
 .flashLight {
   width: 40px;
   height: 40px;

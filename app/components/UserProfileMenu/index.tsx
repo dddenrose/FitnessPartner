@@ -95,7 +95,7 @@ const UserProfileMenu: React.FC = () => {
           }
         }}
       >
-        <Avatar src={user.photoURL || undefined} alt={displayName} role="img">
+        <Avatar src={user.photoURL || undefined} alt={displayName}>
           {!user.photoURL && avatarText}
         </Avatar>
         <span className="hidden md:inline">{displayName}</span>

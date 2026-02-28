@@ -10,7 +10,7 @@
  * @returns 旋轉角度 (0 或 90)
  */
 export const calculateRotationAngle = (
-  videoElement: HTMLVideoElement
+  videoElement: HTMLVideoElement,
 ): number => {
   const videoWidth = videoElement.videoWidth;
   const videoHeight = videoElement.videoHeight;
@@ -23,53 +23,49 @@ export const calculateRotationAngle = (
 
   // 2. 橫式判斷 (Landscape)
   if (typeof window !== "undefined") {
+    const orientationAngle = window.screen?.orientation?.angle ?? 0;
+
+    // 角度為 0 代表螢幕的原始橫向方向（筆電、平板預設橫向）
+    // 不需要任何旋轉修正，直接回傳 0（標準鏡像）
+    if (orientationAngle === 0) {
+      return 0;
+    }
+
     // 依據 Log 分析：
-    // landscape-secondary (270度/逆時針) -> 原為 180 (顛倒)，修正為 0 (正常)
-    // landscape-primary (90度/順時針/0度) -> 原為 0 (顛倒)，修正為 180 (旋轉/翻轉)
+    // landscape-secondary (270度/逆時針) -> 修正為 0 (標準鏡像)
+    // landscape-primary (angle 90，手機順時針橫躺) -> 修正為 180 (旋轉/翻轉)
 
     // 優先檢查明確的 "secondary" 類型 (此為大多數裝置的逆時針橫躺)
-    if (
-      window.screen &&
-      window.screen.orientation &&
-      window.screen.orientation.type &&
-      window.screen.orientation.type.includes("landscape-secondary")
-    ) {
-      // 逆時針橫躺 (270/-90) 現在改為 0 (標準鏡像)
+    if (window.screen?.orientation?.type?.includes("landscape-secondary")) {
+      // 逆時針橫躺 (270/-90) 回傳 0 (標準鏡像)
       return 0;
     }
 
     // 其次檢查 window.orientation (iOS Safari 常見)
     const winOrientation = (window as any).orientation;
     if (typeof winOrientation === "number" && winOrientation === -90) {
-      // 逆時針橫躺 (-90) 現在改為 0
+      // 逆時針橫躺 (-90) 回傳 0
       return 0;
     }
 
     // 針對 window.screen.orientation.angle 為 -90 的情況
-    if (
-      window.screen &&
-      window.screen.orientation &&
-      window.screen.orientation.angle === -90
-    ) {
-      // 逆時針橫躺 (-90) 現在改為 0
+    if (window.screen?.orientation?.angle === -90) {
+      // 逆時針橫躺 (-90) 回傳 0
       return 0;
     }
 
-    // 如果是明確的 Landscape Primary (90 或 0)
-    // 在手機瀏覽器上，這通常就是順時針橫躺，而根據觀察到的現象，這時需要 180 度翻轉
+    // 如果是明確的 Landscape Primary 且 angle 不為 0
+    // 代表手機順時針橫躺（angle 90），需要 180 度翻轉修正
     if (
-      window.screen &&
-      window.screen.orientation &&
-      window.screen.orientation.type &&
-      window.screen.orientation.type.includes("landscape-primary")
+      window.screen?.orientation?.type?.includes("landscape-primary") &&
+      orientationAngle !== 0
     ) {
       return 180;
     }
   }
 
   // 預設情況 (包含PC瀏覽器、無法辨識的橫向)
-  // 保持使用 0 (標準鏡像)，因為通常PC不涉及旋轉問題
-  // 但如果發現在某些特定手機瀏覽器上預設需要180，可以在這裡調整，但目前先針對明確的 Primary 類型做修正
+  // 保持使用 0 (標準鏡像)
   return 0;
 };
 
@@ -83,7 +79,7 @@ export const calculateRotationAngle = (
 export const getRotatedCanvasSize = (
   videoWidth: number,
   videoHeight: number,
-  rotationAngle: number
+  rotationAngle: number,
 ): { width: number; height: number } => {
   // 直接回傳原始尺寸，確保 Canvas 解析度與 Video 訊號源一致
   // 避免因為對調寬高而導致 CSS 擠壓變形
@@ -102,7 +98,7 @@ export const getRotatedCanvasSize = (
 export const applyCanvasRotation = (
   ctx: CanvasRenderingContext2D,
   canvas: HTMLCanvasElement,
-  rotationAngle: number
+  rotationAngle: number,
 ): void => {
   // 由於 rotationAngle 始終為 0，這裡保留介面但實際上不會執行旋轉
   if (rotationAngle === 0) return;
