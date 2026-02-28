@@ -6,7 +6,7 @@ import { getDatabase } from "firebase/database";
 // 檢查環境變數是否正確加載
 if (!process.env.NEXT_PUBLIC_FIREBASE_API_KEY) {
   console.error(
-    "Firebase 配置環境變數未正確加載。請確保在部署環境中設置了所有必要的環境變數。"
+    "Firebase 配置環境變數未正確加載。請確保在部署環境中設置了所有必要的環境變數。",
   );
 }
 
@@ -33,9 +33,6 @@ export const database = getDatabase(app);
 
 console.log("====Firebase app initialized");
 console.log("====Database reference initialized:", database ? "成功" : "失敗");
-
-// Add additional scopes as needed
-googleProvider.addScope("https://www.googleapis.com/auth/contacts.readonly");
 
 // Optional: Enable analytics if supported
 const enableAnalytics = async () => {
