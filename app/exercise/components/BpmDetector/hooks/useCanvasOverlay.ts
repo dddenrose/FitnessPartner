@@ -36,11 +36,9 @@ const CANVAS_TRANSFORMS: Record<number, ApplyTransformFn> = {
 interface UseCanvasOverlayParams {
   videoRef: React.RefObject<HTMLVideoElement | null>;
   canvasRef: React.RefObject<HTMLCanvasElement | null>;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   detector: any;
   cameraReady: boolean;
   isActive: boolean;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   calculateBpm: (
     keypoints: any,
     updateActivity: (time: number) => void,
