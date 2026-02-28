@@ -1,511 +1,470 @@
-# Neo - Fitness Partner
+# Neo — Fitness Partner
 
 ![Neo Fitness Partner](/public/homepage.jpg)
 
-## 目錄
+[![Next.js](https://img.shields.io/badge/Next.js-14-black?logo=next.js)](https://nextjs.org/)
+[![React](https://img.shields.io/badge/React-18-61DAFB?logo=react)](https://react.dev/)
+[![Redux Toolkit](https://img.shields.io/badge/Redux_Toolkit-2-764ABC?logo=redux)](https://redux-toolkit.js.org/)
+[![Firebase](https://img.shields.io/badge/Firebase-11-FFCA28?logo=firebase)](https://firebase.google.com/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript)](https://www.typescriptlang.org/)
 
-- [APP 介紹與功能](#app-介紹與功能)
-  - [主要功能](#主要功能)
-  - [使用流程](#使用流程)
-  - [畫面介紹](#畫面介紹)
-- [技術選型與架構](#技術選型與架構)
-  - [前端技術](#前端技術)
-  - [資料流架構](#資料流架構)
-  - [儲存方案](#儲存方案)
-  - [第三方服務整合](#第三方服務整合)
-  - [架構圖](#架構圖)
-    - [應用架構總覽](#應用架構總覽)
-    - [資料流架構圖](#資料流架構圖)
-    - [元件結構圖](#元件結構圖)
-    - [數據模型圖](#數據模型圖)
+**Languages:** English | [繁體中文](./README.zh.md)
 
 ---
 
-## APP 介紹與功能
+## Table of Contents
 
-Neo Fitness Partner 是一款專注於健身和跑步訓練的 Web 應用程式，提供高度客製化的運動體驗。無論您是健身愛好者還是跑步玩家，都能透過簡單的設定，享受到專業級的訓練指導和記錄功能。
-
-### 主要功能
-
-#### 1. HIIT 高強度間歇訓練
-
-![HIIT 訓練模式](/public/hiit.jpg)
-
-- 提供豐富的運動項目選擇（如登山者、深蹲等）
-- 可自定義每組運動時長
-- 自定義組間休息時間
-- 多組訓練自動切換
-- 運動計時器與提示音
-
-#### 2. 超慢跑模式
-
-![超慢跑模式](/public/slow_run.jpg)
-
-- 可調整步頻 (BPM)
-- 智能節拍器輔助
-- 不限制時間的自由訓練模式
-- 實時累計運動時間
-
-#### 3. 運動報表
-
-- 詳細的運動歷史記錄
-- 不同時間維度的數據分析（日、週、月、年）
-- 可視化圖表展示訓練進度
-- 支持日期範圍篩選
-
-### 使用流程
-
-1. **計劃設定**：
-   ![運動計劃設定](/public/workout_plan.jpg)
-
-   - 在 `create-workout-plan` 頁面選擇運動類型
-   - 根據選擇的類型進行詳細設定：
-     - HIIT 模式：選擇運動項目、設定運動時間和休息時間
-     - 超慢跑模式：設定步頻 (BPM)
-
-2. **運動執行**：
-
-   - HIIT 模式：
-     - 顯示當前運動項目和倒計時
-     - 提供暫停、跳過、靜音、完成等控制功能
-     - 組間自動切換休息與訓練
-   - 超慢跑模式：
-     - 顯示節拍器和累計時間
-     - 提供暫停、節拍器開關、完成等控制功能
-
-#### 3. 運動報表
-
-![運動報表](/public/report.jpg)
-
-3. **成果檢視**：
-   - 運動完成後數據自動記錄
-   - 在報表頁面查看歷史訓練數據與分析
-
-### 畫面介紹
-
-1. **首頁**：介紹應用功能，提供快速入口
-2. **運動計劃頁**：設置訓練參數的界面
-3. **運動執行頁**：根據不同模式顯示對應的訓練界面
-4. **報表頁**：展示歷史數據和分析圖表
+- [Overview](#overview)
+- [Features](#features)
+- [User Flow](#user-flow)
+- [Getting Started](#getting-started)
+- [Tech Stack & Architecture](#tech-stack--architecture)
+  - [Frontend](#frontend)
+  - [UI System & Design Tokens](#ui-system--design-tokens)
+  - [Project Structure](#project-structure)
+  - [State Management](#state-management)
+  - [Custom Hooks](#custom-hooks)
+  - [Styling Architecture](#styling-architecture)
+  - [Storage & Third-party Services](#storage--third-party-services)
+- [Architecture Diagrams](#architecture-diagrams)
 
 ---
 
-## 技術選型與架構
+## Overview
 
-### 前端技術
+**Neo Fitness Partner** is a web application focused on fitness and running training, delivering a highly customisable workout experience. Whether you are a gym enthusiast or a casual runner, a few simple settings are all you need to access professional-grade training guidance and session tracking.
 
-- **框架**：Next.js 14 (React)
-- **UI 庫**：Ant Design + 客製化樣式
-- **狀態管理**：Redux Toolkit + Redux Persist
-- **樣式方案**：
-  - CSS Modules（主要）
-  - Tailwind CSS（輔助）
-  - Ant Design 主題系統
-- **動畫效果**：
-  - React Spring（背景動態效果）
-  - CSS 動畫（介面過渡）
-- **音效處理**：Web Audio API + use-sound
+---
 
-### UI 系統與設計制度
+## Features
 
-Neo 應用採用完整的設計系統，確保視覺一致性與無障礙性：
+### 1. HIIT — High-Intensity Interval Training
 
-#### 設計 Tokens
+![HIIT Mode](/public/hiit.jpg)
 
-- **色彩系統**：50-900 分級色階，支援深色/淺色主題自動切換
-- **排版系統**：從 xs 到 9xl 的完整字號層級
-- **間距系統**：基於 4px 網格的統一間距
-- **陰影系統**：4 個等級的深度表現
-- **圓角系統**：4 個等級的圓角值
+- Rich selection of exercises (Mountain Climbers, Squats, and more)
+- Customisable work duration per set
+- Customisable rest duration between sets
+- Automatic transition across multiple sets
+- Built-in exercise timer with audio cues
 
-#### 響應式設計
+### 2. Slow Jogging Mode
 
-- **斷點**：Mobile (639px)、Tablet (1023px)、Desktop
-- **移動優先**：從行動設備開始設計
-- **自適應導航**：手機漢堡選單 + 桌面橫向導航
+![Slow Jogging Mode](/public/slow_run.jpg)
 
-#### 無障礙性 (A11y)
+- Adjustable cadence (BPM)
+- Intelligent metronome assistance
+- Unlimited free-run mode
+- Real-time cumulative workout timer
 
-- ✅ WCAG AA 色彩對比度標準
-- ✅ 鍵盤導航支援（Tab、Enter、Escape）
-- ✅ ARIA labels 與語義化 HTML
-- ✅ 焦點指示視覺反饋
-- ✅ 圖片 alt text 與圖標 aria-label
+### 3. Workout Reports
 
-#### 主題系統
+- Detailed workout history
+- Multi-dimension data analysis (daily, weekly, monthly, yearly)
+- Visual charts to track training progress
+- Date-range filtering
 
-- 深色模式（預設）與淺色模式
-- 平滑主題切換動畫（View Transition API）
-- 系統偏好自動檢測
-- 用戶偏好持久化
+---
 
-#### 常用 UI 組件
+## User Flow
 
-- **Skeleton**：6 種類型的加載占位符
-- **Spinner**：行內和全屏加載指示器
-- **EmptyState**：無資料狀態提示
-- **ErrorState**：錯誤處理與恢復建議
+1. **Plan Setup**
 
-#### 相關文檔
+   ![Workout Plan Setup](/public/workout_plan.jpg)
 
-- 📚 [設計系統指南](./docs/design-system.md)
-- 📚 [組件庫文檔](./docs/component-library.md)
-- 📚 [CSS 策略](./docs/css-strategy.md)
-- 📚 [效能指南](./docs/performance-guide.md)
+   - Visit the `create-workout-plan` page and choose a workout type.
+   - Configure details based on the selected type:
+     - **HIIT**: Select exercises, set work time and rest time.
+     - **Slow Jogging**: Set cadence (BPM).
 
-### 檔案分層架構
+2. **Workout Execution**
 
-#### 1. 應用層結構
+   - **HIIT mode**: Displays the current exercise with a countdown. Controls include pause, skip, mute, and finish. Sets cycle automatically.
+   - **Slow Jogging mode**: Displays the metronome and elapsed time. Controls include pause, metronome toggle, and finish.
+
+3. **Results Review**
+
+   ![Workout Report](/public/report.jpg)
+
+   - Data is recorded automatically when a session ends.
+   - View historical training data and analysis on the Reports page.
+
+### Pages at a Glance
+
+| Page | Purpose |
+|---|---|
+| Home | App introduction and quick-start entry |
+| Workout Plan | Configure training parameters |
+| Exercise | Real-time training interface (HIIT / Slow Jog) |
+| Reports | Historical data and analytics charts |
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js ≥ 18
+- A Firebase project (Authentication + Firestore enabled)
+
+### Installation
+
+```bash
+# Clone the repository
+git clone <repo-url>
+cd FitnessPartner
+
+# Install dependencies
+npm install
+```
+
+### Environment Variables
+
+Create a `.env.local` file at the project root and fill in your Firebase credentials:
+
+```env
+NEXT_PUBLIC_FIREBASE_API_KEY=
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=
+NEXT_PUBLIC_FIREBASE_APP_ID=
+```
+
+### Development
+
+```bash
+npm run dev       # Start development server (http://localhost:3000)
+npm run build     # Production build
+npm run start     # Start production server
+npm run lint      # Run ESLint
+```
+
+---
+
+## Tech Stack & Architecture
+
+### Frontend
+
+| Category | Technology |
+|---|---|
+| Framework | Next.js 14 (App Router) |
+| UI Library | Ant Design + custom styles |
+| State Management | Redux Toolkit + Redux Persist |
+| Styling | CSS Modules (primary), Tailwind CSS (utility), Ant Design theme |
+| Animation | React Spring (background), CSS animations (transitions) |
+| Audio | Web Audio API + use-sound |
+
+### UI System & Design Tokens
+
+Neo uses a complete design system to ensure visual consistency and accessibility.
+
+#### Design Tokens
+
+| Token | Description |
+|---|---|
+| Color | 50–900 scale, automatic dark/light theme switching |
+| Typography | Full size scale from `xs` to `9xl` |
+| Spacing | Unified spacing based on a 4 px grid |
+| Shadow | 4-level depth system |
+| Border Radius | 4 graduated radius values |
+
+#### Responsive Design
+
+- **Breakpoints**: Mobile (639 px), Tablet (1023 px), Desktop
+- **Mobile-first**: Designs start at the smallest viewport
+- **Adaptive navigation**: Hamburger menu on mobile, horizontal nav on desktop
+
+#### Accessibility (A11y)
+
+- ✅ WCAG AA colour contrast
+- ✅ Keyboard navigation (Tab, Enter, Escape)
+- ✅ ARIA labels and semantic HTML
+- ✅ Visible focus indicators
+- ✅ Image `alt` text and icon `aria-label`
+
+#### Theme System
+
+- Dark mode (default) and light mode
+- Smooth theme-switch animation (View Transition API)
+- Automatic detection of system preference
+- Persistent user preference via Redux Persist
+
+#### Shared UI Components
+
+| Component | Purpose |
+|---|---|
+| `Skeleton` | 6 loading placeholder variants |
+| `Spinner` | Inline and full-screen loading indicators |
+| `EmptyState` | No-data feedback |
+| `ErrorState` | Error handling with recovery suggestions |
+
+#### Related Docs
+
+- 📚 [Design System Guide](./docs/design-system.md)
+- 📚 [Component Library](./docs/component-library.md)
+- 📚 [CSS Strategy](./docs/css-strategy.md)
+- 📚 [Performance Guide](./docs/performance-guide.md)
+
+### Project Structure
+
+#### Application Layer
 
 ```
-/app                    # Next.js 應用目錄
-  /components           # 共用元件
-  /[feature]            # 功能頁面（如 exercise, create-workout-plan）
-    /page.tsx           # 頁面入口
-    /components         # 功能專屬元件
-      /[ComponentName]  # 獨立元件
-        /index.tsx      # 元件主檔
-        /styles.module.css # 元件樣式
-        /const.ts       # 元件常數
-  /interface            # TypeScript 介面定義
-  /static               # 靜態資源
+/app                        # Next.js App Router root
+  /components               # Shared components
+  /[feature]                # Feature pages (e.g. exercise, create-workout-plan)
+    /page.tsx               # Page entry point
+    /components             # Feature-scoped components
+      /[ComponentName]
+        /index.tsx          # Component source
+        /styles.module.css  # Component styles
+        /const.ts           # Component constants
+  /interface                # TypeScript interface definitions
+  /static                   # Static assets
 
-/lib                    # 邏輯層與共用功能
-  /features             # Redux 功能模組（slices）
-  /hooks                # 自定義 Hooks
-  /utils                # 工具函數
+/lib                        # Logic layer & shared utilities
+  /features                 # Redux slices
+  /hooks                    # Custom hooks
+  /utils                    # Utility functions
 ```
 
-#### 2. 元件結構標準
+#### Component Convention
 
-每個元件遵循一致的結構模式：
+Every component follows the same structure:
 
 ```
 /ComponentName
-  /index.tsx           # 元件主檔
-  /styles.module.css   # 封裝的樣式
-  /const.ts            # 元件相關常數（若需要）
-  /components          # 子元件（若需要）
+  /index.tsx           # Main component file
+  /styles.module.css   # Scoped styles
+  /const.ts            # Constants (if needed)
+  /components          # Sub-components (if needed)
 ```
 
-### 資料流架構
+### State Management
 
-#### Redux 資料流設計
+#### Redux Store Slices
 
-- **分層設計**：
+| Slice | Responsibility |
+|---|---|
+| `exercise` | Workout status, timer, type, and exercise list |
+| `audio` | Audio control and mute state |
+| `theme` | Light / dark mode preference |
+| `userInfo` | User info, settings, and UI state |
+| `firebase` | Firebase connection status |
+| `workoutReport` | Workout reports and statistics |
 
-  ```
-  /lib/features/[domain]/[domain]Slice.ts  # Redux 切片
-  /lib/store.ts                           # 全局 store 配置
-  ```
+#### Persistence Strategy
 
-- **Store 設計**：
-
-  - `exercise`: 運動狀態、計時器、運動類型與列表管理
-  - `audio`: 音效控制與靜音狀態
-  - `theme`: 主題設定（亮色/暗色模式）
-  - `userInfo`: 使用者資訊、設定與 UI 狀態
-  - `firebase`: Firebase 連接狀態管理
-  - `workoutReport`: 運動報告與統計數據
-
-- **持久化策略**：
-  使用 Redux-Persist 針對關鍵資料實現持久化：
-  ```typescript
-  const exercisePersistConfig = {
-    key: "exercise",
-    storage,
-    whitelist: ["currentExercise", "remainingExercises", "workoutType"],
-  };
-  ```
-
-#### 資料流程
-
-1. **用戶操作** → 觸發 Action
-2. **Reducer** → 更新 State
-3. **Selectors** → 使用 TypeScript 類型安全選擇器獲取資料
-4. **UI 渲染** → 反映最新狀態
-
-### Hooks 架構與運用
-
-#### 1. 自定義 Hooks 分類
-
-- **狀態邏輯封裝**：
-
-  - `/lib/hooks/timer/useTimerLogic.ts` - 計時器核心邏輯
-  - `/lib/hooks/useMetronome.ts` - 節拍器功能
-
-- **UI 功能封裝**：
-
-  - `/lib/hooks/ui/useMediaQuery.ts` - 響應式設計支援
-
-- **Redux 整合**：
-
-  - `/lib/hooks/redux/useRedux.ts` - 類型安全的 Redux Hooks
-
-  ```typescript
-  export const useAppDispatch = useDispatch.withTypes<AppDispatch>();
-  export const useAppSelector = useSelector.withTypes<RootState>();
-  ```
-
-- **音效處理**：
-
-  - `/lib/hooks/audio/useCountdownSound.ts` - 倒數音效處理
-
-- **身份驗證**：
-  - `/lib/hooks/auth/useAuth.ts` - Firebase 認證整合
-
-#### 2. Hooks 設計原則
-
-- **單一職責**：每個 Hook 專注於解決特定問題
-- **可重用性**：跨組件共享邏輯
-- **關注點分離**：UI 邏輯與業務邏輯分離
-- **類型安全**：完整的 TypeScript 類型支持
-
-例如，計時器邏輯實現：
+Critical state is persisted via Redux Persist:
 
 ```typescript
-/**
- * 運動計時邏輯的 Hook
- * 只專注於:計時邏輯(本地+Redux)以及切換下一個運動的時機邏輯
- * flow: 註冊timer => 每秒觸發計時邏輯 => 更新本地狀態 => 在關鍵節點更新Redux
- */
-export const useTimerLogic = () => {
-  // 邏輯實現...
+const exercisePersistConfig = {
+  key: "exercise",
+  storage,
+  whitelist: ["currentExercise", "remainingExercises", "workoutType"],
 };
 ```
 
-### 常數定義方式
+#### Data Flow
 
-採用模組化的常數定義策略：
+```
+User Interaction → Action dispatched → Reducer updates State
+    ↑                                         |
+    └──────── UI re-renders ←─── Selectors ───┘
+                                      |
+                               Firebase / LocalStorage
+```
 
-1. **功能模組常數**：
+### Custom Hooks
 
-   - 每個功能模組的常數放在該模組下的 `const.ts` 中
+#### Hook Categories
 
-   ```typescript
-   // app/create-workout-plan/components/FormContent/const.ts
-   export const workoutItems = [
-     "登山者",
-     "俯臥撐",
-     "深蹲",
-     // ...
-   ];
-   ```
+| Category | Hook | Purpose |
+|---|---|---|
+| Timer | `useTimerLogic` | Core countdown & next-exercise logic |
+| Audio | `useMetronome` | Metronome beat control |
+| Audio | `useCountdownSound` | Countdown audio cues |
+| UI | `useMediaQuery` | Responsive breakpoint detection |
+| Redux | `useAppDispatch` / `useAppSelector` | Type-safe Redux bindings |
+| Auth | `useAuth` | Firebase authentication integration |
 
-2. **路由映射**：
+#### Design Principles
 
-   ```typescript
-   // app/components/Navigation/const.ts
-   export const routerMap = {
-     Home: "/",
-     "Workout Plan": "/create-workout-plan",
-     // ...
-   };
-   ```
+- **Single Responsibility** — each hook solves one specific problem
+- **Reusability** — logic is shared across components
+- **Separation of Concerns** — UI logic is decoupled from business logic
+- **Type Safety** — full TypeScript coverage
 
-3. **樣式變數**：
-   - 使用 CSS 自定義屬性在 `globals.css` 中定義全局變數
-   ```css
-   :root {
-     --color-primary: #202020ff;
-     --spacing-md: 1rem;
-     /* ... */
-   }
-   ```
+### Styling Architecture
 
-### 樣式架構
+1. **CSS Modules** — component-specific styles are scoped in `.module.css` files
+2. **Global Variables** — colours, spacing, and typography defined as CSS custom properties in `globals.css`
+3. **Ant Design Theme** — centralised via `ConfigProvider`; component-specific overrides via CSS Modules
 
-採用 CSS Modules 為主體的混合式架構：
+### Storage & Third-party Services
 
-1. **CSS Modules 核心原則**：
+| Service | Usage |
+|---|---|
+| Firebase Authentication | User sign-in / sign-up |
+| Firebase Firestore | User data, workout records, training reports |
+| Chart.js | Data visualisation in reports |
+| Web Audio API | Metronome beats and audio cues |
 
-   - 元件特定樣式使用 `.module.css` 文件隔離
-   - 響應式設計集成在 CSS Modules 中
-   - 通過類名命名實現樣式範圍隔離
+---
 
-2. **全局變數系統**：
+## Architecture Diagrams
 
-   - 在 `globals.css` 中定義顏色、間距、字體等全局變數
-   - 在 CSS Modules 中引用全局變數，確保一致性
+The diagrams below illustrate the overall structure, data flow, component hierarchy, and data model of Neo Fitness Partner.
 
-3. **Ant Design 主題整合**：
-   - 通過 ConfigProvider 集中配置主題
-   - 針對特定組件通過 CSS Modules 覆寫樣式
-
-### 儲存方案
-
-- **身份驗證**：Firebase Authentication
-- **數據庫**：Firebase Firestore
-  - 用戶資料
-  - 運動記錄
-  - 訓練報告
-
-### 第三方服務整合
-
-- **Firebase**：身份驗證、數據儲存
-- **Chart.js**：數據視覺化
-- **Web Audio API**：節拍器和提示音效
-
-### 架構圖
-
-以下架構圖展示了 Neo Fitness Partner 應用的整體結構、資料流、元件層次和數據模型。
-
-#### 應用架構總覽
-
-下圖展示了整個應用的架構，包括前端框架、狀態管理、數據處理和功能模塊之間的關係。
+### Application Architecture Overview
 
 ```mermaid
 graph TD
-    User(使用者) --> |使用| App[Neo Fitness Partner 應用]
+    User(User) --> |uses| App[Neo Fitness Partner]
 
-    subgraph "前端框架"
+    subgraph "Frontend Framework"
         App --> NextJS[Next.js 14]
-        NextJS --> React[React 元件]
-        NextJS --> Router[Next.js 路由]
+        NextJS --> React[React Components]
+        NextJS --> Router[Next.js Router]
     end
 
-    subgraph "狀態管理"
-        React --> |使用| Redux[Redux Toolkit]
+    subgraph "State Management"
+        React --> |uses| Redux[Redux Toolkit]
         Redux --> ReduxPersist[Redux Persist]
-        Redux --> ExerciseSlice[exercise 切片]
-        Redux --> AudioSlice[audio 切片]
-        Redux --> ThemeSlice[theme 切片]
-        Redux --> UserInfoSlice[userInfo 切片]
-        Redux --> WorkoutReportSlice[workoutReport 切片]
-        Redux --> FirebaseSlice[firebase 切片]
+        Redux --> ExerciseSlice[exercise slice]
+        Redux --> AudioSlice[audio slice]
+        Redux --> ThemeSlice[theme slice]
+        Redux --> UserInfoSlice[userInfo slice]
+        Redux --> WorkoutReportSlice[workoutReport slice]
+        Redux --> FirebaseSlice[firebase slice]
     end
 
-    subgraph "數據處理"
-        Redux --> |存取| Firebase[(Firebase)]
-        Firebase --> Authentication[身份驗證]
-        Firebase --> Firestore[Firestore 數據庫]
+    subgraph "Data Layer"
+        Redux --> |reads/writes| Firebase[(Firebase)]
+        Firebase --> Authentication[Authentication]
+        Firebase --> Firestore[Firestore Database]
     end
 
-    subgraph "UI 元件"
+    subgraph "UI Components"
         React --> AntDesign[Ant Design]
-        React --> CustomComponents[自定義元件]
+        React --> CustomComponents[Custom Components]
         React --> CSSModules[CSS Modules]
         React --> TailwindCSS[Tailwind CSS]
         React --> ReactSpring[React Spring]
     end
 
-    subgraph "功能模塊"
-        App --> HomePage[首頁]
-        App --> WorkoutPlanPage[運動計劃頁]
-        App --> ExercisePage[運動執行頁]
-        App --> ReportPage[報表頁]
-        App --> LoginPage[登入頁]
+    subgraph "Feature Modules"
+        App --> HomePage[Home Page]
+        App --> WorkoutPlanPage[Workout Plan Page]
+        App --> ExercisePage[Exercise Page]
+        App --> ReportPage[Reports Page]
+        App --> LoginPage[Login Page]
 
-        ExercisePage --> HIITMode[HIIT 模式]
-        ExercisePage --> SlowRunMode[超慢跑模式]
+        ExercisePage --> HIITMode[HIIT Mode]
+        ExercisePage --> SlowRunMode[Slow Jogging Mode]
 
-        HIITMode --> Timer[計時器]
-        HIITMode --> ExerciseControls[運動控制]
+        HIITMode --> Timer[Timer]
+        HIITMode --> ExerciseControls[Exercise Controls]
 
-        SlowRunMode --> Metronome[節拍器]
-        SlowRunMode --> RunningControls[跑步控制]
+        SlowRunMode --> Metronome[Metronome]
+        SlowRunMode --> RunningControls[Running Controls]
     end
 
-    subgraph "音效系統"
+    subgraph "Audio System"
         AudioSlice --> WebAudioAPI[Web Audio API]
-        WebAudioAPI --> UseSound[use-sound 庫]
-        UseSound --> CountdownSound[倒計時音效]
-        UseSound --> MetronomeSound[節拍器音效]
+        WebAudioAPI --> UseSound[use-sound]
+        UseSound --> CountdownSound[Countdown Sound]
+        UseSound --> MetronomeSound[Metronome Sound]
     end
 
-    subgraph "Hooks 架構"
-        React --> CustomHooks[自定義 Hooks]
-        CustomHooks --> TimerHooks[計時器邏輯]
-        CustomHooks --> AudioHooks[音效處理]
-        CustomHooks --> AuthHooks[認證邏輯]
-        CustomHooks --> UIHooks[UI 邏輯]
-        CustomHooks --> ReduxHooks[Redux 整合]
+    subgraph "Hooks Layer"
+        React --> CustomHooks[Custom Hooks]
+        CustomHooks --> TimerHooks[Timer Logic]
+        CustomHooks --> AudioHooks[Audio Handling]
+        CustomHooks --> AuthHooks[Auth Logic]
+        CustomHooks --> UIHooks[UI Logic]
+        CustomHooks --> ReduxHooks[Redux Integration]
     end
 ```
 
-#### 資料流架構圖
-
-此圖展示了應用中資料的流動方式，從用戶交互到 Redux actions、reducers、store 及與 Firebase 的交互。
+### Data Flow
 
 ```mermaid
 flowchart TB
-    User([使用者]) --> |互動| UI[UI 元件]
-    UI --> |觸發| Actions[Redux Actions]
-    Actions --> |處理| Reducers[Redux Reducers]
-    Reducers --> |更新| Store[Redux Store]
-    Store --> |資料訂閱| UI
-    Store --> |持久化| LocalStorage[(Local Storage)]
-    LocalStorage --> |恢復| Store
+    User([User]) --> |interacts| UI[UI Components]
+    UI --> |dispatches| Actions[Redux Actions]
+    Actions --> |processed by| Reducers[Redux Reducers]
+    Reducers --> |update| Store[Redux Store]
+    Store --> |subscribed by| UI
+    Store --> |persisted to| LocalStorage[(Local Storage)]
+    LocalStorage --> |restored to| Store
 
-    subgraph "異步操作"
-        Actions --> |API 請求| Firebase[(Firebase)]
-        Firebase --> |回傳資料| Actions
+    subgraph "Async Operations"
+        Actions --> |API calls| Firebase[(Firebase)]
+        Firebase --> |returns data| Actions
     end
 
-    subgraph "狀態管理"
-        Store --> ExerciseState[運動狀態]
-        Store --> AudioState[音效狀態]
-        Store --> ThemeState[主題狀態]
-        Store --> UserState[使用者狀態]
-        Store --> ReportState[報表狀態]
-        Store --> FirebaseState[Firebase 狀態]
+    subgraph "Store Slices"
+        Store --> ExerciseState[Exercise State]
+        Store --> AudioState[Audio State]
+        Store --> ThemeState[Theme State]
+        Store --> UserState[User State]
+        Store --> ReportState[Report State]
+        Store --> FirebaseState[Firebase State]
     end
 
-    subgraph "自定義 Hooks"
-        UI --> CustomHooks[自定義 Hooks]
-        CustomHooks --> |使用| Store
-        CustomHooks --> |更新| Actions
+    subgraph "Custom Hooks"
+        UI --> CustomHooks[Custom Hooks]
+        CustomHooks --> |reads| Store
+        CustomHooks --> |dispatches| Actions
     end
 ```
 
-#### 元件結構圖
-
-此圖展示了應用的元件層次結構和檔案組織方式。
+### Component Hierarchy
 
 ```mermaid
 graph TD
     App[App] --> Layout[Layout]
     App --> StoreProvider[StoreProvider]
-    Layout --> |路由| Pages[頁面元件]
-    Layout --> Navigation[導航元件]
-    Layout --> AuthProvider[認證提供者]
-    Layout --> ThemeProvider[主題提供者]
+    Layout --> |routes| Pages[Page Components]
+    Layout --> Navigation[Navigation]
+    Layout --> AuthProvider[AuthProvider]
+    Layout --> ThemeProvider[ThemeProvider]
 
-    subgraph "頁面結構"
-        Pages --> HomePage[首頁]
-        Pages --> LoginPage[登入頁]
-        Pages --> WorkoutPlanPage[運動計劃頁]
-        Pages --> ExercisePage[運動執行頁]
-        Pages --> ReportPage[報表頁]
+    subgraph "Pages"
+        Pages --> HomePage[Home Page]
+        Pages --> LoginPage[Login Page]
+        Pages --> WorkoutPlanPage[Workout Plan Page]
+        Pages --> ExercisePage[Exercise Page]
+        Pages --> ReportPage[Reports Page]
     end
 
-    subgraph "元件檔案結構"
-        Component[元件] --> IndexFile["index.tsx (元件主檔)"]
-        Component --> StyleFile["styles.module.css (樣式)"]
-        Component --> ConstFile["const.ts (常數定義)"]
-        Component --> SubComponents["components/ (子元件)"]
+    subgraph "Component File Structure"
+        Component[Component] --> IndexFile["index.tsx (main)"]
+        Component --> StyleFile["styles.module.css (styles)"]
+        Component --> ConstFile["const.ts (constants)"]
+        Component --> SubComponents["components/ (sub-components)"]
     end
 
-    subgraph "工作流頁面組件"
-        WorkoutPlanPage --> FormContent[表單內容]
-        WorkoutPlanPage --> FormAction[表單操作]
-        WorkoutPlanPage --> SimpleModeSelector[模式選擇器]
-        WorkoutPlanPage --> PlanForm[計劃表單]
-        WorkoutPlanPage --> PopularSet[熱門組合]
+    subgraph "Feature Page Components"
+        WorkoutPlanPage --> FormContent[FormContent]
+        WorkoutPlanPage --> FormAction[FormAction]
+        WorkoutPlanPage --> SimpleModeSelector[SimpleModeSelector]
+        WorkoutPlanPage --> PlanForm[PlanForm]
+        WorkoutPlanPage --> PopularSet[PopularSet]
 
-        ExercisePage --> ControlPanel[控制面板]
-        ExercisePage --> Exercise[運動顯示]
-        ExercisePage --> UnifiedTimer[統一計時器]
-        ExercisePage --> Metronome[節拍器]
-        ExercisePage --> ReactSpringBg[背景動畫]
-        ExercisePage --> TimerBg[計時器背景]
-        ExercisePage --> WorkoutModeSelector[運動模式選擇器]
+        ExercisePage --> ControlPanel[ControlPanel]
+        ExercisePage --> Exercise[Exercise]
+        ExercisePage --> UnifiedTimer[UnifiedTimer]
+        ExercisePage --> Metronome[Metronome]
+        ExercisePage --> ReactSpringBg[ReactSpringBg]
+        ExercisePage --> TimerBg[TimerBg]
+        ExercisePage --> WorkoutModeSelector[WorkoutModeSelector]
     end
 ```
 
-#### 數據與邏輯架構圖
-
-此圖展示了主要數據實體及其與邏輯層的關係。
+### Data & Logic Model
 
 ```mermaid
 classDiagram
@@ -579,3 +538,4 @@ classDiagram
     AudioSlice -- Hooks : consumed by
     ExerciseSlice -- Hooks : consumed by
 ```
+
