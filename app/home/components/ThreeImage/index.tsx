@@ -14,14 +14,16 @@ const ThreeImage = () => {
         "w-full",
         "justify-center",
         "items-center",
-        "pt-12",
-        "pb-12",
-        "gap-10",
-        "bg-gray-200"
+        "py-8",
+        "md:py-12",
+        "gap-8",
+        "md:gap-10",
+        "px-4"
       )}
+      style={{ background: "var(--bg-secondary)" }}
     >
       {/* Three Images */}
-      <div className="flex-col items-center sm:flex-row flex gap-4 justify-between w-3/5">
+      <div className="flex flex-col lg:flex-row items-center gap-6 lg:gap-8 justify-center w-full max-w-7xl">
         <BorderImage
           imageSrc={image1}
           information={{
@@ -49,18 +51,21 @@ const ThreeImage = () => {
       </div>
 
       {/* Brand Story */}
-      <div className="flex flex-col sm:flex-row gap-4 w-3/5">
-        <div className="text-3xl font-bold flex-1">Better than yesterday.</div>
+      <div className="flex flex-col md:flex-row gap-8 md:gap-12 w-full max-w-7xl">
+        <div
+          className="text-2xl md:text-3xl font-bold flex-1"
+          style={{ color: "var(--text-primary)" }}
+        >
+          Better than yesterday.
+        </div>
         <div
           className={classNames(
             "flex-1",
             "text-sm",
-            "flex-1",
-            "top-0",
-            "left-0",
-            "right-0",
-            "text-base"
+            "md:text-base",
+            "leading-relaxed"
           )}
+          style={{ color: "var(--text-secondary)" }}
         >
           在這個高速變化的時代，每一天都是自我挑戰的新契機。Neo
           致力於陪伴您走過每一程，無論是初學者還是健身老手，我們都有適合您的訓練計劃。

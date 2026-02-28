@@ -8,14 +8,14 @@ import {
   BarChartOutlined,
   ThunderboltOutlined,
   MenuOutlined,
-  BulbOutlined,
-  BulbFilled,
+  SunOutlined,
+  MoonOutlined,
 } from "@ant-design/icons";
 import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
 import { routerMap } from "./const";
-import { useAppSelector, useAppDispatch } from "@/lib/hooks/index";
-import { toggleTheme, selectTheme } from "@/lib/features/theme/themeSlice";
+import { useAppSelector } from "@/lib/hooks/index";
+import { useThemeTransition } from "@/lib/hooks/ui/useThemeTransition";
 import UserProfileMenu from "../UserProfileMenu";
 
 // 定義導航項的圖標
@@ -33,7 +33,7 @@ const useNavigation = () => {
   const isNavigationShow = useAppSelector(
     (state) => state.userInfo.user.isNavigationShow
   );
-  const isMobile = useMediaQuery("(max-width: 768px)");
+  const isMobile = useMediaQuery("mobile");
   const [drawerVisible, setDrawerVisible] = useState(false);
 
   // 檢查路由是否活動中
@@ -78,8 +78,7 @@ const useNavigation = () => {
 // 桌面版導航組件
 const DesktopNavigation: React.FC = () => {
   const { isRouteActive, navigateTo } = useNavigation();
-  const dispatch = useAppDispatch();
-  const theme = useAppSelector(selectTheme);
+  const { effectiveTheme, toggleWithTransition } = useThemeTransition();
 
   // 桌面版導覽項目
   const NavLink = ({ title }: { title: keyof typeof routerMap }) => {
@@ -122,11 +121,20 @@ const DesktopNavigation: React.FC = () => {
         <NavLink title="Workout Report" />
       </Flex>
       <Space align="center" size={12}>
-        <Tooltip title={theme === "dark" ? "切換到亮色模式" : "切換到暗色模式"}>
+        <Tooltip
+          title={
+            effectiveTheme === "dark" ? "切換到亮色模式" : "切換到暗色模式"
+          }
+        >
           <Button
             type="text"
-            icon={theme === "dark" ? <BulbOutlined /> : <BulbFilled />}
-            onClick={() => dispatch(toggleTheme())}
+            icon={
+              effectiveTheme === "dark" ? <SunOutlined /> : <MoonOutlined />
+            }
+            onClick={toggleWithTransition}
+            aria-label={
+              effectiveTheme === "dark" ? "切換到亮色模式" : "切換到暗色模式"
+            }
             style={{
               fontSize: 16,
               color: "var(--text-primary)",
@@ -148,8 +156,7 @@ const DesktopNavigation: React.FC = () => {
 const MobileNavigation: React.FC = () => {
   const { pathname, drawerVisible, setDrawerVisible, navigateTo } =
     useNavigation();
-  const dispatch = useAppDispatch();
-  const theme = useAppSelector(selectTheme);
+  const { effectiveTheme, toggleWithTransition } = useThemeTransition();
 
   return (
     <Flex align="center" justify="space-between" style={{ width: "100%" }}>
@@ -157,6 +164,7 @@ const MobileNavigation: React.FC = () => {
         type="text"
         icon={<MenuOutlined />}
         onClick={() => setDrawerVisible(true)}
+        aria-label="打開導航選單"
         style={{
           fontSize: 16,
           color: "var(--text-primary)",
@@ -166,11 +174,20 @@ const MobileNavigation: React.FC = () => {
         }}
       />
       <Flex align="center" gap={8}>
-        <Tooltip title={theme === "dark" ? "切換到亮色模式" : "切換到暗色模式"}>
+        <Tooltip
+          title={
+            effectiveTheme === "dark" ? "切換到亮色模式" : "切換到暗色模式"
+          }
+        >
           <Button
             type="text"
-            icon={theme === "dark" ? <BulbOutlined /> : <BulbFilled />}
-            onClick={() => dispatch(toggleTheme())}
+            icon={
+              effectiveTheme === "dark" ? <SunOutlined /> : <MoonOutlined />
+            }
+            onClick={toggleWithTransition}
+            aria-label={
+              effectiveTheme === "dark" ? "切換到亮色模式" : "切換到暗色模式"
+            }
             style={{
               fontSize: 16,
               color: "var(--text-primary)",
@@ -190,17 +207,16 @@ const MobileNavigation: React.FC = () => {
         placement="left"
         onClose={() => setDrawerVisible(false)}
         open={drawerVisible}
-        width="100%"
-        height="100%"
+        width="80%"
         styles={{
           body: {
             padding: 0,
-            backgroundColor: "#000000",
+            backgroundColor: "var(--bg-primary)",
           },
           header: {
-            backgroundColor: "#000000",
-            borderBottom: "1px solid #333333",
-            color: "#ffffff",
+            backgroundColor: "var(--bg-primary)",
+            borderBottom: "1px solid var(--border-color)",
+            color: "var(--text-primary)",
           },
         }}
       >
@@ -210,10 +226,10 @@ const MobileNavigation: React.FC = () => {
           style={{
             border: "none",
             fontSize: "16px",
-            backgroundColor: "#000000",
-            color: "#ffffff",
+            backgroundColor: "var(--bg-primary)",
+            color: "var(--text-primary)",
           }}
-          theme="dark"
+          theme={effectiveTheme === "dark" ? "dark" : "light"}
           items={[
             {
               key: routerMap["Home"],

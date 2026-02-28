@@ -18,7 +18,7 @@ const SlowRunSettings: React.FC<SlowRunSettingsProps> = ({
   onBpmChange,
   onStart,
 }) => {
-  const isMobile = useMediaQuery("(max-width: 768px)");
+  const isMobile = useMediaQuery("mobile");
 
   return (
     <Space direction="vertical" size="middle" style={{ width: "100%" }}>

@@ -106,6 +106,53 @@ Neo Fitness Partner 是一款專注於健身和跑步訓練的 Web 應用程式�
   - CSS 動畫（介面過渡）
 - **音效處理**：Web Audio API + use-sound
 
+### UI 系統與設計制度
+
+Neo 應用採用完整的設計系統，確保視覺一致性與無障礙性：
+
+#### 設計 Tokens
+
+- **色彩系統**：50-900 分級色階，支援深色/淺色主題自動切換
+- **排版系統**：從 xs 到 9xl 的完整字號層級
+- **間距系統**：基於 4px 網格的統一間距
+- **陰影系統**：4 個等級的深度表現
+- **圓角系統**：4 個等級的圓角值
+
+#### 響應式設計
+
+- **斷點**：Mobile (639px)、Tablet (1023px)、Desktop
+- **移動優先**：從行動設備開始設計
+- **自適應導航**：手機漢堡選單 + 桌面橫向導航
+
+#### 無障礙性 (A11y)
+
+- ✅ WCAG AA 色彩對比度標準
+- ✅ 鍵盤導航支援（Tab、Enter、Escape）
+- ✅ ARIA labels 與語義化 HTML
+- ✅ 焦點指示視覺反饋
+- ✅ 圖片 alt text 與圖標 aria-label
+
+#### 主題系統
+
+- 深色模式（預設）與淺色模式
+- 平滑主題切換動畫（View Transition API）
+- 系統偏好自動檢測
+- 用戶偏好持久化
+
+#### 常用 UI 組件
+
+- **Skeleton**：6 種類型的加載占位符
+- **Spinner**：行內和全屏加載指示器
+- **EmptyState**：無資料狀態提示
+- **ErrorState**：錯誤處理與恢復建議
+
+#### 相關文檔
+
+- 📚 [設計系統指南](./docs/design-system.md)
+- 📚 [組件庫文檔](./docs/component-library.md)
+- 📚 [CSS 策略](./docs/css-strategy.md)
+- 📚 [效能指南](./docs/performance-guide.md)
+
 ### 檔案分層架構
 
 #### 1. 應用層結構

@@ -9,6 +9,7 @@ export * from "./auth/useAuth";
 
 // UI 相關 hooks
 export * from "./ui/useMediaQuery";
+export * from "./ui/useThemeTransition";
 
 // 計時器相關 hooks
 export * from "./timer/useTimerLogic";

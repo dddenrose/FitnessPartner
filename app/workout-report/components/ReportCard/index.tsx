@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { Card, Col, Row, Statistic } from "antd";
+import { Card, Col, Row, Statistic, theme } from "antd";
 import { ClockCircleOutlined, FireOutlined } from "@ant-design/icons";
 import { WorkoutSummary } from "@/app/interface/WorkoutReport";
 
@@ -15,6 +15,8 @@ const ReportCard: React.FC<ReportCardProps> = ({
   summary,
   formattedTitle,
 }) => {
+  const { token } = theme.useToken();
+
   return (
     <Col xs={24} sm={12} lg={8} key={timeKey}>
       <Card title={formattedTitle} hoverable>
@@ -23,7 +25,7 @@ const ReportCard: React.FC<ReportCardProps> = ({
             <Statistic
               title="運動次數"
               value={summary.workoutCount}
-              valueStyle={{ color: "#3f8600" }}
+              valueStyle={{ color: token.colorSuccess }}
             />
           </Col>
           <Col span={12}>

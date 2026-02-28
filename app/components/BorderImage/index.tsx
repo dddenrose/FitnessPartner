@@ -16,7 +16,16 @@ const BorderImage = (props: BorderImageProps) => {
   const { information, imageSrc = image3 } = props;
 
   return (
-    <div className={classNames("w-60", "h-80", "relative", "group")}>
+    <div
+      className={classNames(
+        "w-48",
+        "md:w-60",
+        "h-60",
+        "md:h-80",
+        "relative",
+        "group"
+      )}
+    >
       <div
         className={classNames(
           "absolute",
@@ -47,7 +56,7 @@ const BorderImage = (props: BorderImageProps) => {
 
       {/* Image */}
       <Image
-        alt="image"
+        alt={information?.title || "特色圖片"}
         src={imageSrc}
         className={classNames(
           "rounded-3xl",

@@ -1,22 +1,21 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { Flex, Typography, Progress, Segmented, Tooltip, Badge } from "antd";
+import React, { useState } from "react";
+import { Flex, Typography, Segmented, Badge } from "antd";
 import { useAppSelector } from "@/lib/hooks/redux/useRedux";
 import {
   usePoseDetection,
   useBpmCalculation,
   useInactivityDetection,
 } from "@/lib/hooks";
-import { drawKeypoints, drawSkeleton } from "@/lib/utils/poseDrawing";
-import {
-  calculateRotationAngle,
-  getRotatedCanvasSize,
-  applyCanvasRotation,
-} from "@/lib/utils/canvasRotation";
+import { useCanvasOverlay } from "./hooks/useCanvasOverlay";
 import styles from "./styles.module.css";
 
-const { Text, Title } = Typography;
+const { Text } = Typography;
+
+const BPM_TOLERANCE = 10;
+const BUILD_ID =
+  process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA?.slice(0, 7) || "dev";
 
 interface BpmDetectorProps {
   isActive: boolean;
@@ -28,9 +27,8 @@ const BpmDetector: React.FC<BpmDetectorProps> = ({
   onBpmDetected,
 }) => {
   const targetBpm = useAppSelector((state) => state.exercise.bpm);
-  const tolerance = 10;
   const [displayMode, setDisplayMode] = useState<"recent" | "average">(
-    "recent"
+    "recent",
   );
 
   // 使用自訂 Hooks
@@ -46,117 +44,21 @@ const BpmDetector: React.FC<BpmDetectorProps> = ({
     isActive,
   });
 
-  // 運行姿態檢測
-  useEffect(() => {
-    if (!detector || !videoRef.current || !cameraReady || !isActive) return;
-
-    const video = videoRef.current;
-    const canvas = canvasRef.current;
-    const ctx = canvas?.getContext("2d");
-    let rafId: number;
-
-    async function detectPoseAndCalculateBpm() {
-      if (!video || video.paused || video.ended) return;
-
-      // 取得 video 原始尺寸
-      const videoWidth = video.videoWidth;
-      const videoHeight = video.videoHeight;
-
-      // 計算需要的旋轉角度（傳入 video 元素以比較實際顯示尺寸）
-      const rotationAngle = calculateRotationAngle(video);
-
-      // 根據旋轉角度設定 Canvas 尺寸
-      if (canvas) {
-        const { width, height } = getRotatedCanvasSize(
-          videoWidth,
-          videoHeight,
-          rotationAngle
-        );
-        if (canvas.width !== width || canvas.height !== height) {
-          canvas.width = width;
-          canvas.height = height;
-        }
-      }
-
-      try {
-        const poses = await detector?.estimatePoses(video);
-
-        // 無論是否有偵測到人物，都要先清除 Canvas
-        if (canvas && ctx) {
-          ctx.save();
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-          // 根據旋轉角度決定變換順序
-          if (rotationAngle === 0) {
-            // 不需旋轉：只做水平鏡像
-            ctx.translate(canvas.width, 0);
-            ctx.scale(-1, 1);
-          } else if (rotationAngle === 180) {
-            // 逆時針橫躺：需要垂直翻轉修正 (配合鏡像變成旋轉 180 度)
-            ctx.translate(canvas.width, canvas.height);
-            ctx.scale(-1, -1);
-          } else if (rotationAngle === 90) {
-            // 需要旋轉 90 度：使用逆時針旋轉來修正方向
-            ctx.rotate(-Math.PI / 2);
-            // 修正平移量：因為現在 Canvas 寬高未對調 (是直向)，
-            // 旋轉後要移回視野，應該是平移原本的「寬度」距離 (短邊, e.g. 480)。
-            // 使用 videoWidth (480) 才是正確的平移量。
-            ctx.translate(-videoWidth, 0);
-            // 旋轉後的鏡像
-            ctx.translate(canvas.width, 0);
-            ctx.scale(-1, 1);
-          }
-        }
-
-        if (poses && poses.length > 0) {
-          const pose = poses[0];
-
-          if (canvas && ctx) {
-            // MoveNet 回傳的座標是基於 video 原始尺寸 (videoWidth x videoHeight)
-            // 我們已經透過旋轉處理了方向問題，所以直接使用原始尺寸即可
-            drawKeypoints(pose.keypoints, ctx, videoWidth, videoHeight);
-            drawSkeleton(pose.keypoints, ctx, videoWidth, videoHeight);
-          }
-
-          calculateBpm(pose.keypoints, updateActivityTime);
-        }
-
-        // 恢復 context 狀態
-        if (canvas && ctx) {
-          ctx.restore();
-        }
-      } catch (err) {
-        console.error("Pose detection error:", err);
-      }
-
-      rafId = requestAnimationFrame(detectPoseAndCalculateBpm);
-    }
-
-    detectPoseAndCalculateBpm();
-
-    return () => {
-      cancelAnimationFrame(rafId);
-    };
-  }, [
+  // 骨架繪製與 BPM 計算（rAF 迴圈）
+  useCanvasOverlay({
+    videoRef,
+    canvasRef,
     detector,
     cameraReady,
     isActive,
     calculateBpm,
     updateActivityTime,
-    videoRef,
-    canvasRef,
-  ]);
+  });
 
-  // 計算顯示的 BPM 和匹配百分比
   const displayedBpm = displayMode === "recent" ? recentBpm : averageBpm;
-
-  const isInRange = Math.abs(displayedBpm - targetBpm) <= tolerance;
+  const isInRange = Math.abs(displayedBpm - targetBpm) <= BPM_TOLERANCE;
 
   if (!isActive) return null;
-
-  // Vercel 環境變數（自動注入）
-  const buildId =
-    process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA?.slice(0, 7) || "dev";
 
   return (
     <Flex vertical align="center" style={{ marginTop: 20 }}>
@@ -165,56 +67,11 @@ const BpmDetector: React.FC<BpmDetectorProps> = ({
         <video ref={videoRef} className={styles.video} autoPlay playsInline />
         <canvas ref={canvasRef} className={styles.canvas} />
 
-        {/* 調試信息顯示 */}
-        <div
-          style={{
-            position: "absolute",
-            top: "50px",
-            left: "10px",
-            background: "rgba(0,0,0,0.9)",
-            color: "#0f0",
-            padding: "8px",
-            fontSize: "11px",
-            zIndex: 999,
-            fontFamily: "monospace",
-            lineHeight: "1.4",
-            borderRadius: "4px",
-          }}
-        >
-          Video: {videoRef.current?.videoWidth || 0} x{" "}
-          {videoRef.current?.videoHeight || 0}
-          <br />
-          Display: {videoRef.current?.clientWidth || 0} x{" "}
-          {videoRef.current?.clientHeight || 0}
-          <br />
-          Canvas: {canvasRef.current?.width || 0} x{" "}
-          {canvasRef.current?.height || 0}
-          <br />
-          Rotate:{" "}
-          {videoRef.current ? calculateRotationAngle(videoRef.current) : 0}°
-          <br />
-          Orn:{" "}
-          {typeof window !== "undefined"
-            ? window.screen?.orientation?.angle ??
-              (window as any).orientation ??
-              "N/A"
-            : "N/A"}
-          <br />
-          Type:{" "}
-          {typeof window !== "undefined"
-            ? window.screen?.orientation?.type ?? "N/A"
-            : "N/A"}
-        </div>
-
         {/* 不活動狀態提示 */}
         {inactivityDetected && (
           <div className={styles.inactivityAlert}>
             <Badge status="warning" />
-            <span
-              style={{ color: "white", fontSize: "14px", fontWeight: "bold" }}
-            >
-              請增加動作幅度
-            </span>
+            <span className={styles.inactivityAlertText}>請增加動作幅度</span>
           </div>
         )}
 
@@ -222,18 +79,7 @@ const BpmDetector: React.FC<BpmDetectorProps> = ({
         <Flex
           justify="space-between"
           align="center"
-          style={{
-            color: "white",
-            fontSize: "12px",
-            position: "absolute",
-            bottom: "0px",
-            right: "0px",
-            width: "100%",
-            backgroundColor: isInRange
-              ? "rgba(82, 196, 26, 0.6)"
-              : "rgba(255, 77, 79, 0.6)",
-            padding: "8px",
-          }}
+          className={`${styles.bpmBar} ${isInRange ? styles.bpmBarInRange : styles.bpmBarOutOfRange}`}
         >
           <Segmented
             value={displayMode}
@@ -245,29 +91,20 @@ const BpmDetector: React.FC<BpmDetectorProps> = ({
           />
           {displayedBpm} BPM
           <div>
-            目標: {targetBpm - tolerance} - {targetBpm + tolerance} BPM
+            目標: {targetBpm - BPM_TOLERANCE} - {targetBpm + BPM_TOLERANCE} BPM
           </div>
         </Flex>
 
         {/* 錯誤提示 */}
         {error && (
           <div className={styles.errorOverlay}>
-            <Text style={{ color: "white" }}>{error}</Text>
+            <Text className={styles.errorText}>{error}</Text>
           </div>
         )}
       </div>
 
-      {/* 版本標記 - 不明顯的顯示在底部 */}
-      <div
-        style={{
-          marginTop: "8px",
-          fontSize: "10px",
-          color: "rgba(0, 0, 0, 0.25)",
-          userSelect: "none",
-        }}
-      >
-        {buildId}
-      </div>
+      {/* 版本標記 */}
+      <div className={styles.buildId}>{BUILD_ID}</div>
     </Flex>
   );
 };

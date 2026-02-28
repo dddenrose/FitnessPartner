@@ -3,10 +3,10 @@
   /* RWD: 使用百分比寬度但限制最大寬度 */
   width: 100%;
   max-width: 500px; /* 限制最大寬度 */
-  margin-bottom: 16px;
-  border-radius: 8px;
+  margin-bottom: var(--spacing-md);
+  border-radius: var(--border-radius-md);
   overflow: hidden;
-  border: 2px solid rgba(255, 255, 255, 0.2);
+  border: 2px solid var(--border-color);
   /* 讓容器置中 */
   margin-left: auto;
   margin-right: auto;
@@ -39,9 +39,47 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: var(--bg-overlay);
+  color: var(--text-primary);
+  border-radius: var(--border-radius-md);
+}
+
+.errorText {
   color: white;
-  border-radius: 8px;
+}
+
+/* 底部 BPM 指示列 */
+.bpmBar {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 100%;
+  color: white;
+  font-size: 12px;
+  padding: 8px;
+}
+
+.bpmBarInRange {
+  background-color: rgba(82, 196, 26, 0.6);
+}
+
+.bpmBarOutOfRange {
+  background-color: rgba(255, 77, 79, 0.6);
+}
+
+/* 不活動提示文字 */
+.inactivityAlertText {
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+/* 版本標記 */
+.buildId {
+  margin-top: 8px;
+  font-size: 10px;
+  color: rgba(0, 0, 0, 0.25);
+  user-select: none;
 }
 
 .flashLight {
@@ -54,19 +92,19 @@
 /* 新增樣式 */
 .detectionIndicator {
   position: absolute;
-  top: 8px;
-  right: 8px;
+  top: var(--spacing-xs);
+  right: var(--spacing-xs);
   width: 24px;
   height: 24px;
-  border-radius: 50%;
+  border-radius: var(--border-radius-full);
   display: flex;
   justify-content: center;
   align-items: center;
-  color: white;
+  color: var(--text-inverse);
   font-weight: bold;
-  font-size: 12px;
-  box-shadow: 0 0 10px rgba(24, 144, 255, 0.8);
-  transition: all 0.3s ease;
+  font-size: var(--font-size-xs);
+  box-shadow: 0 0 10px var(--color-info-light);
+  transition: all var(--transition-base);
 }
 
 .bpmZoneIndicator {
@@ -75,21 +113,21 @@
   left: 0;
   width: 100%;
   height: 100%;
-  transition: background-color 0.5s ease;
+  transition: background-color var(--transition-slow);
 }
 
 /* 不活動提醒 - 改為小型通知而非全屏覆蓋 */
 .inactivityAlert {
   position: absolute;
-  top: 8px;
-  right: 8px;
-  background-color: rgba(250, 140, 22, 0.85);
-  color: white;
-  padding: 4px 8px;
-  border-radius: 4px;
+  top: var(--spacing-xs);
+  right: var(--spacing-xs);
+  background-color: var(--color-warning-light);
+  color: var(--text-inverse);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--border-radius-sm);
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: var(--spacing-xs);
   animation: fadeInOut 1.5s infinite;
   z-index: 5;
   max-width: 120px;
@@ -121,29 +159,30 @@
 
 /* 模式切換按鈕樣式 */
 .modeToggle {
-  background: none;
-  border: 1px solid white;
-  color: white;
-  padding: 5px 10px;
-  border-radius: 4px;
-  margin-bottom: 8px;
+  background: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--border-radius-sm);
+  margin-bottom: var(--spacing-xs);
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all var(--transition-base);
 }
 
 .modeToggle:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: var(--bg-hover);
+  border-color: var(--color-accent);
 }
 
 .toggleHint {
-  font-size: 10px;
-  margin-left: 4px;
+  font-size: var(--font-size-xs);
+  margin-left: var(--spacing-xs);
   opacity: 0.7;
 }
 
 .averageHint {
-  font-size: 12px;
-  color: #1890ff;
+  font-size: var(--font-size-sm);
+  color: var(--color-info);
   margin: 0;
   padding: 0;
 }

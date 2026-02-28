@@ -84,7 +84,17 @@ const UserProfileMenu: React.FC = () => {
 
   return (
     <Dropdown menu={{ items: menuItems }} placement="bottomRight">
-      <Space className="cursor-pointer">
+      <Space
+        className="cursor-pointer"
+        aria-label={`使用者選單：${displayName}`}
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+          }
+        }}
+      >
         <Avatar src={user.photoURL || undefined} alt={displayName}>
           {!user.photoURL && avatarText}
         </Avatar>

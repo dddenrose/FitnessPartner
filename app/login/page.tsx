@@ -30,7 +30,12 @@ const Login: React.FC = () => {
       {/* Login form positioned absolutely on top with higher z-index */}
       <div className="absolute inset-0 z-10 flex items-center justify-center">
         <Card
-          className="w-full max-w-md mx-4 shadow-xl bg-white/95"
+          className="w-full max-w-md mx-4 shadow-xl"
+          style={{
+            background: "var(--bg-elevated)",
+            backdropFilter: "blur(20px)",
+            border: "1px solid var(--border-color)",
+          }}
           bordered={false}
         >
           <Title level={2} className="text-center mb-6">

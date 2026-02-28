@@ -32,9 +32,9 @@ const ImageBlock = () => {
           "align-middle",
           "text-center",
           "underline",
-          "underline-offset-4",
-          "text-white"
+          "underline-offset-4"
         )}
+        style={{ color: "var(--text-inverse)" }}
         onClick={() => {
           router.push("create-workout-plan");
         }}
