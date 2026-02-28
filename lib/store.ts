@@ -6,6 +6,7 @@ import workoutReportReducer from "./features/workoutReport/workoutReportSlice";
 import exerciseReducer from "./features/exercise/exerciseSlice";
 import themeReducer from "./features/theme/themeSlice";
 import bpmDetectorReducer from "./features/bpmDetector/bpmDetectorSlice";
+import userProfileReducer from "./features/userProfile/userProfileSlice";
 
 // Redux-Persist imports
 import {
@@ -55,10 +56,11 @@ const rootReducer = combineReducers({
   firebase: FirebaseReducer,
   workoutReport: persistReducer(
     workoutReportPersistConfig,
-    workoutReportReducer
+    workoutReportReducer,
   ),
   theme: persistReducer(themePersistConfig, themeReducer),
   bpmDetector: bpmDetectorReducer,
+  userProfile: userProfileReducer,
 });
 
 export const makeStore = () => {

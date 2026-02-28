@@ -40,7 +40,7 @@ const formatYearWeek = (date: Date) => {
   // 計算日期是當年第幾天
   const dayOfYear =
     Math.floor(
-      (date.getTime() - firstDayOfYear.getTime()) / (24 * 60 * 60 * 1000)
+      (date.getTime() - firstDayOfYear.getTime()) / (24 * 60 * 60 * 1000),
     ) + 1;
   // 計算週數
   const weekNumber = Math.ceil((dayOfYear + dayOfWeek - 1) / 7);
@@ -102,13 +102,34 @@ export const addWorkoutSession = createAsyncThunk(
       // 處理常見的 Firebase 錯誤
       if (error.message && error.message.includes("PERMISSION_DENIED")) {
         throw new Error(
-          "權限被拒絕：請確認 Firebase 數據庫安全規則已正確設置，允許已登入用戶寫入數據"
+          "權限被拒絕：請確認 Firebase 數據庫安全規則已正確設置，允許已登入用戶寫入數據",
         );
       }
 
       throw new Error(`新增運動記錄失敗: ${error.message}`);
     }
-  }
+  },
+);
+
+// 獲取用戶所有運動記錄（不限日期，供 Profile 頁面使用）
+export const fetchAllWorkoutSessions = createAsyncThunk(
+  "workoutReport/fetchAllWorkoutSessions",
+  async () => {
+    const user = auth.currentUser;
+    if (!user) return [];
+
+    const workoutRef = ref(database, `workouts/${user.uid}`);
+    const snapshot = await get(workoutRef);
+    const workouts: WorkoutSession[] = [];
+
+    if (snapshot.exists()) {
+      snapshot.forEach((childSnapshot) => {
+        workouts.push(childSnapshot.val() as WorkoutSession);
+      });
+    }
+
+    return workouts;
+  },
 );
 
 // 獲取用戶的運動記錄
@@ -156,7 +177,7 @@ export const fetchWorkoutSessions = createAsyncThunk(
       console.error("獲取運動記錄失敗:", error);
       throw new Error(`獲取運動記錄失敗: ${error.message}`);
     }
-  }
+  },
 );
 
 // 生成運動報表
@@ -211,7 +232,7 @@ export const generateWorkoutReport = createAsyncThunk(
     } catch (error: any) {
       throw new Error(`生成運動報表失敗: ${error.message}`);
     }
-  }
+  },
 );
 
 // 創建空的摘要對象
@@ -251,6 +272,7 @@ const updateSummary = (summary: WorkoutSummary, session: WorkoutSession) => {
 // 定義 Slice 的 state 類型
 interface WorkoutReportState {
   workoutSessions: WorkoutSession[];
+  allWorkoutSessions: WorkoutSession[];
   report: WorkoutReport | null;
   loading: boolean;
   error: string | null;
@@ -260,6 +282,7 @@ interface WorkoutReportState {
 // 初始狀態
 const initialState: WorkoutReportState = {
   workoutSessions: [],
+  allWorkoutSessions: [],
   report: null,
   loading: false,
   error: null,
@@ -273,7 +296,7 @@ const workoutReportSlice = createSlice({
   reducers: {
     setSelectedTimeRange: (
       state,
-      action: PayloadAction<"daily" | "weekly" | "monthly" | "yearly">
+      action: PayloadAction<"daily" | "weekly" | "monthly" | "yearly">,
     ) => {
       state.selectedTimeRange = action.payload;
     },
@@ -295,6 +318,20 @@ const workoutReportSlice = createSlice({
       .addCase(addWorkoutSession.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || "添加運動記錄失敗";
+      })
+
+      // 處理獲取所有運動記錄
+      .addCase(fetchAllWorkoutSessions.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchAllWorkoutSessions.fulfilled, (state, action) => {
+        state.loading = false;
+        state.allWorkoutSessions = action.payload;
+      })
+      .addCase(fetchAllWorkoutSessions.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || "獲取所有運動記錄失敗";
       })
 
       // 處理獲取運動記錄
@@ -334,6 +371,8 @@ export const { setSelectedTimeRange, clearWorkoutReportError } =
 // 導出 selector
 export const selectWorkoutSessions = (state: RootState) =>
   state.workoutReport.workoutSessions;
+export const selectAllWorkoutSessions = (state: RootState) =>
+  state.workoutReport.allWorkoutSessions;
 export const selectWorkoutReport = (state: RootState) =>
   state.workoutReport.report;
 export const selectWorkoutReportLoading = (state: RootState) =>
