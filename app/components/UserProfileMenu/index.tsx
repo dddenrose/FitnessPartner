@@ -6,7 +6,7 @@ import {
   UserOutlined,
   SettingOutlined,
 } from "@ant-design/icons";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { signOut } from "firebase/auth";
 import { auth } from "@/app/firebase";
 import {
@@ -47,12 +47,12 @@ const UserProfileMenu: React.FC = () => {
     {
       key: "1",
       label: (
-        <a onClick={() => message.info("Profile page - Coming soon")}>
+        <Link href="/profile">
           <Space>
             <UserOutlined />
             Profile
           </Space>
-        </a>
+        </Link>
       ),
     },
     {

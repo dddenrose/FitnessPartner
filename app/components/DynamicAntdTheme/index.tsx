@@ -117,7 +117,8 @@ export default function DynamicAntdTheme({
           : "rgba(0, 0, 0, 0.05)", // var(--hover-overlay)
       },
       Tooltip: {
-        colorBgSpotlight: isDark ? "#1f1f1f" : "#ffffff", // var(--bg-elevated)
+        colorBgSpotlight: isDark ? "#1f1f1f" : "rgba(0, 0, 0, 0.85)", // dark bg in light mode for readability
+        colorTextLightSolid: "#ffffff", // white text on dark bg
       },
       Notification: {
         colorBgElevated: isDark ? "#1f1f1f" : "#ffffff", // var(--bg-elevated)
